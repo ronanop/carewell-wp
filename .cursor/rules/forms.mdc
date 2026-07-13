@@ -1,0 +1,30 @@
+---
+description: Contact form validation and submission rules
+globs: "**/contact/**,lib/validations/**,lib/actions/**"
+alwaysApply: false
+---
+
+# Forms Rules
+
+## Stack
+React Hook Form + Zod + Server Actions
+
+## Validation
+- Schema in `lib/validations/contact-form.ts`
+- Server-side validation mandatory in Server Action
+- Honeypot field `website` must be empty
+
+## Submission
+- External endpoint via `CONTACT_FORM_ENDPOINT` env var
+- Never store in custom database
+- Return `{ success, error }` — no thrown errors to client
+
+## Accessibility
+- Visible labels on all inputs
+- `aria-invalid` + `aria-describedby` for errors
+- `aria-live="polite"` on success
+
+## Security
+- Honeypot hidden with `sr-only`, `tabIndex={-1}`, `aria-hidden`
+- No PII in logs
+- Server Actions for CSRF protection

@@ -1,0 +1,594 @@
+/**
+ * Scoped WordPress / Gutenberg content styles.
+ *
+ * Namespace: `.rich-content` — never leaks globally.
+ *
+ * Security assumption: HTML is trusted/sanitized before reaching RichContent.
+ * This stylesheet only styles markup; it does not execute scripts.
+ */
+
+.rich-content {
+  /* Editorial spacing tokens (CSS variables only) */
+  --rc-space-paragraph: 1.5rem; /* 24px */
+  --rc-space-heading: 2rem; /* 32px */
+  --rc-space-section: 4rem; /* 64px */
+  --rc-space-list: 0.5rem;
+  --rc-space-block: 1.75rem;
+  --rc-line-height: 1.75;
+  --rc-measure: var(--reading-width, 42.5rem); /* 680px */
+  --rc-measure-max: var(--container-article, 47.5rem); /* ~760px */
+
+  max-width: min(var(--rc-measure-max), 100%);
+  width: 100%;
+  margin-inline: auto;
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: var(--rc-line-height);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.rich-content > *:first-child {
+  margin-top: 0;
+}
+
+.rich-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* -------------------------------------------------------------------------
+   Typography — headings
+   ------------------------------------------------------------------------- */
+
+.rich-content :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--foreground);
+  font-family: var(--font-heading);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin-top: var(--rc-space-section);
+  margin-bottom: var(--rc-space-heading);
+  text-wrap: balance;
+}
+
+.rich-content h1 {
+  font-size: clamp(1.875rem, 1.5rem + 1.2vw, 2.5rem);
+  font-weight: 400;
+}
+
+.rich-content h2 {
+  font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);
+  font-weight: 400;
+}
+
+.rich-content h3 {
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+}
+
+.rich-content h4 {
+  font-size: 1.25rem;
+}
+
+.rich-content h5 {
+  font-size: 1.125rem;
+}
+
+.rich-content h6 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+}
+
+.rich-content :is(h1, h2, h3, h4, h5, h6) + p {
+  margin-top: 0;
+}
+
+/* -------------------------------------------------------------------------
+   Paragraphs & inline text
+   ------------------------------------------------------------------------- */
+
+.rich-content p {
+  margin-top: 0;
+  margin-bottom: var(--rc-space-paragraph);
+  max-width: var(--rc-measure);
+}
+
+.rich-content :is(strong, b) {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.rich-content :is(em, i) {
+  font-style: italic;
+}
+
+.rich-content u {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.rich-content :is(sup, sub) {
+  font-size: 0.75em;
+  line-height: 0;
+}
+
+.rich-content mark {
+  background-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  color: var(--foreground);
+  padding-inline: 0.15em;
+}
+
+/* -------------------------------------------------------------------------
+   Links
+   ------------------------------------------------------------------------- */
+
+.rich-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--motion-duration-fast, 150ms)
+    var(--motion-ease-out, ease);
+}
+
+.rich-content a:hover {
+  color: var(--primary-600, var(--primary));
+}
+
+.rich-content a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.rich-content a[href^="tel:"],
+.rich-content a[href^="mailto:"] {
+  text-decoration-style: dotted;
+}
+
+/* -------------------------------------------------------------------------
+   Lists
+   ------------------------------------------------------------------------- */
+
+.rich-content :is(ul, ol) {
+  margin-top: 0;
+  margin-bottom: var(--rc-space-paragraph);
+  padding-left: 1.5rem;
+  max-width: var(--rc-measure);
+}
+
+.rich-content ul {
+  list-style-type: disc;
+}
+
+.rich-content ol {
+  list-style-type: decimal;
+}
+
+.rich-content li {
+  margin-bottom: var(--rc-space-list);
+  padding-left: 0.25rem;
+}
+
+.rich-content li > :is(ul, ol) {
+  margin-top: var(--rc-space-list);
+  margin-bottom: var(--rc-space-list);
+}
+
+.rich-content li > p {
+  margin-bottom: var(--rc-space-list);
+}
+
+/* -------------------------------------------------------------------------
+   Blockquote
+   ------------------------------------------------------------------------- */
+
+.rich-content blockquote,
+.rich-content .wp-block-quote {
+  margin: var(--rc-space-block) 0;
+  padding: 1rem 0 1rem 1.25rem;
+  border-left: 3px solid var(--accent);
+  color: var(--muted-foreground);
+  font-style: italic;
+  max-width: var(--rc-measure);
+}
+
+.rich-content blockquote p:last-child,
+.rich-content .wp-block-quote p:last-child {
+  margin-bottom: 0;
+}
+
+.rich-content blockquote cite,
+.rich-content .wp-block-quote cite {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-style: normal;
+  color: var(--muted-foreground);
+}
+
+/* -------------------------------------------------------------------------
+   Code
+   ------------------------------------------------------------------------- */
+
+.rich-content code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background-color: var(--muted);
+  color: var(--foreground);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+}
+
+.rich-content pre {
+  margin: var(--rc-space-block) 0;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  max-width: 100%;
+}
+
+.rich-content pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* -------------------------------------------------------------------------
+   Horizontal rules / separators
+   ------------------------------------------------------------------------- */
+
+.rich-content hr,
+.rich-content .wp-block-separator {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--rc-space-section) 0;
+  width: 100%;
+  max-width: var(--rc-measure);
+}
+
+.rich-content .wp-block-separator.is-style-wide,
+.rich-content .wp-block-separator.alignwide {
+  max-width: 100%;
+}
+
+.rich-content .wp-block-separator.is-style-dots {
+  border: 0;
+  text-align: center;
+  line-height: 1;
+  height: auto;
+}
+
+.rich-content .wp-block-separator.is-style-dots::before {
+  content: "···";
+  color: var(--muted-foreground);
+  letter-spacing: 0.75em;
+  padding-left: 0.75em;
+}
+
+/* -------------------------------------------------------------------------
+   Images & figures
+   ------------------------------------------------------------------------- */
+
+.rich-content :is(img, video, svg) {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.rich-content img {
+  border-radius: var(--radius-lg);
+}
+
+.rich-content figure,
+.rich-content .wp-block-image {
+  margin: var(--rc-space-block) 0;
+  max-width: 100%;
+}
+
+.rich-content figure img,
+.rich-content .wp-block-image img {
+  margin-inline: auto;
+}
+
+.rich-content figcaption,
+.rich-content .wp-element-caption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.rich-content .alignleft {
+  float: left;
+  margin: 0.25rem 1.5rem 1rem 0;
+  max-width: min(50%, 20rem);
+}
+
+.rich-content .alignright {
+  float: right;
+  margin: 0.25rem 0 1rem 1.5rem;
+  max-width: min(50%, 20rem);
+}
+
+.rich-content .aligncenter {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.rich-content .alignwide {
+  max-width: 100%;
+}
+
+.rich-content .alignfull {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0;
+}
+
+.rich-content .alignnone {
+  float: none;
+}
+
+@media (max-width: 640px) {
+  .rich-content .alignleft,
+  .rich-content .alignright {
+    float: none;
+    display: block;
+    margin: var(--rc-space-block) auto;
+    max-width: 100%;
+  }
+}
+
+/* Clear floats after aligned images */
+.rich-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* -------------------------------------------------------------------------
+   Gallery
+   ------------------------------------------------------------------------- */
+
+.rich-content .wp-block-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 0.75rem;
+  margin: var(--rc-space-block) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rich-content .wp-block-gallery .wp-block-image,
+.rich-content .wp-block-gallery figure {
+  margin: 0;
+}
+
+.rich-content .wp-block-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+/* -------------------------------------------------------------------------
+   Buttons (WordPress button blocks)
+   ------------------------------------------------------------------------- */
+
+.rich-content .wp-block-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: var(--rc-space-block) 0;
+}
+
+.rich-content .wp-block-button {
+  margin: 0;
+}
+
+.rich-content .wp-block-button__link,
+.rich-content a.wp-block-button__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    background-color var(--motion-duration-fast, 150ms)
+      var(--motion-ease-out, ease),
+    color var(--motion-duration-fast, 150ms) var(--motion-ease-out, ease);
+}
+
+.rich-content .wp-block-button__link:hover,
+.rich-content a.wp-block-button__link:hover {
+  background-color: var(--primary-600, var(--primary));
+  color: var(--primary-foreground);
+  text-decoration: none;
+}
+
+.rich-content .wp-block-button__link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.rich-content .wp-block-button.is-style-outline .wp-block-button__link {
+  background-color: transparent;
+  color: var(--primary);
+  box-shadow: inset 0 0 0 1.5px var(--primary);
+}
+
+.rich-content .wp-block-button.is-style-outline .wp-block-button__link:hover {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* -------------------------------------------------------------------------
+   Tables — horizontal scroll, zebra, headers
+   ------------------------------------------------------------------------- */
+
+.rich-content .wp-block-table,
+.rich-content figure.wp-block-table {
+  margin: var(--rc-space-block) 0;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rich-content table {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.rich-content thead th {
+  background-color: var(--muted);
+  color: var(--foreground);
+  font-weight: 600;
+  text-align: left;
+}
+
+.rich-content :is(th, td) {
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  vertical-align: top;
+}
+
+.rich-content tbody tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--muted) 55%, transparent);
+}
+
+.rich-content tbody tr:hover {
+  background-color: color-mix(in srgb, var(--primary) 6%, transparent);
+}
+
+/* Bare tables (no figure wrapper) still scroll */
+.rich-content > table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* -------------------------------------------------------------------------
+   Embeds — responsive 16:9 iframes
+   ------------------------------------------------------------------------- */
+
+.rich-content .wp-block-embed,
+.rich-content .wp-block-embed__wrapper,
+.rich-content figure.wp-block-embed {
+  margin: var(--rc-space-block) 0;
+  max-width: 100%;
+}
+
+.rich-content .wp-block-embed__wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: var(--muted);
+}
+
+.rich-content .wp-block-embed__wrapper iframe,
+.rich-content .wp-block-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: var(--radius-md);
+}
+
+/* Fallback when WordPress does not wrap the iframe */
+.rich-content iframe {
+  max-width: 100%;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
+  border-radius: var(--radius-md);
+  display: block;
+}
+
+.rich-content .wp-block-embed__wrapper iframe {
+  aspect-ratio: auto;
+  height: 100%;
+}
+
+/* -------------------------------------------------------------------------
+   Columns
+   ------------------------------------------------------------------------- */
+
+.rich-content .wp-block-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: var(--rc-space-block) 0;
+}
+
+.rich-content .wp-block-column {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .rich-content .wp-block-columns {
+    flex-direction: column;
+  }
+
+  .rich-content .wp-block-column {
+    flex-basis: 100%;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Groups / spacers / misc Gutenberg
+   ------------------------------------------------------------------------- */
+
+.rich-content .wp-block-group {
+  margin: var(--rc-space-block) 0;
+}
+
+.rich-content .wp-block-spacer {
+  clear: both;
+}
+
+.rich-content .has-text-align-left {
+  text-align: left;
+}
+
+.rich-content .has-text-align-center {
+  text-align: center;
+}
+
+.rich-content .has-text-align-right {
+  text-align: right;
+}
+
+.rich-content .has-drop-cap:first-letter {
+  float: left;
+  font-size: 3.25em;
+  line-height: 0.85;
+  font-weight: 500;
+  margin: 0.05em 0.15em 0 0;
+  color: var(--primary);
+  font-family: var(--font-heading);
+}

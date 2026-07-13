@@ -1,0 +1,36 @@
+---
+description: SEO and metadata implementation rules
+globs: "app/**"
+alwaysApply: false
+---
+
+# SEO Rules
+
+## Metadata
+Every page must export `generateMetadata()` sourcing WordPress SEO fields.
+
+```typescript
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const data = await getContent(slug);
+  return {
+    title: data.seo.title || `${data.title} | Care Well Medical Centre`,
+    description: data.seo.description,
+    alternates: { canonical: data.seo.canonicalUrl },
+    openGraph: { title, description, images, type: 'website' },
+    twitter: { card: 'summary_large_image' },
+  };
+}
+```
+
+## Schema (JSON-LD)
+- All pages: Organization + BreadcrumbList
+- Home: MedicalBusiness | Service: MedicalProcedure | Blog: BlogPosting | Doctors: Physician
+
+## Sitemap & Robots
+- `app/sitemap.ts` — dynamic, fetches all slugs from WordPress
+- `app/robots.ts` — allow crawlers, point to sitemap
+
+## Rules
+- Preserve WordPress slugs exactly — no URL changes without 301 redirects
+- Set `metadataBase` in root layout
+- One `<h1>` per page with primary keyword

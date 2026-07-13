@@ -1,0 +1,295 @@
+// Experience Studio — PostgreSQL schema (ADR-011).
+// Presentation configuration only. Never store WordPress page/post HTML or media binaries.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleName {
+  ADMIN
+  EDITOR
+  MARKETING
+  DEVELOPER
+}
+
+enum PresentationStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum VersionStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum GalleryCategory {
+  BEFORE_AFTER
+  PROCEDURE
+  HOSPITAL
+}
+
+enum ReviewSource {
+  GOOGLE
+  VIDEO
+  MANUAL
+}
+
+enum CtaScope {
+  GLOBAL
+  TEMPLATE
+  PAGE
+}
+
+model Role {
+  id        String   @id @default(cuid())
+  name      RoleName @unique
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String?
+  passwordHash String
+  roleId       String
+  role         Role       @relation(fields: [roleId], references: [id])
+  active       Boolean    @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+
+  @@index([roleId])
+}
+
+/// Tenant / site root for Experience Studio presentation data.
+model Site {
+  id        String          @id @default(cuid())
+  key       String          @unique @default("default")
+  name      String          @default("Care Well Medical Centre")
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  pages     WordPressPage[]
+  templates Template[]
+}
+
+/// WordPress page metadata only — never article HTML.
+model WordPressPage {
+  id                    String            @id @default(cuid())
+  siteId                String
+  site                  Site              @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  databaseId            Int
+  uri                   String
+  slug                  String
+  title                 String
+  status                String
+  wpTemplate            String?
+  featuredImageUrl      String?
+  seoTitle              String?
+  parentDatabaseId      Int?
+  /// Last modified timestamp from WordPress.
+  lastWordPressModified DateTime
+  lastSyncedAt          DateTime
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  presentation          PagePresentation?
+
+  @@unique([siteId, databaseId])
+  @@unique([siteId, uri])
+  @@index([siteId, slug])
+  @@index([siteId, status])
+  @@index([lastWordPressModified])
+}
+
+/// Named presentation template defaults (seeded; CRUD comes later).
+model Template {
+  id              String             @id @default(cuid())
+  siteId          String
+  site            Site               @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  slug            String
+  name            String
+  description     String?
+  previewImageUrl String?
+  sortOrder       Int                @default(0)
+  active          Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  presentations   PagePresentation[]
+
+  @@unique([siteId, slug])
+  @@index([siteId, sortOrder])
+}
+
+/// Presentation configuration for one WordPress page.
+/// `config` is the PresentationConfig JSON contract (media IDs only — never URLs).
+model PagePresentation {
+  id          String               @id @default(cuid())
+  pageId      String               @unique
+  page        WordPressPage        @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  templateId  String?
+  template    Template?            @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  status      PresentationStatus   @default(DRAFT)
+  /// PresentationConfig JSON — single source of truth for Studio ↔ Frontend.
+  config      Json
+  publishedAt DateTime?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  versions    PresentationVersion[]
+
+  @@index([templateId])
+  @@index([status])
+}
+
+model PresentationVersion {
+  id             String           @id @default(cuid())
+  presentationId String
+  presentation   PagePresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
+  version        Int
+  status         VersionStatus    @default(DRAFT)
+  /// Full PresentationConfig snapshot — publishing never overwrites prior rows.
+  snapshot       Json
+  note           String?
+  createdById    String?
+  createdAt      DateTime         @default(now())
+
+  @@unique([presentationId, version])
+  @@index([presentationId, createdAt])
+  @@index([presentationId, status])
+}
+
+/// Presentation profile for clinic doctors (placeholder module).
+model DoctorProfile {
+  id                   String   @id @default(cuid())
+  wordpressSlug        String?  @unique
+  displayName          String
+  designation          String?
+  credentials          String?
+  experienceLabel      String?
+  awards               String?
+  imageUrl             String?
+  socialLinkedIn       String?
+  socialInstagram      String?
+  availabilityNote     String?
+  consultationCtaLabel String?
+  consultationCtaHref  String?
+  sortOrder            Int      @default(0)
+  published            Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Gallery {
+  id        String          @id @default(cuid())
+  name      String
+  category  GalleryCategory
+  sortOrder Int             @default(0)
+  published Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  items     GalleryItem[]
+}
+
+model GalleryItem {
+  id             String   @id @default(cuid())
+  galleryId      String
+  gallery        Gallery  @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+  title          String?
+  imageUrl       String
+  altText        String?
+  beforeImageUrl String?
+  afterImageUrl  String?
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([galleryId])
+}
+
+model Review {
+  id         String       @id @default(cuid())
+  source     ReviewSource
+  authorName String
+  rating     Int?
+  body       String?
+  videoUrl   String?
+  featured   Boolean      @default(false)
+  published  Boolean      @default(true)
+  sortOrder  Int          @default(0)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@index([source, featured])
+}
+
+model CTAConfiguration {
+  id              String   @id @default(cuid())
+  scope           CtaScope
+  name            String
+  templateSlug    String?
+  wordpressPageId String?
+  primaryLabel    String
+  primaryHref     String
+  secondaryLabel  String?
+  secondaryHref   String?
+  whatsappEnabled Boolean  @default(true)
+  callEnabled     Boolean  @default(true)
+  bookEnabled     Boolean  @default(true)
+  stickyBottom    Boolean  @default(false)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([scope])
+}
+
+model ThemeConfiguration {
+  id                     String            @id @default(cuid())
+  key                    String            @unique @default("default")
+  logoUrl                String?
+  faviconUrl             String?
+  primaryColor           String?
+  accentColor            String?
+  footerText             String?
+  announcementBarText    String?
+  announcementBarEnabled Boolean           @default(false)
+  contactPhone           String?
+  contactEmail           String?
+  contactAddress         String?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  socialLinks            ThemeSocialLink[]
+}
+
+model ThemeSocialLink {
+  id        String             @id @default(cuid())
+  themeId   String
+  theme     ThemeConfiguration @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  platform  String
+  url       String
+  sortOrder Int                @default(0)
+
+  @@index([themeId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  summary    String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

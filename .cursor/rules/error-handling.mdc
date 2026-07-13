@@ -1,0 +1,27 @@
+---
+description: Error boundaries and GraphQL failure handling
+globs: "app/**,lib/wordpress/**"
+alwaysApply: false
+---
+
+# Error Handling Rules
+
+## GraphQL Fetchers
+- try/catch with typed `WordPressFetchError`
+- Retry once on timeout/5xx only
+- Return `null` for missing content → page calls `notFound()`
+
+## Error Boundaries
+- `error.tsx` on every route segment fetching WordPress data
+- Client component with `reset()` retry
+- User-friendly messages only — no stack traces
+
+## Logging
+```typescript
+console.error('[CWMC]', { context, query, message });
+```
+Never log secrets, GraphQL URLs with auth, or form PII.
+
+## Degraded Mode
+- Static fallback contact info on error pages
+- Serve stale ISR cache when available

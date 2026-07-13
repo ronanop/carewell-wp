@@ -1,0 +1,33 @@
+---
+description: TypeScript and coding standards
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Coding Standards
+
+## TypeScript
+- Strict mode; no `any` — use `unknown` with type guards
+- Interface for object shapes; no enums — use `as const`
+- Explicit return types on exported functions
+
+## Imports
+```typescript
+// 1. React/Next → 2. Third-party → 3. @/ internal → 4. Relative
+import type { Metadata } from 'next';
+import { motion } from 'framer-motion';
+import { Container } from '@/components/layout/Container';
+import { ServiceCard } from './ServiceCard';
+```
+
+## Naming
+- Components: PascalCase (`ServiceCard.tsx`)
+- Hooks: `use{Name}.ts`
+- Utilities/queries: kebab-case (`get-all-services.ts`)
+- Constants: SCREAMING_SNAKE_CASE
+
+## Quality
+- Max 200 lines per file
+- No commented-out code
+- No `console.log` in production
+- Run `npm run lint` and `npm run build` before completing

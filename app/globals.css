@@ -1,0 +1,981 @@
+/* =============================================================================
+   CARE WELL MEDICAL CENTRE — GLOBAL DESIGN SYSTEM
+   Phase 1: Theme & Design Tokens
+
+   Architecture:
+   - Palette primitives (50–950) → semantic tokens → Tailwind @theme mapping
+   - Change branding by updating :root variables only
+   - Dark mode tokens defined in .dark (not enabled at launch)
+
+   Reference: reference/brand.md, reference/visual-language.md,
+              reference/typography.md, reference/motion-system.md
+   ============================================================================= */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Dark variant for future use — requires .dark class on html */
+@custom-variant dark (&:is(.dark *));
+
+/* =============================================================================
+   SECTION 1: CSS VARIABLES — PALETTE PRIMITIVES
+   Medical primary = deep teal (#0D4F4F). Medical accent = editorial gold.
+   ============================================================================= */
+
+:root {
+  /* -------------------------------------------------------------------------
+     Primary — Medical Teal (trust, CTAs, links, focus rings)
+     WCAG: primary-700 on white ≈ 7.2:1 | white on primary-700 ≈ 7.2:1
+     ------------------------------------------------------------------------- */
+  --primary-50: #f0f9f9;
+  --primary-100: #d9f0f0;
+  --primary-200: #b3e0e0;
+  --primary-300: #7dc4c4;
+  --primary-400: #4a9e9e;
+  --primary-500: #2d7a7a;
+  --primary-600: #1a6666;
+  --primary-700: #0d4f4f;
+  --primary-800: #0a3f3f;
+  --primary-900: #072f2f;
+  --primary-950: #041f1f;
+
+  /* -------------------------------------------------------------------------
+     Medical Accent — Editorial Gold (overlines, highlights, borders)
+     ------------------------------------------------------------------------- */
+  --accent-gold-50: #faf8f5;
+  --accent-gold-100: #f5f0eb;
+  --accent-gold-200: #ebe0cc;
+  --accent-gold-300: #dcc9a8;
+  --accent-gold-400: #c4a882;
+  --accent-gold-500: #b09468;
+  --accent-gold-600: #967a52;
+  --accent-gold-700: #7a6142;
+  --accent-gold-800: #5e4a33;
+  --accent-gold-900: #423524;
+  --accent-gold-950: #2a2117;
+
+  /* -------------------------------------------------------------------------
+     Neutral — Cool gray scale (UI chrome, body text, borders)
+     Foreground anchor: #1A1A2E (neutral-900)
+     ------------------------------------------------------------------------- */
+  --neutral-50: #f8fafc;
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1e293b;
+  --neutral-900: #1a1a2e;
+  --neutral-950: #0f172a;
+
+  /* -------------------------------------------------------------------------
+     Semantic — Success, Warning, Error, Info
+     ------------------------------------------------------------------------- */
+  --success-50: #f0fdf4;
+  --success-100: #dcfce7;
+  --success-200: #bbf7d0;
+  --success-300: #86efac;
+  --success-400: #4ade80;
+  --success-500: #22c55e;
+  --success-600: #16a34a;
+  --success-700: #15803d;
+  --success-800: #166534;
+  --success-900: #14532d;
+  --success-950: #052e16;
+
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-200: #fde68a;
+  --warning-300: #fcd34d;
+  --warning-400: #fbbf24;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-700: #b45309;
+  --warning-800: #92400e;
+  --warning-900: #78350f;
+  --warning-950: #451a03;
+
+  --error-50: #fef2f2;
+  --error-100: #fee2e2;
+  --error-200: #fecaca;
+  --error-300: #fca5a5;
+  --error-400: #f87171;
+  --error-500: #ef4444;
+  --error-600: #dc2626;
+  --error-700: #b91c1c;
+  --error-800: #991b1b;
+  --error-900: #7f1d1d;
+  --error-950: #450a0a;
+
+  --info-50: #f0f9f9;
+  --info-100: #d9f0f0;
+  --info-200: #b3e0e0;
+  --info-300: #7dc4c4;
+  --info-400: #4a9e9e;
+  --info-500: #2d7a7a;
+  --info-600: #1a6666;
+  --info-700: #0d4f4f;
+  --info-800: #0a3f3f;
+  --info-900: #072f2f;
+  --info-950: #041f1f;
+}
+
+/* =============================================================================
+   SECTION 2: CSS VARIABLES — SEMANTIC TOKENS
+   Map primitives to roles. Components use these via Tailwind utilities.
+   ============================================================================= */
+
+:root {
+  /* Background & surfaces */
+  --background: #ffffff;
+  --foreground: var(--neutral-900);
+  --surface: #ffffff;
+  --card: #ffffff;
+  --card-foreground: var(--neutral-900);
+  --popover: #ffffff;
+  --popover-foreground: var(--neutral-900);
+
+  /* Brand */
+  --primary: var(--primary-700);
+  --primary-foreground: #ffffff;
+  --secondary: var(--accent-gold-100);
+  --secondary-foreground: var(--neutral-900);
+  --accent: var(--accent-gold-400);
+  --accent-foreground: var(--neutral-900);
+
+  /* Muted & chrome */
+  --muted: var(--neutral-100);
+  --muted-foreground: var(--neutral-500);
+  --border: var(--neutral-200);
+  --input: var(--neutral-200);
+  --ring: var(--primary-700);
+
+  /* Semantic states */
+  --success: var(--success-600);
+  --success-foreground: #ffffff;
+  --warning: var(--warning-600);
+  --warning-foreground: #ffffff;
+  --error: var(--error-600);
+  --error-foreground: #ffffff;
+  --info: var(--info-700);
+  --info-foreground: #ffffff;
+  --destructive: var(--error-600);
+
+  /* Shadcn chart tokens (neutral palette) */
+  --chart-1: var(--primary-500);
+  --chart-2: var(--accent-gold-400);
+  --chart-3: var(--neutral-500);
+  --chart-4: var(--primary-300);
+  --chart-5: var(--neutral-300);
+
+  /* Shadcn sidebar (reserved) */
+  --sidebar: var(--neutral-50);
+  --sidebar-foreground: var(--neutral-900);
+  --sidebar-primary: var(--primary-700);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--neutral-100);
+  --sidebar-accent-foreground: var(--neutral-900);
+  --sidebar-border: var(--neutral-200);
+  --sidebar-ring: var(--primary-700);
+}
+
+/* =============================================================================
+   SECTION 3: SPACING SYSTEM (4px base grid)
+   Usage: section py = --space-16–24 | component gap = --space-4–8
+          group gap = --space-8–12 | macro = --space-24–32
+   ============================================================================= */
+
+:root {
+  --space-1: 0.25rem;   /* 4px  — micro: icon gaps */
+  --space-2: 0.5rem;    /* 8px  — tight stacks */
+  --space-3: 0.75rem;   /* 12px — form field gaps */
+  --space-4: 1rem;      /* 16px — component padding, paragraph spacing */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px — card padding, container px mobile */
+  --space-8: 2rem;      /* 32px — grid gaps, group spacing */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px — loose stacks */
+  --space-16: 4rem;     /* 64px — section padding mobile min */
+  --space-20: 5rem;     /* 80px — hero padding */
+  --space-24: 6rem;     /* 96px — section padding desktop */
+  --space-32: 8rem;     /* 128px — macro homepage blocks */
+
+  /* Semantic spacing aliases */
+  --section-padding-y-mobile: var(--space-16);
+  --section-padding-y-tablet: var(--space-20);
+  --section-padding-y-desktop: var(--space-24);
+  --container-padding-x: calc(var(--space-4) * 1.15);
+  --container-padding-x-md: calc(var(--space-6) * 1.15);
+  --container-padding-x-lg: calc(var(--space-8) * 1.15);
+  --grid-gap: var(--space-6);
+  --grid-gap-lg: var(--space-8);
+}
+
+/* =============================================================================
+   SECTION 4: RADIUS SYSTEM
+   sm = buttons/inputs | lg = cards | xl = modals | pill = badges
+   ============================================================================= */
+
+:root {
+  --radius: 0.5rem; /* 8px — base (cards) */
+  --radius-sm: 0.375rem;  /* 6px — buttons, inputs */
+  --radius-md: 0.5rem;    /* 8px — cards */
+  --radius-lg: 0.5rem;    /* 8px — cards (alias) */
+  --radius-xl: 0.75rem; /* 12px — modals */
+  --radius-2xl: 1rem;     /* 16px — large panels */
+  --radius-3xl: 1.5rem;   /* 24px — feature blocks */
+  --radius-pill: 9999px;
+}
+
+/* =============================================================================
+   SECTION 5: SHADOW SYSTEM (elevation)
+   Brand uses borders over shadows — shadows reserved for floating UI only.
+   ============================================================================= */
+
+:root {
+  --shadow-xs: 0 1px 2px 0 rgb(26 26 46 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(26 26 46 / 0.06), 0 1px 2px -1px rgb(26 26 46 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(26 26 46 / 0.07), 0 2px 4px -2px rgb(26 26 46 / 0.07);
+  --shadow-lg: 0 10px 15px -3px rgb(26 26 46 / 0.08), 0 4px 6px -4px rgb(26 26 46 / 0.08);
+  --shadow-xl: 0 20px 25px -5px rgb(26 26 46 / 0.08), 0 8px 10px -6px rgb(26 26 46 / 0.08);
+  --shadow-2xl: 0 25px 50px -12px rgb(26 26 46 / 0.15);
+  /* Usage: cards = none | dropdown = sm | modal = md | navbar scroll = xs | floating CTA = lg */
+}
+
+/* =============================================================================
+   SECTION 6: CONTAINER SYSTEM
+   content = 1280px | article = 768px | narrow = 672px | wide = 1440px
+   ============================================================================= */
+
+:root {
+  --container-content: 80rem;   /* 1280px — max-w-7xl equivalent */
+  --container-article: 48rem;   /* 768px — blog reading */
+  --container-narrow: 42rem;    /* 672px — forms, CTAs */
+  --container-wide: 90rem;      /* 1440px — full-bleed heroes */
+  --container-full: 100%;
+  --reading-width: 42.5rem;     /* 680px — optimal prose line length */
+}
+
+/* =============================================================================
+   SECTION 7: GRID SYSTEM
+   Mobile 4-col | Tablet 4-col | Desktop 12-col | Gutters via --grid-gap
+   ============================================================================= */
+
+:root {
+  --grid-columns-mobile: 4;
+  --grid-columns-tablet: 4;
+  --grid-columns-desktop: 12;
+}
+
+/* =============================================================================
+   SECTION 8: MOTION TOKENS (values only — no animations in Phase 1)
+   Reference: reference/motion-system.md
+   ============================================================================= */
+
+:root {
+  /* Duration */
+  --motion-duration-instant: 0ms;
+  --motion-duration-fast: 150ms;
+  --motion-duration-normal: 250ms;
+  --motion-duration-moderate: 400ms;
+  --motion-duration-slow: 500ms;
+  --motion-duration-slower: 600ms;
+
+  /* Delay */
+  --motion-delay-none: 0ms;
+  --motion-delay-short: 100ms;
+  --motion-delay-stagger: 80ms;
+  --motion-delay-hero: 200ms;
+
+  /* Distance (translate) */
+  --motion-distance-sm: 8px;
+  --motion-distance-md: 16px;
+  --motion-distance-lg: 20px;
+  --motion-distance-max: 24px;
+
+  /* Scale */
+  --motion-scale-default: 1;
+  --motion-scale-hover: 1.02;
+  --motion-scale-modal-in: 0.95;
+
+  /* Opacity */
+  --motion-opacity-hidden: 0;
+  --motion-opacity-visible: 1;
+  --motion-opacity-overlay: 0.8;
+
+  /* Easing — cubic-bezier values for Framer Motion / CSS */
+  --motion-ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-ease-linear: linear;
+}
+
+/* =============================================================================
+   SECTION 9: Z-INDEX SCALE
+   ============================================================================= */
+
+:root {
+  --z-background: 0;
+  --z-content: 1;
+  --z-sticky: 10;
+  --z-dropdown: 20;
+  --z-modal: 30;
+  --z-toast: 40;
+  --z-tooltip: 50;
+}
+
+/* =============================================================================
+   SECTION 10: BREAKPOINTS (Tailwind defaults — documented for reference)
+   sm: 640px | md: 768px | lg: 1024px | xl: 1280px | 2xl: 1536px
+   Mobile-first: base → sm → md → lg → xl → 2xl
+   ============================================================================= */
+
+:root {
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* =============================================================================
+   SECTION 11: DARK MODE TOKENS (future — not enabled at launch)
+   Apply by adding .dark class to <html>
+   ============================================================================= */
+
+.dark {
+  --background: var(--neutral-950);
+  --foreground: var(--neutral-50);
+  --surface: var(--neutral-900);
+  --card: var(--neutral-900);
+  --card-foreground: var(--neutral-50);
+  --popover: var(--neutral-900);
+  --popover-foreground: var(--neutral-50);
+  --primary: var(--primary-400);
+  --primary-foreground: var(--neutral-950);
+  --secondary: var(--neutral-800);
+  --secondary-foreground: var(--neutral-50);
+  --accent: var(--accent-gold-400);
+  --accent-foreground: var(--neutral-950);
+  --muted: var(--neutral-800);
+  --muted-foreground: var(--neutral-400);
+  --border: rgb(255 255 255 / 10%);
+  --input: rgb(255 255 255 / 15%);
+  --ring: var(--primary-400);
+  --destructive: var(--error-500);
+  --success: var(--success-500);
+  --warning: var(--warning-500);
+  --error: var(--error-500);
+  --info: var(--info-400);
+  --sidebar: var(--neutral-900);
+  --sidebar-foreground: var(--neutral-50);
+  --sidebar-primary: var(--primary-400);
+  --sidebar-primary-foreground: var(--neutral-950);
+  --sidebar-accent: var(--neutral-800);
+  --sidebar-accent-foreground: var(--neutral-50);
+  --sidebar-border: rgb(255 255 255 / 10%);
+  --sidebar-ring: var(--primary-400);
+}
+
+/* =============================================================================
+   SECTION 12: TAILWIND v4 THEME MAPPING
+   Maps CSS variables → Tailwind utility classes
+   ============================================================================= */
+
+@theme inline {
+  /* Fonts — loaded via next/font in layout.tsx */
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Semantic colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-destructive: var(--destructive);
+
+  /* Primary palette scale */
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
+
+  /* Medical accent (gold) palette */
+  --color-accent-gold-50: var(--accent-gold-50);
+  --color-accent-gold-100: var(--accent-gold-100);
+  --color-accent-gold-200: var(--accent-gold-200);
+  --color-accent-gold-300: var(--accent-gold-300);
+  --color-accent-gold-400: var(--accent-gold-400);
+  --color-accent-gold-500: var(--accent-gold-500);
+  --color-accent-gold-600: var(--accent-gold-600);
+  --color-accent-gold-700: var(--accent-gold-700);
+  --color-accent-gold-800: var(--accent-gold-800);
+  --color-accent-gold-900: var(--accent-gold-900);
+  --color-accent-gold-950: var(--accent-gold-950);
+
+  /* Neutral palette */
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+  --color-neutral-950: var(--neutral-950);
+
+  /* Semantic palette scales */
+  --color-success-50: var(--success-50);
+  --color-success-500: var(--success-500);
+  --color-success-600: var(--success-600);
+  --color-success-700: var(--success-700);
+  --color-warning-50: var(--warning-50);
+  --color-warning-500: var(--warning-500);
+  --color-warning-600: var(--warning-600);
+  --color-error-50: var(--error-50);
+  --color-error-500: var(--error-500);
+  --color-error-600: var(--error-600);
+  --color-info-700: var(--info-700);
+
+  /* Charts & sidebar */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
+  --radius-pill: var(--radius-pill);
+
+  /* Shadows */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+
+  /* Container max-widths */
+  --width-reading: var(--reading-width);
+  --container-content: var(--container-content);
+  --container-article: var(--container-article);
+  --container-narrow: var(--container-narrow);
+  --container-wide: var(--container-wide);
+
+  /* Typography scale — mobile-first sizes with line-height & letter-spacing */
+  --text-display-xl: clamp(2.25rem, 5vw + 1rem, 4.5rem);
+  --text-display-xl--line-height: 1.1;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-xl--font-weight: 300;
+
+  --text-display-lg: clamp(1.875rem, 3vw + 1rem, 3.75rem);
+  --text-display-lg--line-height: 1.15;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 300;
+
+  --text-h1: clamp(1.875rem, 2vw + 1rem, 3rem);
+  --text-h1--line-height: 1.2;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h1--font-weight: 400;
+
+  --text-h2: clamp(1.5rem, 1.5vw + 1rem, 2.25rem);
+  --text-h2--line-height: 1.25;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h2--font-weight: 400;
+
+  --text-h3: clamp(1.25rem, 1vw + 1rem, 1.875rem);
+  --text-h3--line-height: 1.3;
+  --text-h3--font-weight: 500;
+
+  --text-h4: clamp(1.125rem, 0.5vw + 1rem, 1.5rem);
+  --text-h4--line-height: 1.35;
+  --text-h4--font-weight: 500;
+
+  --text-h5: clamp(1rem, 0.25vw + 1rem, 1.25rem);
+  --text-h5--line-height: 1.4;
+  --text-h5--font-weight: 500;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.7;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.5;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.1em;
+  --text-label--font-weight: 500;
+
+  --text-button: 0.875rem;
+  --text-button--line-height: 1;
+  --text-button--letter-spacing: 0.01em;
+  --text-button--font-weight: 500;
+
+  /* Z-index */
+  --z-index-sticky: var(--z-sticky);
+  --z-index-dropdown: var(--z-dropdown);
+  --z-index-modal: var(--z-modal);
+  --z-index-toast: var(--z-toast);
+  --z-index-tooltip: var(--z-tooltip);
+}
+
+/* =============================================================================
+   SECTION 13: BASE LAYER
+   ============================================================================= */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-body antialiased;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-full;
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Typography — semantic HTML defaults */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading text-foreground;
+    text-wrap: balance;
+  }
+
+  h1 {
+    @apply text-h1;
+  }
+
+  h2 {
+    @apply text-h2;
+  }
+
+  h3 {
+    @apply text-h3;
+  }
+
+  h4 {
+    @apply text-h4;
+  }
+
+  h5 {
+    @apply text-h5;
+  }
+
+  p {
+    @apply text-body leading-relaxed;
+  }
+
+  a {
+    @apply text-primary underline-offset-4 transition-colors;
+    transition-duration: var(--motion-duration-fast);
+  }
+
+  a:hover {
+    @apply underline;
+  }
+
+  strong {
+    @apply font-medium;
+  }
+
+  /* Focus visible — WCAG compliant ring */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+    color: var(--foreground);
+  }
+}
+
+/* =============================================================================
+   SECTION 14: SCROLLBAR (webkit)
+   ============================================================================= */
+
+@layer base {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--muted);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--neutral-300);
+    border-radius: var(--radius-pill);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--neutral-400);
+  }
+}
+
+/* =============================================================================
+   SECTION 15: ACCESSIBILITY
+   ============================================================================= */
+
+@layer base {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* =============================================================================
+   SECTION 16: UTILITY CLASSES
+   ============================================================================= */
+
+@layer utilities {
+  /* Container widths — responsive horizontal padding */
+  .container-content {
+    width: 100%;
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-x);
+  }
+
+  @media (min-width: 768px) {
+    .container-content {
+      padding-inline: var(--container-padding-x-md);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-content {
+      padding-inline: var(--container-padding-x-lg);
+    }
+  }
+
+  .container-article {
+    width: 100%;
+    max-width: var(--container-article);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-x);
+  }
+
+  .container-narrow {
+    width: 100%;
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-x);
+  }
+
+  .container-wide {
+    width: 100%;
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-x);
+  }
+
+  .container-full {
+    width: 100%;
+    padding-inline: var(--container-padding-x);
+  }
+
+  .max-w-reading {
+    max-width: var(--reading-width);
+  }
+
+  /* Section vertical rhythm */
+  .section-padding {
+    padding-block: var(--section-padding-y-mobile);
+  }
+
+  @media (min-width: 768px) {
+    .section-padding {
+      padding-block: var(--section-padding-y-tablet);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding-block: var(--section-padding-y-desktop);
+    }
+  }
+
+  /* Grid system — 4-col mobile/tablet, 12-col desktop */
+  .grid-cw {
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(var(--grid-columns-mobile), minmax(0, 1fr));
+  }
+
+  @media (min-width: 768px) {
+    .grid-cw {
+      grid-template-columns: repeat(var(--grid-columns-tablet), minmax(0, 1fr));
+      gap: var(--grid-gap-lg);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .grid-cw {
+      grid-template-columns: repeat(var(--grid-columns-desktop), minmax(0, 1fr));
+    }
+  }
+
+  /* Typography utilities */
+  .text-display-xl {
+    font-size: var(--text-display-xl);
+    line-height: var(--text-display-xl--line-height);
+    letter-spacing: var(--text-display-xl--letter-spacing);
+    font-weight: var(--text-display-xl--font-weight);
+  }
+
+  .text-display-lg {
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+    font-weight: var(--text-display-lg--font-weight);
+  }
+
+  .text-h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    letter-spacing: var(--text-h1--letter-spacing);
+    font-weight: var(--text-h1--font-weight);
+  }
+
+  .text-h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+    font-weight: var(--text-h2--font-weight);
+  }
+
+  .text-h3 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    font-weight: var(--text-h3--font-weight);
+  }
+
+  .text-h4 {
+    font-size: var(--text-h4);
+    line-height: var(--text-h4--line-height);
+    font-weight: var(--text-h4--font-weight);
+  }
+
+  .text-h5 {
+    font-size: var(--text-h5);
+    line-height: var(--text-h5--line-height);
+    font-weight: var(--text-h5--font-weight);
+  }
+
+  .text-body-lg {
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+  }
+
+  .text-body {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  .text-small {
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+
+  .text-caption {
+    font-size: var(--text-caption);
+    line-height: var(--text-caption--line-height);
+  }
+
+  .text-label {
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    letter-spacing: var(--text-label--letter-spacing);
+    font-weight: var(--text-label--font-weight);
+  }
+
+  .text-button {
+    font-size: var(--text-button);
+    line-height: var(--text-button--line-height);
+    letter-spacing: var(--text-button--letter-spacing);
+    font-weight: var(--text-button--font-weight);
+  }
+
+  /* Z-index utilities */
+  .z-sticky {
+    z-index: var(--z-sticky);
+  }
+
+  .z-dropdown {
+    z-index: var(--z-dropdown);
+  }
+
+  .z-modal {
+    z-index: var(--z-modal);
+  }
+
+  .z-toast {
+    z-index: var(--z-toast);
+  }
+
+  .z-tooltip {
+    z-index: var(--z-tooltip);
+  }
+
+  /* Shadow utilities (semantic aliases) */
+  .shadow-card {
+    box-shadow: none;
+  }
+
+  .shadow-dropdown {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .shadow-modal {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-navbar {
+    box-shadow: var(--shadow-xs);
+  }
+
+  .shadow-floating-cta {
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* Homepage post-hero + footer: 32% visual shrink (0.85 × 0.8 = 0.68) via zoom.
+   Transform fallback for engines without zoom; width compensated to avoid gaps. */
+.homepage-compact {
+  zoom: 0.76;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@supports not (zoom: 1) {
+  .homepage-compact {
+    zoom: unset;
+    transform: scale(0.76);
+    transform-origin: top center;
+    width: 131.5789%; /* 100 / 0.76 */
+    max-width: none;
+    margin-inline: -15.7895%; /* center the oversized box */
+  }
+}
+
+/* Hero: 10% visual shrink via zoom. */
+.hero-compact {
+  zoom: 0.9;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@supports not (zoom: 1) {
+  .hero-compact {
+    zoom: unset;
+    transform: scale(0.9);
+    transform-origin: top center;
+    width: 111.1111%; /* 100 / 0.9 */
+    max-width: none;
+    margin-inline: -5.5556%; /* center the oversized box */
+  }
+}
+
+/* Navbar: 12% visual shrink via zoom. Sticky still works with zoom. */
+.navbar-compact {
+  zoom: 0.88;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@supports not (zoom: 1) {
+  .navbar-compact {
+    zoom: unset;
+    transform: scale(0.88);
+    transform-origin: top center;
+    width: 113.6364%; /* 100 / 0.88 */
+    max-width: none;
+    margin-inline: -6.8182%; /* center the oversized box */
+  }
+}

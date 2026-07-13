@@ -1,0 +1,37 @@
+---
+description: Responsive design and mobile-first layout rules
+globs: "**/*.{tsx,css}"
+alwaysApply: false
+---
+
+# Responsive Design Rules
+
+## Mobile-First
+Base styles for mobile; enhance at breakpoints:
+- `sm: 640px` | `md: 768px` | `lg: 1024px` | `xl: 1280px`
+
+## Layout
+```tsx
+// Container
+<div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8" />
+
+// Section spacing
+<section className="py-16 md:py-20 lg:py-28" />
+
+// Responsive grid
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" />
+```
+
+## Navigation
+- Hamburger menu below `lg` (1024px)
+- Full horizontal nav at `lg` and above
+
+## Touch Targets
+- Minimum 44x44px on mobile (48px recommended)
+- Prominent phone number and CTA buttons on mobile
+
+## Typography
+- Scale down one step on mobile: `text-3xl md:text-4xl lg:text-5xl`
+
+## Testing
+Verify at 320px, 375px, 768px, 1024px, 1440px — no horizontal scroll

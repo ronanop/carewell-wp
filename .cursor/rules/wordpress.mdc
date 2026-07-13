@@ -1,0 +1,34 @@
+---
+description: WordPress and WPGraphQL integration rules
+globs: "lib/wordpress/**"
+alwaysApply: false
+---
+
+# WordPress Rules
+
+## Read-Only Integration
+WordPress is the ONLY content source. Never mutate, migrate, or duplicate content.
+
+## Query Pattern
+```typescript
+// lib/wordpress/queries/get-{entity}.ts
+export const GET_QUERY = gql`...`;
+export async function getEntity() {
+  const data = await wpClient.request(GET_QUERY, variables);
+  return data.nodes.map(mapEntity);
+}
+```
+
+## Requirements
+- Use `graphql-request` with singleton client in `client.ts`
+- Use fragments for reusable field selections
+- Cursor-based pagination (`first`/`after`)
+- Map raw responses via `lib/wordpress/mappers/`
+- Render Gutenberg HTML through `ContentRenderer` with sanitization
+
+## Environment
+- `WORDPRESS_GRAPHQL_URL` — server-side only, never `NEXT_PUBLIC_`
+
+## Error Handling
+- Call `notFound()` when slug returns null
+- Log GraphQL errors server-side; show user-friendly fallback

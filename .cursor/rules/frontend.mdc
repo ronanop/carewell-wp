@@ -1,0 +1,37 @@
+---
+description: Frontend component and UI development rules
+globs: "**/*.{tsx,jsx}"
+alwaysApply: false
+---
+
+# Frontend Rules
+
+## Components
+- Server Components by default; Client only for events, hooks, browser APIs
+- One component per file; PascalCase filename
+- Accept `className` prop; use `cn()` for conditional classes
+- Use CVA for variants on UI primitives
+
+## Styling
+- Tailwind CSS only — no inline styles, no CSS Modules
+- Use semantic design tokens: `bg-primary`, `text-foreground`, `border-border`
+- Mobile-first responsive: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+
+## Layout Pattern
+```tsx
+<Section>
+  <Container>
+    <SectionHeader title="..." />
+    {/* content */}
+  </Container>
+</Section>
+```
+
+## Images
+- Always use `next/image` with width, height, alt, and sizes
+- Source alt text from WordPress media fields
+
+## Don'ts
+- No `<div onClick>` — use `<button>`
+- No business logic in `components/ui/`
+- No cross-feature imports between `components/features/` folders

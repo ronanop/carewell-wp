@@ -1,0 +1,24 @@
+# Experience Studio PostgreSQL (ADR-011)
+# Usage: docker compose up -d
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: carewell-experience-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: carewell_experience
+    volumes:
+      - carewell_experience_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d carewell_experience"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  carewell_experience_pgdata:

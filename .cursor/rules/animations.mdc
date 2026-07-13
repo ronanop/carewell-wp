@@ -1,0 +1,40 @@
+---
+description: Framer Motion animation standards
+globs: "**/*.{tsx,ts}"
+alwaysApply: false
+---
+
+# Animation Rules
+
+## Philosophy
+Subtle, purposeful, fast. Healthcare context — never bouncy or flashy.
+
+## Durations
+- Micro-interaction: 150-200ms
+- Content reveal: 300-500ms
+- Modal: 200-300ms
+- Stagger delay: 50-100ms between children
+
+## Reduced Motion (Required)
+```typescript
+const prefersReducedMotion = useReducedMotion();
+initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+```
+
+## Allowed
+- Fade-in + subtle upward translate on scroll (`viewport={{ once: true }}`)
+- Staggered card grid reveals
+- Mobile menu slide-in
+- Modal opacity transition
+
+## Prohibited
+- Parallax scrolling
+- Bounce, wiggle, shake effects
+- Auto-playing looping animations
+- Character-by-character text animation
+- Animating above-fold content (hurts LCP)
+
+## Performance
+- Lazy load: `dynamic(() => import('framer-motion'))`
+- Animate `opacity` and `transform` only
+- Max 10-15 animated elements per viewport

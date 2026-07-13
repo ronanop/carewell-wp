@@ -1,0 +1,51 @@
+---
+description: Core architecture rules for Care Well Medical Centre headless WordPress + Next.js project
+alwaysApply: true
+---
+
+# Architecture Rules
+
+## Stack
+- Next.js 15 App Router + TypeScript + Tailwind CSS + WordPress (WPGraphQL)
+- WordPress owns content. React owns presentation.
+
+## Public website (unchanged)
+Data flow:
+```
+WordPress → WPGraphQL → lib/wordpress/ → Server Components → UI
+```
+
+Prohibited on the public website:
+- CMS replacement, content migration, Express, MongoDB, Supabase, Firebase
+- Custom content APIs, patient portals, or storing WordPress page/post bodies in a database
+- Importing Prisma or Auth session APIs into public routes or `lib/wordpress/**`
+
+## Experience Studio exception (ADR-011 / ADR-012)
+Prisma (PostgreSQL), Auth.js, RBAC, and the `/admin` dashboard are permitted **only** inside the Experience Studio bounded context:
+
+- `app/admin/**`
+- `lib/experience/**`
+- `prisma/**`
+- `auth.ts` / `app/api/auth/**`
+
+Experience Studio manages presentation only (templates, heroes, CTAs, theme, section visibility). It must never edit or duplicate WordPress article content.
+
+Platform foundation (ADR-012): blocks register via Plugin SDK under `lib/experience/platform/`. Components never import WordPress. Binding Engine resolves props. Do not hardcode pack components into Page Studio core.
+
+## Rendering
+- Server Components by default; `"use client"` only for interactivity
+- Fetch WordPress data in Server Components only
+- ISR for dynamic content; SSG for static pages
+
+## Before Coding
+Read relevant docs in `docs/` and skills in `skills/`. See ADR-011 before touching `/admin`.
+
+## File Placement
+- Queries: `lib/wordpress/queries/`
+- Experience Studio: `lib/experience/`
+- Types: `types/`
+- UI primitives: `components/ui/`
+- Feature components: `components/features/{domain}/`
+- Admin UI: `components/admin/`
+- Pages: `app/{route}/page.tsx`
+- Admin: `app/admin/`

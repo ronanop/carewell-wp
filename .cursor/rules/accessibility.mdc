@@ -1,0 +1,35 @@
+---
+description: WCAG 2.1 AA accessibility requirements
+globs: "**/*.{tsx,jsx}"
+alwaysApply: false
+---
+
+# Accessibility Rules
+
+## Standards
+WCAG 2.1 Level AA on all pages and components.
+
+## HTML
+- Semantic elements: `nav`, `main`, `article`, `section`, `header`, `footer`
+- One `<h1>` per page; no heading level skips
+- Skip-to-content link in root layout
+
+## Interactive
+- All elements keyboard accessible with visible focus (`focus-visible:ring-2`)
+- Buttons not divs; form inputs have `<label>` elements
+- Modal: focus trap + Escape to close
+- Mobile menu: `aria-expanded`, `aria-controls`
+
+## Motion
+```typescript
+const prefersReducedMotion = useReducedMotion();
+// Disable animations when true
+```
+
+## Forms
+- `aria-invalid="true"` on error fields
+- `aria-describedby` linking to error messages
+- Server-side validation with Zod (client validation is UX only)
+
+## Images
+- Alt text from WordPress `altText` field; empty alt for decorative images

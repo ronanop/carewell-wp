@@ -1,0 +1,30 @@
+---
+description: Performance optimization rules
+globs: "app/**"
+alwaysApply: false
+---
+
+# Performance Rules
+
+## Targets
+- LCP < 2.5s | INP < 200ms | CLS < 0.1 | Initial JS < 100KB gzipped
+
+## Server-First
+- Fetch WordPress data in Server Components — zero client-side GraphQL
+- Use React `cache()` to deduplicate requests
+- Add `loading.tsx` Suspense fallbacks for data routes
+
+## Images
+```tsx
+<Image src={url} alt={altText} width={w} height={h} sizes="(max-width:768px) 100vw, 33vw" />
+```
+
+## Caching (ISR)
+- Homepage/services: `revalidate: 3600`
+- Blog listing: `revalidate: 1800`
+- Static pages: SSG on deploy
+
+## Bundle
+- Lazy load Client Components: `dynamic(() => import('...'))`
+- Import individual Lucide icons, not the full library
+- Lazy load Framer Motion on animated pages only
