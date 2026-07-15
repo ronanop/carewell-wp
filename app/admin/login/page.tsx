@@ -10,15 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminLoginPage() {
-  let session: Awaited<ReturnType<typeof auth>> = null;
   let authError: string | null = null;
-
-  try {
-    session = await auth();
-  } catch {
+  const session = await auth().catch(() => {
     authError =
       "Auth is not configured on this deployment. Set AUTH_SECRET (and AUTH_URL) in Vercel Environment Variables, then redeploy.";
-  }
+    return null;
+  });
 
   if (session?.user) {
     redirect("/admin/dashboard");
