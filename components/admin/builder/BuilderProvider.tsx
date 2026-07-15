@@ -10,12 +10,18 @@ import {
 import { useEditorStore } from "@/lib/experience/builder/editorStore";
 import type { PresentationConfig } from "@/types/presentation-config";
 import type { PresentationPage } from "@/types/presentation-config";
+import type { StaticPageDescriptor } from "@/types/static-page-descriptor";
+
+export type BuilderPersistenceKind = "wordpress" | "static";
 
 type BuilderMeta = {
   pageId: string;
-  basePage: PresentationPage;
+  basePage: PresentationPage | null;
   title: string;
   uri: string;
+  persistenceKind: BuilderPersistenceKind;
+  staticDescriptor: StaticPageDescriptor | null;
+  staticPageSlug: string | null;
 };
 
 const BuilderMetaContext = createContext<BuilderMeta | null>(null);
@@ -30,13 +36,19 @@ export function BuilderProvider({
   initialConfig,
   title,
   uri,
+  persistenceKind = "wordpress",
+  staticDescriptor = null,
+  staticPageSlug = null,
   children,
 }: {
   pageId: string;
-  basePage: PresentationPage;
+  basePage: PresentationPage | null;
   initialConfig: PresentationConfig;
   title: string;
   uri: string;
+  persistenceKind?: BuilderPersistenceKind;
+  staticDescriptor?: StaticPageDescriptor | null;
+  staticPageSlug?: string | null;
   children: ReactNode;
 }) {
   useEffect(() => {
@@ -109,6 +121,8 @@ export function BuilderProvider({
 
       if (event.key === "Delete" || event.key === "Backspace") {
         event.preventDefault();
+        // Static pages: do not delete handcrafted sections from the tree.
+        if (persistenceKind === "static") return;
         store.deleteSections(store.selectedIds);
       }
     }
@@ -127,10 +141,20 @@ export function BuilderProvider({
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("wheel", onWheel);
     };
-  }, []);
+  }, [persistenceKind]);
 
   return (
-    <BuilderMetaContext.Provider value={{ pageId, basePage, title, uri }}>
+    <BuilderMetaContext.Provider
+      value={{
+        pageId,
+        basePage,
+        title,
+        uri,
+        persistenceKind,
+        staticDescriptor,
+        staticPageSlug,
+      }}
+    >
       {children}
     </BuilderMetaContext.Provider>
   );

@@ -73,8 +73,11 @@ Report any failures before marking task complete.
 
 | Action | Reason |
 |--------|--------|
-| Build CMS, admin dashboard, auth | ADR-007 |
-| Create Express, Prisma, MongoDB, Supabase, Firebase | ADR-007 |
+| Build CMS replacement or patient portal | ADR-007 / product scope |
+| Create Express, MongoDB, Supabase, Firebase | ADR-007 |
+| Import Prisma into public routes or `lib/wordpress/**` | ADR-007 / ADR-011 / ADR-013 |
+| Use Prisma outside Experience Studio or Lead Engine | ADR-011 / ADR-013 |
+| Cyclic imports among wordpress / experience / leads | ADR-013 |
 | Migrate or duplicate WordPress content | ADR-001 |
 | Fetch WordPress in Client Components | ADR-003 |
 | Add dependencies without justification | `03_TECH_STACK.md` |

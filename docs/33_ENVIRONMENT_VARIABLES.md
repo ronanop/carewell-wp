@@ -4,11 +4,7 @@
 
 Provide the complete reference for all environment variables used across development, preview, and production environments.
 
-## Responsibilities
-
-- Document every required and optional variable.
-- Specify server-side vs client-side exposure rules.
-- Define validation requirements and example values.
+Canonical deployment: **Vercel** (Next.js) + **Render** (Postgres) + **Hostinger** (WordPress). See `docs/18_DEPLOYMENT.md`.
 
 ---
 
@@ -16,21 +12,27 @@ Provide the complete reference for all environment variables used across develop
 
 | Variable | Exposure | Required In | Description | Example |
 |----------|----------|-------------|-------------|---------|
-| `WORDPRESS_GRAPHQL_URL` | Server only | All environments | WPGraphQL endpoint URL | `https://cms.carewellmedical.com/graphql` |
+| `WORDPRESS_GRAPHQL_ENDPOINT` | Server only | All environments | WPGraphQL endpoint URL | `https://cms.example.com/graphql` |
 | `NEXT_PUBLIC_SITE_URL` | Client + Server | All environments | Canonical public site URL | `https://www.carewellmedical.com` |
-| `REVALIDATION_SECRET` | Server only | Production, Preview | Bearer token for on-demand ISR webhook | `openssl rand -hex 32` |
+| `WEBHOOK_SECRET` | Server only | Production, Preview | Bearer token for on-demand ISR webhook | `openssl rand -hex 32` |
+| `DATABASE_URL` | Server only | Production, Preview, local Studio | Postgres for Experience Studio + Lead Engine | Render External URL + `?schema=public` |
+| `AUTH_SECRET` | Server only | When using `/admin` login | Auth.js secret | `openssl rand -hex 32` |
 
 ---
 
-## Optional Variables
+## Optional / Conditional Variables
 
 | Variable | Exposure | Description | Example |
-|----------|----------|-------------|---------|
-| `NEXT_PUBLIC_GA_ID` | Client | Google Analytics 4 measurement ID | `G-XXXXXXXXXX` |
-| `CONTACT_FORM_ENDPOINT` | Server only | External form submission URL | `https://formspree.io/f/fxxxxxxx` |
-| `NEXT_PUBLIC_SITE_NAME` | Client | Site name for metadata fallback | `Care Well Medical Centre` |
-| `WORDPRESS_AUTH_TOKEN` | Server only | Bearer token if GraphQL requires auth (rare) | — |
-| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Client | Plausible analytics domain (alternative to GA) | `carewellmedical.com` |
+|----------|----------|-------------|-------------|
+| `AUTH_TRUST_HOST` | Server only | Trust host header on Vercel | `true` |
+| `AUTH_URL` | Server only | Auth callback base URL | same as `NEXT_PUBLIC_SITE_URL` |
+| `WORDPRESS_USERNAME` | Server only | WP Application Password user (media upload) | — |
+| `WORDPRESS_APPLICATION_PASSWORD` | Server only | WP Application Password | — |
+| `STUDIO_BOOTSTRAP_EMAIL` | Server only | Seed script only | — |
+| `STUDIO_BOOTSTRAP_PASSWORD` | Server only | Seed script only | — |
+| `NEXT_PUBLIC_GA_ID` | Client | Google Analytics 4 | `G-XXXXXXXXXX` |
+| `NEXT_PUBLIC_SITE_NAME` | Client | Site name fallback | `Care Well Medical Centre` |
+| `NEXT_PUBLIC_WORDPRESS_URL` | Client | WP origin for admin media browser (if used) | `https://cms.example.com` |
 
 ---
 
@@ -38,11 +40,12 @@ Provide the complete reference for all environment variables used across develop
 
 | Variable | Local (`.env.local`) | Vercel Preview | Vercel Production |
 |----------|---------------------|----------------|-------------------|
-| `WORDPRESS_GRAPHQL_URL` | Staging or production WP | Staging WP recommended | Production WP |
-| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://{preview}.vercel.app` | `https://www.carewellmedical.com` |
-| `REVALIDATION_SECRET` | Dev secret | Unique per preview | Strong production secret |
-| `NEXT_PUBLIC_GA_ID` | Omit or test ID | Omit or test ID | Production GA4 ID |
-| `CONTACT_FORM_ENDPOINT` | Test endpoint | Test endpoint | Production endpoint |
+| `WORDPRESS_GRAPHQL_ENDPOINT` | Staging or production WP | Staging WP recommended | Production WP |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://{preview}.vercel.app` | Production domain |
+| `WEBHOOK_SECRET` | Dev secret | Preview secret | Strong production secret |
+| `DATABASE_URL` | Docker Compose | Render External URL | Render External URL |
+| `AUTH_SECRET` | Local secret | Preview secret | Production secret |
+| `AUTH_TRUST_HOST` | optional | `true` | `true` |
 
 ---
 
@@ -50,89 +53,46 @@ Provide the complete reference for all environment variables used across develop
 
 ### Server-Only (NEVER prefix with `NEXT_PUBLIC_`)
 
-- `WORDPRESS_GRAPHQL_URL`
-- `REVALIDATION_SECRET`
-- `CONTACT_FORM_ENDPOINT`
-- `WORDPRESS_AUTH_TOKEN`
-
-These must not appear in client bundles. Verify with `npm run build` bundle analysis if uncertain.
+- `WORDPRESS_GRAPHQL_ENDPOINT`
+- `WEBHOOK_SECRET`
+- `DATABASE_URL`
+- `AUTH_SECRET`
+- `WORDPRESS_USERNAME`
+- `WORDPRESS_APPLICATION_PASSWORD`
 
 ### Client-Safe (`NEXT_PUBLIC_` prefix)
 
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_GA_ID`
 - `NEXT_PUBLIC_SITE_NAME`
-- `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`
-
-Only non-sensitive values that browsers need.
+- `NEXT_PUBLIC_WORDPRESS_URL` (origin only; no secrets)
 
 ---
 
 ## File Templates
 
-### `.env.example` (committed)
+Keep `.env.example` in sync with this doc. Copy to `.env.local` for local development.
 
-```env
-# WordPress
-WORDPRESS_GRAPHQL_URL=
-
-# Site
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Revalidation (generate: openssl rand -hex 32)
-REVALIDATION_SECRET=
-
-# Analytics (optional)
-# NEXT_PUBLIC_GA_ID=
-
-# Contact form (optional)
-# CONTACT_FORM_ENDPOINT=
-```
-
-### `.env.local` (gitignored)
-
-Copy from `.env.example` and fill values for local development.
-
----
-
-## Validation at Startup
-
-When implementing `lib/env.ts`, validate required variables:
-
-```typescript
-// Reference pattern — implement in Phase 1
-import { z } from 'zod';
-
-const envSchema = z.object({
-  WORDPRESS_GRAPHQL_URL: z.string().url(),
-  NEXT_PUBLIC_SITE_URL: z.string().url(),
-  REVALIDATION_SECRET: z.string().min(16),
-});
-
-export const env = envSchema.parse(process.env);
-```
-
-Fail fast at build time if required variables are missing.
+Production secrets live in the **Vercel** project settings. Database lives on **Render**; paste its External URL into Vercel as `DATABASE_URL`.
 
 ---
 
 ## Security
 
-- Never commit `.env.local`, `.env.production`, or secrets to git.
-- Rotate `REVALIDATION_SECRET` if compromised.
-- Use Vercel environment variable UI for production secrets.
-- Separate secrets per environment (preview ≠ production).
+- Never commit `.env.local`, `.env`, or production URLs with passwords.
+- Rotate `WEBHOOK_SECRET` / `AUTH_SECRET` if leaked.
+- Prefer separate Render databases for preview vs production when feasible.
+- Do not put Render **Internal** Database URL on Vercel.
 
 ---
 
 ## Do's
 
-- Keep `.env.example` updated when adding new variables.
-- Document new variables in this file before use.
-- Use `NEXT_PUBLIC_` only when browser access is required.
+- Keep `.env.example` updated when adding variables.
+- Document new variables here before use.
+- Use `NEXT_PUBLIC_` only when the browser must read the value.
 
 ## Don'ts
 
-- Do not expose WordPress GraphQL URL to client.
-- Do not hardcode production URLs in source code.
-- Do not share production secrets in PR descriptions or chat.
+- Do not expose GraphQL credentials or `DATABASE_URL` to the client.
+- Do not hardcode production secrets in source.

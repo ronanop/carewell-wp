@@ -11,6 +11,7 @@ import {
 } from "@carewell/layout-engine";
 
 import { createDefaultPresentationConfig } from "@/lib/experience/validations/presentationConfig";
+import { setElementOverrideField } from "@/lib/experience/static-pages/elementOverrides";
 import type {
   PresentationConfig,
   SectionConfig,
@@ -47,6 +48,14 @@ type EditorStore = {
   hoveredContentId: string | null;
   editingContentId: string | null;
 
+  /** Static element selection (ADR-016 — universal content editing). */
+  selectedElementId: string | null;
+  hoveredElementId: string | null;
+  editingElementId: string | null;
+
+  /** System page chrome selection (not a content section). */
+  selectedChromeId: "consultation-sidebar" | null;
+
   device: EditorDevice;
   zoom: number;
   leftTab: EditorLeftTab;
@@ -78,12 +87,23 @@ type EditorStore = {
   redo: () => void;
 
   select: (sectionId: string | null, opts?: { additive?: boolean }) => void;
+  selectChrome: (chromeId: "consultation-sidebar" | null) => void;
   hover: (sectionId: string | null) => void;
   clearSelection: () => void;
 
   selectContent: (nodeId: string | null) => void;
   hoverContent: (nodeId: string | null) => void;
   setEditingContent: (nodeId: string | null) => void;
+
+  selectElement: (elementId: string | null) => void;
+  hoverElement: (elementId: string | null) => void;
+  setEditingElement: (elementId: string | null) => void;
+  setElementField: (
+    elementId: string,
+    field: string,
+    value: unknown,
+    pushHistory?: boolean,
+  ) => void;
 
   setDevice: (device: EditorDevice) => void;
   setZoom: (zoom: number) => void;
@@ -210,6 +230,10 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   selectedContentId: null,
   hoveredContentId: null,
   editingContentId: null,
+  selectedElementId: null,
+  hoveredElementId: null,
+  editingElementId: null,
+  selectedChromeId: null,
   device: "desktop",
   zoom: 100,
   leftTab: "layers",
@@ -239,6 +263,10 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
       selectedContentId: null,
       hoveredContentId: null,
       editingContentId: null,
+      selectedElementId: null,
+      hoveredElementId: null,
+      editingElementId: null,
+      selectedChromeId: null,
       dirty: removedDupes,
       saving: false,
       lastSavedAt: null,
@@ -295,7 +323,14 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
 
   select: (sectionId, opts) => {
     if (!sectionId) {
-      set({ selectedIds: [], selectedContentId: null, editingContentId: null });
+      set({
+        selectedIds: [],
+        selectedContentId: null,
+        editingContentId: null,
+        selectedElementId: null,
+        editingElementId: null,
+        selectedChromeId: null,
+      });
       return;
     }
     if (get().lockedIds.includes(sectionId)) return;
@@ -307,6 +342,9 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
           : [...current, sectionId],
         selectedContentId: null,
         editingContentId: null,
+        selectedElementId: null,
+        editingElementId: null,
+        selectedChromeId: null,
       });
       return;
     }
@@ -314,8 +352,21 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
       selectedIds: [sectionId],
       selectedContentId: null,
       editingContentId: null,
+      selectedElementId: null,
+      editingElementId: null,
+      selectedChromeId: null,
     });
   },
+
+  selectChrome: (chromeId) =>
+    set({
+      selectedChromeId: chromeId,
+      selectedIds: [],
+      selectedContentId: null,
+      editingContentId: null,
+      selectedElementId: null,
+      editingElementId: null,
+    }),
 
   hover: (sectionId) => set({ hoveredId: sectionId }),
 
@@ -326,17 +377,54 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
       selectedContentId: null,
       hoveredContentId: null,
       editingContentId: null,
+      selectedElementId: null,
+      hoveredElementId: null,
+      editingElementId: null,
+      selectedChromeId: null,
     }),
 
   selectContent: (nodeId) =>
     set({
       selectedContentId: nodeId,
       editingContentId: null,
+      selectedElementId: null,
+      editingElementId: null,
+      selectedChromeId: null,
     }),
 
   hoverContent: (nodeId) => set({ hoveredContentId: nodeId }),
 
   setEditingContent: (nodeId) => set({ editingContentId: nodeId }),
+
+  selectElement: (elementId) =>
+    set({
+      selectedElementId: elementId,
+      editingElementId: null,
+      selectedContentId: null,
+      editingContentId: null,
+      selectedChromeId: null,
+      // Keep section selection for parent context when possible
+      selectedIds: elementId
+        ? [
+            elementId.split(".").slice(0, 2).join("."),
+          ]
+        : get().selectedIds,
+    }),
+
+  hoverElement: (elementId) => set({ hoveredElementId: elementId }),
+
+  setEditingElement: (elementId) =>
+    set({
+      editingElementId: elementId,
+      selectedElementId: elementId ?? get().selectedElementId,
+    }),
+
+  setElementField: (elementId, field, value, pushHistoryFlag = true) => {
+    get().updateConfig(
+      (prev) => setElementOverrideField(prev, elementId, field, value),
+      pushHistoryFlag,
+    );
+  },
 
   setDevice: (device) => set({ device }),
   setZoom: (zoom) => set({ zoom: Math.min(200, Math.max(25, zoom)) }),

@@ -14,6 +14,7 @@ import {
   useState,
   useTransition,
 } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -90,7 +91,7 @@ const ThumbnailCard = memo(function ThumbnailCard({
           fill
           loading="lazy"
           className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-          sizes="160px"
+          sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 16vw"
         />
         {selected ? (
           <span className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow">
@@ -199,8 +200,13 @@ export function MediaBrowser({
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
     }
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
   }, [open, onClose]);
 
   // Infinite scroll
@@ -243,12 +249,17 @@ export function MediaBrowser({
     window.setTimeout(() => setCopied(false), 1500);
   }
 
-  if (!open) return null;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  return (
+  if (!open || !mounted) return null;
+
+  const dialog = (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-0 sm:items-center sm:p-6"
+        className="fixed inset-0 z-[200] flex bg-black/50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -258,14 +269,14 @@ export function MediaBrowser({
           role="dialog"
           aria-modal="true"
           aria-label={title}
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 12, scale: 0.98 }}
-          className="flex h-[min(92vh,900px)] w-full max-w-6xl flex-col overflow-hidden rounded-t-2xl border border-border bg-surface shadow-2xl sm:rounded-2xl"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 12 }}
+          className="flex h-dvh w-screen min-w-0 flex-col overflow-hidden bg-surface shadow-2xl"
           onClick={(event) => event.stopPropagation()}
         >
-          <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
-            <div>
+          <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-6">
+            <div className="min-w-0">
               <h2 className="font-heading text-h4 font-semibold text-foreground">
                 {title}
               </h2>
@@ -276,16 +287,16 @@ export function MediaBrowser({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+              className="shrink-0 rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               aria-label="Close media browser"
             >
               <X className="size-4" />
             </button>
           </header>
 
-          <div className="grid min-h-0 flex-1 lg:grid-cols-[minmax(0,1fr)_20rem]">
-            <div className="flex min-h-0 flex-col border-b border-border lg:border-b-0 lg:border-r">
-              <div className="flex flex-wrap items-center gap-2 border-b border-border px-4 py-3">
+          <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 md:grid-cols-[minmax(0,1fr)_22rem]">
+            <div className="flex min-h-0 min-w-0 flex-col border-b border-border md:border-b-0 md:border-r">
+              <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-border px-4 py-3 sm:px-6">
                 <label className="relative min-w-0 flex-1">
                   <span className="sr-only">Search media</span>
                   <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -311,7 +322,7 @@ export function MediaBrowser({
                 </Button>
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto p-4">
+              <div className="min-h-0 min-w-0 flex-1 overflow-y-auto p-4 sm:p-6">
                 {error ? (
                   <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-4">
                     <div className="flex items-start gap-2 text-red-800">
@@ -335,8 +346,8 @@ export function MediaBrowser({
                 ) : null}
 
                 {initialLoading && items.length === 0 ? (
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                    {Array.from({ length: 12 }).map((_, index) => (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                    {Array.from({ length: 18 }).map((_, index) => (
                       <div
                         key={index}
                         className="aspect-square animate-pulse rounded-xl bg-muted"
@@ -357,7 +368,7 @@ export function MediaBrowser({
                 ) : null}
 
                 {filtered.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                     {filtered.map((asset) => (
                       <ThumbnailCard
                         key={asset.id}
@@ -378,7 +389,7 @@ export function MediaBrowser({
               </div>
             </div>
 
-            <aside className="hidden min-h-0 overflow-y-auto bg-muted/20 p-4 lg:block">
+            <aside className="hidden min-h-0 min-w-0 overflow-y-auto bg-muted/20 p-4 md:block md:w-[22rem] md:shrink-0 sm:p-5">
               {selected ? (
                 <div className="space-y-3">
                   <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
@@ -387,7 +398,7 @@ export function MediaBrowser({
                       alt={selected.alt || selected.title}
                       fill
                       className="object-cover"
-                      sizes="320px"
+                      sizes="352px"
                     />
                   </div>
                   <dl className="space-y-2.5 text-[0.75rem]">
@@ -445,7 +456,7 @@ export function MediaBrowser({
             </aside>
           </div>
 
-          <footer className="flex items-center justify-end gap-2 border-t border-border px-4 py-3 sm:px-5">
+          <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border px-4 py-3 sm:px-6">
             <Button type="button" variant="outline" size="sm" onClick={onClose}>
               Cancel
             </Button>
@@ -466,6 +477,8 @@ export function MediaBrowser({
       </motion.div>
     </AnimatePresence>
   );
+
+  return createPortal(dialog, document.body);
 }
 
 function Meta({

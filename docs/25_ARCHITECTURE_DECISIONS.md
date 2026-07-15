@@ -101,26 +101,26 @@ Each entry follows this structure:
 
 ## ADR-007: No Custom Backend or Database (Public Website)
 
-- **Status:** Superseded by ADR-011 for Experience Studio only; remains in force for the public website
+- **Status:** Superseded in part by ADR-011 / ADR-013 for bounded application domains; remains in force for the public website content surface
 - **Date:** 2026-07-09
 - **Context:** Scope is a marketing/content website. No patient portal, auth, or transactional features at launch.
 - **Decision:** Prohibit Express, Prisma, MongoDB, Supabase, Firebase, authentication, and custom API routes for content on the public website.
 - **Rationale:** Reduces attack surface, operational complexity, and scope creep.
-- **Consequences:** (+) Simple architecture; clear boundaries. (−) Contact form must use external service; no server-side user data.
-- **Alternatives Considered:** Next.js API routes for forms with DB (rejected: scope); Serverless functions for CMS (rejected: duplicates WordPress).
-- **Supersession note:** ADR-011 introduces a bounded Experience Studio (`/admin`) that may use Prisma and Auth.js for presentation management only. ADR-007 continues to govern all public routes and WordPress content flows.
+- **Consequences:** (+) Simple architecture; clear boundaries. (−) Contact form historically expected external services; bounded domains may store operational data in Postgres under ADR-011 / ADR-013.
+- **Alternatives Considered:** Next.js API routes for forms with DB (rejected at launch: scope); Serverless functions for CMS (rejected: duplicates WordPress).
+- **Supersession note:** ADR-011 (Experience Studio) and ADR-013 (Lead Engine) permit Prisma and Auth.js only inside named bounded contexts. ADR-007 continues to govern all public content routes and WordPress flows: public UI and `lib/wordpress/**` must never import Prisma.
 
 ---
 
-## ADR-008: Vercel + Cloudflare + Hostinger Deployment Topology
+## ADR-008: Vercel + Render + Cloudflare + Hostinger Deployment Topology
 
-- **Status:** Accepted
-- **Date:** 2026-07-09
-- **Context:** Need global CDN, serverless Next.js hosting, and existing WordPress on Hostinger.
-- **Decision:** Vercel for Next.js (region: `bom1`), Cloudflare for DNS/CDN/WAF, Hostinger for WordPress/MySQL.
-- **Rationale:** Vercel optimizes Next.js ISR; Cloudflare adds DDoS protection; WordPress stays on existing host.
-- **Consequences:** (+) Best-in-class Next.js deployment. (−) Three platforms to configure; cross-origin image and CORS setup required.
-- **Alternatives Considered:** Self-hosted Next.js (rejected: ops burden); WordPress and Next.js on same server (rejected: resource contention).
+- **Status:** Accepted (amended)
+- **Date:** 2026-07-09 (amended 2026-07-15)
+- **Context:** Need serverless Next.js hosting, bounded-domain Postgres for Studio/leads, and existing WordPress on Hostinger.
+- **Decision:** Vercel for Next.js (region: `bom1`); Render for PostgreSQL (`render.yaml`); Cloudflare for DNS/CDN/WAF (optional); Hostinger for WordPress/MySQL. Do not deploy a separate “API backend” on Render for this app.
+- **Rationale:** Vercel optimizes Next.js ISR and Server Actions; Render supplies managed Postgres without coupling to WordPress; WordPress stays on existing host.
+- **Consequences:** (+) Clear app / CMS / app-DB split. (−) Multiple platforms; Vercel must use Render’s External Database URL; CORS/image domains still required.
+- **Alternatives Considered:** Self-hosted Next.js (ops burden); Next + WP on same server (contention); Netlify static frontend + separate API (incompatible with App Router Studio/auth).
 
 ---
 
@@ -150,14 +150,21 @@ Each entry follows this structure:
 
 ## ADR-011: Experience Studio Bounded Context
 
-- **Status:** Accepted
+- **Status:** Accepted (amended 2026-07-13 by ADR-013)
 - **Date:** 2026-07-11
 - **Context:** The public Next.js site renders WordPress content but needs a non-technical Presentation Management System (templates, heroes, CTAs, theme, section visibility) without becoming a CMS or duplicating WordPress content. ADR-007 prohibited databases and auth for the public website; Experience Studio requires both.
-- **Decision:** Introduce Experience Studio as a bounded context under `/admin` in the same Next.js app. Permit Prisma (PostgreSQL), Auth.js (credentials), RBAC, and `/api/auth/*` exclusively for this context. WordPress remains the sole source of truth for pages, blogs, media, SEO, categories, tags, and doctor articles. Experience Studio stores only presentation configuration.
-- **Rationale:** Keeps one deployable app while isolating operational complexity. Editors continue in WordPress; marketers configure presentation in Studio. Avoids Builder.io-style page builders and Gutenberg clones.
-- **Consequences:** (+) Clear product boundary; public architecture unchanged. (−) Two data systems (WP + Postgres); auth surface limited to `/admin`; must enforce import boundaries so public routes never depend on Prisma.
-- **Alternatives Considered:** Separate Studio Next.js app (rejected for this phase: operational overhead); Store presentation in WordPress ACF (rejected: couples presentation to CMS, harder RBAC/audit); Full CMS replacement (rejected: out of scope, SEO risk).
-- **Import boundary:** `app/admin/**`, `lib/experience/**`, `prisma/**`, and `auth.ts` may use Prisma/Auth. Public `app/**` (except `/admin`) and `lib/wordpress/**` must not import Prisma or Auth session APIs for content rendering.
+- **Decision:** Introduce Experience Studio as a bounded context under `/admin` in the same Next.js app. Permit Prisma (PostgreSQL), Auth.js (credentials), RBAC, and `/api/auth/*` for **named bounded application domains only**. Experience Studio remains one such domain and stores **presentation configuration only**. WordPress remains the sole source of truth for pages, blogs, media, SEO, categories, tags, and doctor articles.
+- **Prisma policy (amended):** Prisma may be used solely by:
+  1. **Experience Studio** — presentation configuration (`lib/experience/**`, Studio admin UI).
+  2. **Lead Engine** — patient enquiry / CRM operational data (`lib/leads/**`, Lead admin UI) per ADR-013.
+  No other domain may introduce Prisma without a new ADR. Public website routes and `lib/wordpress/**` must never import Prisma or Auth session APIs.
+- **Rationale:** Keeps one deployable app while isolating operational complexity. Editors continue in WordPress; marketers configure presentation in Studio. Avoids Builder.io-style page builders and Gutenberg clones. Explicitly enumerating Prisma-allowed domains prevents accidental “Postgres for everything” scope creep.
+- **Consequences:** (+) Clear product boundary; public architecture unchanged; room for additional bounded domains via ADR. (−) Multiple schemas/concerns in one Postgres database; must enforce import boundaries and avoid cyclic dependencies between domains.
+- **Alternatives Considered:** Separate Studio Next.js app (rejected for this phase: operational overhead); Store presentation in WordPress ACF (rejected: couples presentation to CMS, harder RBAC/audit); Full CMS replacement (rejected: out of scope, SEO risk); Allow Prisma anywhere under `/admin` without domain boundaries (rejected: blurs presentation vs operational CRM data).
+- **Import boundary:**
+  - May use Prisma/Auth: `app/admin/**`, `lib/experience/**`, `lib/leads/**` (ADR-013), `prisma/**`, `auth.ts`, `app/api/auth/**`.
+  - Must not use Prisma/Auth: public `app/**` (except `/admin`), `lib/wordpress/**`, and any public feature component that renders WordPress content.
+  - Experience Studio must not import Lead Engine internals (and vice versa) except through documented, unidirectional facades if a future ADR requires cross-domain reads.
 
 ---
 
@@ -174,6 +181,130 @@ Each entry follows this structure:
 
 ---
 
+## ADR-013: Lead Engine Bounded Context
+
+- **Status:** Accepted
+- **Date:** 2026-07-13
+- **Context:** Service and landing pages require a high-converting patient consultation capture flow that can evolve into a lightweight medical CRM (lead list, assignment, status, immutable activity history). Product docs historically directed forms to external email/CRM services (ADR-007 / forms architecture). Experience Studio (ADR-011) owns presentation only and must not store patient enquiries. Storing leads in WordPress or coupling Lead logic to WPGraphQL would blur content vs operational concerns and block future CRM/WhatsApp/SMS/AI adapters.
+- **Decision:** Introduce **Lead Engine** as a new bounded application domain, peer to Experience Studio:
+
+  | Concern | Owner |
+  |---------|--------|
+  | Page/post HTML, media, SEO | WordPress |
+  | Templates, heroes, CTAs, theme, section visibility | Experience Studio |
+  | Patient enquiries, lead CRM, timeline, lead analytics events | Lead Engine |
+
+  **Isolation**
+  - Lead Engine code lives under `lib/leads/**` (repositories, services, validators, events, timeline, analytics publishers, notification adapters).
+  - Admin CRM UI lives under `app/admin/**` lead routes (e.g. `/admin/leads`) and `components/admin/leads/**` (or equivalent), authenticated via existing Auth.js/RBAC.
+  - Lead Engine **must not** import `lib/wordpress/**` or `lib/experience/**`.
+  - WordPress and Experience Studio **must not** import `lib/leads/**` internals.
+  - Public UI may call Lead Engine **only** through Server Actions / thin facades that live in the Lead Engine boundary (e.g. `lib/leads/actions/**`). Those actions may accept page attribution fields as plain inputs (slug, URI, title, IDs) captured by the client — they must not query WPGraphQL or Prisma from public components.
+
+  **Exposure pattern**
+  - Persistence only via repositories → services → Server Actions (or admin loaders).
+  - UI (public or admin) never imports `@prisma/client` or `lib/experience/db`.
+  - No cyclic dependencies across WordPress ↔ Experience Studio ↔ Lead Engine.
+
+  **Event-driven, timeline-first**
+  - Every meaningful lead mutation appends an immutable `LeadTimeline` event (append-only; never edit/delete historical events for audit rewriting).
+  - Domain events (`LeadCreated`, `LeadStatusChanged`, `LeadAssigned`, `LeadTimelineCreated`, etc.) are published through a Lead Event Publisher for future CRM, WhatsApp, email, SMS, analytics, and AI journey summarization subscribers.
+  - Timeline is the source of truth for activity history; status/priority fields on `Lead` are projections optimized for listing/filters.
+
+  **Data**
+  - Lead records and timeline events are stored in the shared PostgreSQL database via Prisma models owned by this domain (same `prisma/schema.prisma`, clearly namespaced/commented as Lead Engine).
+  - Leads permanently retain originating page attribution (title, slug, URI, WordPress page id, presentation ids when provided) as denormalized fields — not as live WordPress fetches.
+
+  **Non-goals (this ADR)**
+  - Does not replace WordPress content or Experience Studio presentation.
+  - Does not authorize patient portals or medical-record storage.
+  - Does not require a separate `packages/` monorepo package in the first implementation; `lib/leads/**` is the canonical module boundary (a future ADR may extract `packages/lead-engine` without changing public contracts).
+
+- **Rationale:** Matches the product need for a sticky consultation capture + mini CRM while preserving headless WordPress and Studio boundaries. Timeline-first design enables audit, AI summaries, and external CRM sync without rewriting history. Explicit isolation prevents Prisma leakage into content rendering and avoids cyclic domain imports.
+- **Consequences:** (+) Clear Lead ownership; future adapters subscribe to events; public site stays Prisma-free. (−) Another Postgres-backed domain to operate; attribution fields must be passed in at submit time; RBAC must cover lead admin routes.
+- **Alternatives Considered:** External-only Formspree/HubSpot (rejected for primary path: no first-party timeline/CRM control); Store leads in WordPress CPT (rejected: mixes content CMS with operational CRM); Fold leads into Experience Studio schema (rejected: violates presentation-only Studio charter); Allow public routes to import Prisma (rejected: ADR-007 / security boundary).
+- **Amends:** ADR-011 Prisma policy (bounded domains list). ADR-007 remains in force for public content surfaces.
+- **Implementation guidance:** Follow repository → service → Server Action layering; Zod at boundaries; rate limiting / honeypot / duplicate detection in Lead services; admin list/detail/timeline UIs consume Lead services only.
+
+---
+
+## ADR-014: Static Experience Studio (Universal Presentation Layer)
+
+- **Status:** Accepted (Amended by ADR-015)
+- **Date:** 2026-07-14
+- **Context:** Experience Studio originally configured presentation only for WordPress-origin pages. Handcrafted Next.js routes (Home, About, Contact, Legal, 404, Thank You, future landings) still needed the same visual builder and PresentationConfig contract without a second editor or WordPress CPT duplication.
+- **Decision:**
+  1. Introduce a **StaticPageRegistry** (`lib/experience/static-pages/catalog.ts`) that registers every static/marketing page (slug, path, category, default sections).
+  2. Persist presentation in Postgres via `StaticPage` + `StaticPagePresentation` + `StaticPresentationVersion` (mirror of WordPress `PagePresentation`, **no** FK to WordPress).
+  3. Expose a **PageProvider** interface with `WordPressPageProvider` and `StaticPageProvider` so Studio loaders never call WPGraphQL from the editor shell.
+  4. Reuse the **same** `VisualBuilder` / `PresentationPage` / Plugin SDK with `persistenceKind: "static" | "wordpress"`.
+  5. Admin IA: `/admin/static-pages` list + `/admin/static-pages/[slug]` opens Visual Builder.
+  6. Public handcrafted routes optionally consume published config (e.g. homepage section `enabled` flags) via cached Experience facades — never duplicate renderers.
+- **Rationale:** One universal presentation platform; WordPress remains one content provider; static pages gain Studio without CMS migration or duplicate builders.
+- **Consequences:** (+) Shared editor/renderer; landing pages creatable from catalog/templates. (−) Handcrafted React sections still need incremental prop wiring for full field-level editing; keep `HANDCRAFTED_PATHS` aligned with the catalog.
+- **Alternatives Considered:** Separate static-page editor (rejected: duplication); Store static HTML in Postgres (rejected: ADR-011); Fold static pages into `WordPressPage` (rejected: false WP coupling); Force all static routes through `PresentationPage` immediately (deferred: keep bespoke compositions while enabling Studio progressively).
+- **Amends:** ADR-011 (Studio covers static + WordPress presentation). Does not change ADR-007 for WordPress article bodies.
+- **Amended by:** ADR-015 (Static Studio mounts real React page views; no synthetic PresentationPage canvas).
+
+---
+
+## ADR-015: Static Component Descriptors (Eliminate Dual Rendering)
+
+- **Status:** Accepted
+- **Date:** 2026-07-14
+- **Context:** ADR-014 reused Visual Builder for static pages by synthesizing an empty `PresentationPage` shell from the catalog. That produced a second, generic render tree that was visually and structurally different from the handcrafted public routes (`HomePageView`, `AboutPageView`, etc.), breaking WYSIWYG.
+- **Decision:**
+  1. Each static page registers a **StaticPageModule** (`descriptor` + React `component`) in `lib/experience/static-pages/registry.ts`.
+  2. Public routes and Static Studio mount the **same** page view (`mode: "public" | "editor"`). There is one React implementation per page.
+  3. **SectionDescriptor** / **StaticPageDescriptor** declare editable sections, prop schemas, supports, and inspector panels. Inspectors are generated from descriptors.
+  4. `PresentationConfig` for static pages stores **overrides only** (`sections[]` visibility/order/spacing + `propOverrides`). Unbound props keep handcrafted defaults.
+  5. Static Studio canvas **must not** render `PresentationPage` / generic Hero-Content-CTA synthesizers. WordPress Studio continues to use `PresentationPage`.
+  6. Studio static routes load exclusively through **StaticPageProvider** (`loadStatic`).
+  7. `buildStaticPresentationPage` is deprecated for canvas use.
+- **Rationale:** Pixel-perfect editor parity; single source of truth; PresentationConfig remains storage-compatible for WP while serving static as overrides.
+- **Consequences:** (+) True WYSIWYG for static pages; descriptors scale props incrementally. (−) Page views must stay free of `server-only` imports so Studio client canvas can mount them; data fetching stays in thin route wrappers.
+- **Alternatives Considered:** iframe preview of public URL (rejected: weak overlay tooling); Force static pages through PresentationPage (rejected: dual trees); Separate static-only editor (rejected: duplication).
+- **Amends:** ADR-014 (replaces synthetic static PresentationPage canvas). Does not change WordPress presentation (ADR-011) or Lead Engine (ADR-013).
+
+---
+
+## ADR-016: Universal Content Editing (Element Descriptors)
+
+- **Status:** Accepted
+- **Date:** 2026-07-14
+- **Context:** ADR-015 mounted real page components in Studio, but editors could only toggle sections or a few section props. True no-code editing requires every visible heading, image, button, statistic, and card surface to be selectable and overridable without mutating React source or WordPress HTML.
+- **Decision:**
+  1. Introduce **ElementDescriptor** (`types/element-descriptor.ts`) for each editable surface (id path like `home.hero.heading`).
+  2. Wrap handcrafted surfaces with **EditableElement** — public mode is transparent; editor mode enables hover/select + double-click inline edit via a controlled portal (not contentEditable HTML mutation).
+  3. Persist all edits in `PresentationConfig.elementOverrides` (field map per element id). Never modify component source or WordPress.
+  4. Generate inspectors and image toolbars from element descriptors (`ElementInspector`, `ElementImageToolbar`).
+  5. Progressive wiring: Homepage Hero, Trust stats, and CTA are fully wired first; remaining sections register elements incrementally using the same pattern.
+  6. WordPress media remains authoritative for uploads (`mediaId` + `sourceUrl` snapshots).
+- **Rationale:** Builder.io / Framer-like editing while preserving one React tree and override-only storage.
+- **Consequences:** (+) Canvas-level content editing; same production render path. (−) Each section must opt surfaces into EditableElement + descriptors over time.
+- **Alternatives Considered:** contentEditable DOM mutation (rejected: unstable + mutates tree); Duplicate Studio components (rejected: ADR-015); Edit WordPress HTML for static pages (rejected: ADR-007 / static pages are React-owned).
+- **Amends:** ADR-015 (adds element-level override system). WordPress PresentationPage content AST editing remains for WP pages.
+
+---
+
+## ADR-017: Complete Universal Editability (Repeaters, Bindings, Responsive)
+
+- **Status:** Accepted
+- **Date:** 2026-07-14
+- **Context:** ADR-016 delivered element editing for Hero/Trust/CTA. Remaining homepage sections (services, doctors, FAQ-like cards, journey, blogs, location/form, specialties, AI) and About/Contact heroes still needed the same override path, plus list mutation, WordPress binding mode, and per-device field patches.
+- **Decision:**
+  1. Introduce **RepeaterDescriptor** + `repeaterOverrides` for add/duplicate/hide/reorder of list data without mutating React defaults.
+  2. Store per-item fields as element paths (`home.services.item.0.title`) merged via `resolveRepeaterItems`.
+  3. Add `elementBindings` (static | wordpress | api | ai) and `elementResponsive` (desktop/tablet/mobile patches).
+  4. Auto-register all element + repeater descriptors in `elementRegistry` — new sections register by exporting descriptors; Studio discovers them on import.
+  5. Floating element toolbar + inspector Bindings/Responsive panels generated from descriptors (no hand-coded inspectors per section).
+  6. Wire every homepage section and About/Contact heroes onto EditableElement; WordPress Studio path unchanged.
+- **Rationale:** One architecture for all static surfaces; progressive CPT hydration later without a second editor.
+- **Consequences:** (+) Full homepage canvas editability; (−) WordPress CPT live resolution remaining for future when GraphQL entities are bound at runtime (binding mode is stored now).
+- **Amends:** ADR-016.
+
+---
+
 ## Best Practices
 
 - Propose new ADRs before implementing significant architectural changes.
@@ -184,14 +315,18 @@ Each entry follows this structure:
 
 - Add ADR entries for dependency additions that affect architecture.
 - Review ADRs during onboarding.
+- Keep bounded contexts acyclic: WordPress content ≠ Experience presentation ≠ Lead operations.
 
 ## Don'ts
 
 - Do not delete superseded ADRs — mark status as Superseded with link to replacement.
 - Do not implement architecture changes without recording the decision.
+- Do not import Prisma from public routes or `lib/wordpress/**`.
+- Do not create cyclic imports between `lib/wordpress`, `lib/experience`, and `lib/leads`.
 
 ## Future Expansion
 
-- ADR-012: On-demand revalidation webhook (when implemented)
-- ADR-013: Multi-language routing (if i18n added)
-- ADR-014: Search implementation (WordPress vs Algolia)
+- ADR-015: On-demand revalidation webhook (when implemented)
+- ADR-016: Multi-language routing (if i18n added)
+- ADR-017: Search implementation (WordPress vs Algolia)
+- ADR-018: Extract `packages/lead-engine` monorepo package (optional)

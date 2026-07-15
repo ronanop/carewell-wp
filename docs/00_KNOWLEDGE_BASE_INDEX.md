@@ -94,7 +94,7 @@ Skills and rules must not contradict domain docs. Update the domain doc first, t
 | `18` | Deployment | Vercel, Cloudflare, Hostinger, env setup |
 | `20` | Development Workflow | Branching, PRs, agent workflow |
 | `24` | Project Checklist | Phase tracking, launch readiness |
-| `25` | Architecture Decisions | ADR log, decision rationale — see **ADR-011 Experience Studio** |
+| `25` | Architecture Decisions | ADR log — **ADR-011 Experience Studio**, **ADR-013 Lead Engine**, **ADR-014 Static Experience Studio**, **ADR-015 Static Component Descriptors**, **ADR-016 Universal Content Editing**, **ADR-017 Complete Universal Editability** |
 | `26` | Agent Onboarding | AI agent session startup protocol |
 
 ---
@@ -148,11 +148,21 @@ Skills and rules must not contradict domain docs. Update the domain doc first, t
 - Use inline styles or non-Tailwind CSS approaches
 - Import Prisma or Auth into public routes / `lib/wordpress/**`
 
+**Bounded Prisma domains — ADR-011 / ADR-013**
+- Prisma + Auth.js only for Experience Studio (`lib/experience/**`) and Lead Engine (`lib/leads/**`)
+- Public UI must never import Prisma; Lead capture uses Lead Server Actions only
+- No cyclic imports among `lib/wordpress`, `lib/experience`, and `lib/leads`
+
 **Experience Studio (`/admin`) — ADR-011 / ADR-012**
-- Prisma + Auth.js are allowed only for presentation management
+- Presentation management only (templates, heroes, CTAs, theme, visibility)
 - Never edit WordPress article HTML from Studio
 - Never use Studio as a CMS replacement
 - Blocks register via Plugin SDK (`lib/experience/platform/`) — do not hardcode packs into core
+
+**Lead Engine — ADR-013**
+- Owns patient enquiries, mini CRM, append-only timeline, lead domain events
+- Isolated from WordPress and Experience Studio modules
+- Timeline-first; future CRM / messaging / AI adapters subscribe to events
 
 ---
 

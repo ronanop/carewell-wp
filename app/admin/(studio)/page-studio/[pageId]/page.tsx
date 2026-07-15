@@ -66,6 +66,8 @@ export default async function PageStudioPage({ params }: PageStudioRouteProps) {
       { label: "Home", href: "/" },
       { label: page.title, href: page.uri },
     ],
+    pageType: "GENERIC",
+    chrome: { consultation: null },
   };
 
   const catalog = getStudioPlatformCatalog();

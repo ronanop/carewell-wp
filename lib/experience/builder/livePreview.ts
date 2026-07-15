@@ -1,3 +1,9 @@
+import { classifyPage } from "@/lib/experience/engine/pageClassification";
+import { resolvePageChrome } from "@/lib/experience/chrome/widgetEngine";
+import {
+  DEFAULT_CONSULTATION_SETTINGS,
+  type ConsultationSidebarGlobalSettings,
+} from "@/types/page-chrome";
 import type {
   PresentationConfig,
   PresentationPage,
@@ -32,10 +38,36 @@ export function buildLivePreviewPage(
   }
 
   const og = config.seo.ogImage;
+  const slug =
+    base.uri
+      .replace(/^\/+|\/+$/g, "")
+      .split("/")
+      .filter(Boolean)
+      .pop() ?? "";
+
+  const pageType = classifyPage({
+    uri: base.uri,
+    slug,
+    title: base.title,
+    templateSlug: config.templateSlug,
+    pageTypeOverride: config.pageTypeOverride ?? null,
+  });
+
+  const chrome = resolvePageChrome({
+    uri: base.uri,
+    slug,
+    title: base.title,
+    templateSlug: config.templateSlug,
+    pageTypeOverride: config.pageTypeOverride ?? null,
+    settings: settingsFromBase(base),
+    pageChrome: config.chrome,
+  });
 
   return {
     ...base,
     config,
+    pageType,
+    chrome,
     seo: {
       ...base.seo,
       canonicalUrl: config.seo.canonicalOverride ?? base.seo.canonicalUrl,
@@ -59,6 +91,39 @@ export function buildLivePreviewPage(
         : null,
       sectionMedia,
     },
+  };
+}
+
+function settingsFromBase(
+  base: PresentationPage,
+): ConsultationSidebarGlobalSettings {
+  const c = base.chrome.consultation;
+  if (!c) {
+    return { ...DEFAULT_CONSULTATION_SETTINGS };
+  }
+  return {
+    ...DEFAULT_CONSULTATION_SETTINGS,
+    enabled: true,
+    desktopWidthPx: c.desktopWidthPx,
+    stickyOffsetPx: c.stickyOffsetPx,
+    minWidthPx: c.minWidthPx,
+    maxWidthPx: c.maxWidthPx,
+    variant: c.variant,
+    theme: c.theme,
+    heading: c.heading,
+    subtitle: c.subtitle,
+    ctaLabel: c.ctaLabel,
+    badgeLabel: c.badgeLabel,
+    phoneNumber: c.phoneNumber,
+    whatsappNumber: c.whatsappNumber,
+    emergencyNumber: c.emergencyNumber,
+    successMessage: c.successMessage,
+    animation: c.animation,
+    showTrustBadges: c.showTrustBadges,
+    googleRatingLabel: c.googleRatingLabel,
+    patientsLabel: c.patientsLabel,
+    responseBadge: c.responseBadge,
+    doctorAvailabilityLabel: c.doctorAvailabilityLabel,
   };
 }
 

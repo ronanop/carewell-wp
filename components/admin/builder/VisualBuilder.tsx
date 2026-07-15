@@ -9,15 +9,20 @@ import { BuilderLeftSidebar } from "@/components/admin/builder/BuilderLeftSideba
 import {
   BuilderProvider,
   useBuilderMeta,
+  type BuilderPersistenceKind,
 } from "@/components/admin/builder/BuilderProvider";
 import { BuilderToolbar } from "@/components/admin/builder/BuilderToolbar";
 import { CommandPalette } from "@/components/admin/builder/CommandPalette";
 import { EditorCanvas } from "@/components/admin/builder/EditorCanvas";
 import { savePagePresentationAction } from "@/lib/experience/actions/pageActions";
+import { saveStaticPagePresentationAction } from "@/lib/experience/actions/staticPageActions";
 import { useEditorStore } from "@/lib/experience/builder/editorStore";
 import { presentationConfigSchema } from "@/lib/experience/validations/presentationConfig";
 import type { PresentationConfig } from "@/types/presentation-config";
 import type { PresentationPage } from "@/types/presentation-config";
+import type { StaticPageDescriptor } from "@/types/static-page-descriptor";
+
+export type { BuilderPersistenceKind };
 
 type CatalogBlock = {
   id: string;
@@ -34,13 +39,22 @@ export function VisualBuilder({
   basePage,
   initialConfig,
   catalogBlocks,
+  persistenceKind = "wordpress",
+  staticDescriptor = null,
+  staticPageSlug = null,
 }: {
   pageId: string;
   title: string;
   uri: string;
-  basePage: PresentationPage;
+  basePage: PresentationPage | null;
   initialConfig: PresentationConfig;
   catalogBlocks: CatalogBlock[];
+  /** Same builder shell — WordPress vs static persistence only. */
+  persistenceKind?: BuilderPersistenceKind;
+  /** ADR-015 — descriptor drives static inspectors. */
+  staticDescriptor?: StaticPageDescriptor | null;
+  /** ADR-015 — slug resolves real page view on the client. */
+  staticPageSlug?: string | null;
 }) {
   return (
     <BuilderProvider
@@ -49,16 +63,24 @@ export function VisualBuilder({
       initialConfig={initialConfig}
       title={title}
       uri={uri}
+      persistenceKind={persistenceKind}
+      staticDescriptor={staticDescriptor}
+      staticPageSlug={staticPageSlug}
     >
-      <VisualBuilderInner catalogBlocks={catalogBlocks} />
+      <VisualBuilderInner
+        catalogBlocks={catalogBlocks}
+        persistenceKind={persistenceKind}
+      />
     </BuilderProvider>
   );
 }
 
 function VisualBuilderInner({
   catalogBlocks,
+  persistenceKind,
 }: {
   catalogBlocks: CatalogBlock[];
+  persistenceKind: BuilderPersistenceKind;
 }) {
   const router = useRouter();
   const { toast } = useAdminToast();
@@ -79,11 +101,18 @@ function VisualBuilderInner({
 
       useEditorStore.getState().setSaving(true);
       try {
-        const result = await savePagePresentationAction({
-          pageId,
-          data: parsed.data,
-          publish,
-        });
+        const result =
+          persistenceKind === "static"
+            ? await saveStaticPagePresentationAction({
+                pageId,
+                data: parsed.data,
+                publish,
+              })
+            : await savePagePresentationAction({
+                pageId,
+                data: parsed.data,
+                publish,
+              });
         if (result.ok) {
           useEditorStore.getState().markSaved();
           toast(result.message, "success");
@@ -97,7 +126,7 @@ function VisualBuilderInner({
         toast("Save failed", "error");
       }
     },
-    [pageId, toast, router],
+    [pageId, persistenceKind, toast, router],
   );
 
   const dirty = useEditorStore((s) => s.dirty);
@@ -129,12 +158,14 @@ function VisualBuilderInner({
         onPublish={() => void persist(true)}
       />
       <div className="flex min-h-0 flex-1">
-        <BuilderLeftSidebar catalogBlocks={catalogBlocks} />
+        <BuilderLeftSidebar
+          catalogBlocks={persistenceKind === "static" ? [] : catalogBlocks}
+        />
         <EditorCanvas />
         <BuilderInspector />
       </div>
       <CommandPalette
-        catalogBlocks={catalogBlocks}
+        catalogBlocks={persistenceKind === "static" ? [] : catalogBlocks}
         onSave={() => void persist(false)}
         onPublish={() => void persist(true)}
       />

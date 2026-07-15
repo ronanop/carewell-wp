@@ -1,5 +1,8 @@
 import "server-only";
 
+import { resolvePageChrome } from "@/lib/experience/chrome/widgetEngine";
+import { classifyPage } from "@/lib/experience/engine/pageClassification";
+import { createConsultationSettingsRepository } from "@/lib/experience/repositories/consultationSettingsRepository";
 import { createWordPressPageRepository } from "@/lib/experience/repositories/wordpressPageRepository";
 import { getCachedPagePresentation } from "@/lib/experience/services/presentationService";
 import { getDefaultSite } from "@/lib/experience/services/siteService";
@@ -145,6 +148,46 @@ function buildSectionMedia(
   return sectionMedia;
 }
 
+async function attachChrome(
+  page: Omit<PresentationPage, "pageType" | "chrome"> &
+    Partial<Pick<PresentationPage, "pageType" | "chrome">>,
+  config: PresentationConfig,
+): Promise<PresentationPage> {
+  const slug =
+    page.uri
+      .replace(/^\/+|\/+$/g, "")
+      .split("/")
+      .filter(Boolean)
+      .pop() ?? "";
+
+  const settings =
+    await createConsultationSettingsRepository().getOrCreateDefault();
+
+  const pageType = classifyPage({
+    uri: page.uri,
+    slug,
+    title: page.title,
+    templateSlug: config.templateSlug,
+    pageTypeOverride: config.pageTypeOverride ?? null,
+  });
+
+  const chrome = resolvePageChrome({
+    uri: page.uri,
+    slug,
+    title: page.title,
+    templateSlug: config.templateSlug,
+    pageTypeOverride: config.pageTypeOverride ?? null,
+    settings,
+    pageChrome: config.chrome,
+  });
+
+  return {
+    ...page,
+    pageType,
+    chrome,
+  };
+}
+
 /**
  * PresentationEngine — sole merger of WordPress content + PresentationConfig.
  */
@@ -185,34 +228,37 @@ export async function getPresentationPage(
   const ogImage = resolveFromMapOrSnapshot(publicConfig.seo.ogImage, mediaById);
   const breadcrumbs = buildUriBreadcrumbs(normalizedUri, page.title);
 
-  return {
-    uri: page.uri,
-    title: page.title,
-    contentHtml: page.content ?? "",
-    wordpressStatus: "publish",
-    featuredImage: featuredToResolved(page.featuredImage),
-    seo: {
-      title: page.seo?.title ?? null,
-      description: page.seo?.description ?? null,
-      canonicalUrl:
-        publicConfig.seo.canonicalOverride ?? page.seo?.canonicalUrl ?? null,
-      openGraphTitle: page.seo?.openGraphTitle ?? null,
-      openGraphDescription: page.seo?.openGraphDescription ?? null,
-      openGraphImage:
-        ogImage?.sourceUrl ||
-        page.seo?.openGraphImage ||
-        page.featuredImage?.sourceUrl ||
-        null,
+  return attachChrome(
+    {
+      uri: page.uri,
+      title: page.title,
+      contentHtml: page.content ?? "",
+      wordpressStatus: "publish",
+      featuredImage: featuredToResolved(page.featuredImage),
+      seo: {
+        title: page.seo?.title ?? null,
+        description: page.seo?.description ?? null,
+        canonicalUrl:
+          publicConfig.seo.canonicalOverride ?? page.seo?.canonicalUrl ?? null,
+        openGraphTitle: page.seo?.openGraphTitle ?? null,
+        openGraphDescription: page.seo?.openGraphDescription ?? null,
+        openGraphImage:
+          ogImage?.sourceUrl ||
+          page.seo?.openGraphImage ||
+          page.featuredImage?.sourceUrl ||
+          null,
+      },
+      config: publicConfig,
+      resolved: {
+        heroImage,
+        ogImage,
+        sectionMedia: buildSectionMedia(publicConfig, mediaById),
+      },
+      presentationStatus,
+      breadcrumbs,
     },
-    config: publicConfig,
-    resolved: {
-      heroImage,
-      ogImage,
-      sectionMedia: buildSectionMedia(publicConfig, mediaById),
-    },
-    presentationStatus,
-    breadcrumbs,
-  };
+    publicConfig,
+  );
 }
 
 export async function getPresentationPagePreview(
@@ -260,31 +306,35 @@ export async function getPresentationPagePreview(
   const mediaById = await buildResolvedMediaMap(config);
   const ogImage = resolveFromMapOrSnapshot(config.seo.ogImage, mediaById);
 
-  return {
-    uri: page.uri,
-    title: page.title,
-    contentHtml: page.content ?? "",
-    wordpressStatus: local.status,
-    featuredImage: featuredToResolved(page.featuredImage),
-    seo: {
-      title: page.seo?.title ?? local.seoTitle,
-      description: page.seo?.description ?? null,
-      canonicalUrl: config.seo.canonicalOverride ?? page.seo?.canonicalUrl ?? null,
-      openGraphTitle: page.seo?.openGraphTitle ?? null,
-      openGraphDescription: page.seo?.openGraphDescription ?? null,
-      openGraphImage:
-        ogImage?.sourceUrl ||
-        page.seo?.openGraphImage ||
-        page.featuredImage?.sourceUrl ||
-        null,
+  return attachChrome(
+    {
+      uri: page.uri,
+      title: page.title,
+      contentHtml: page.content ?? "",
+      wordpressStatus: local.status,
+      featuredImage: featuredToResolved(page.featuredImage),
+      seo: {
+        title: page.seo?.title ?? local.seoTitle,
+        description: page.seo?.description ?? null,
+        canonicalUrl:
+          config.seo.canonicalOverride ?? page.seo?.canonicalUrl ?? null,
+        openGraphTitle: page.seo?.openGraphTitle ?? null,
+        openGraphDescription: page.seo?.openGraphDescription ?? null,
+        openGraphImage:
+          ogImage?.sourceUrl ||
+          page.seo?.openGraphImage ||
+          page.featuredImage?.sourceUrl ||
+          null,
+      },
+      config,
+      resolved: {
+        heroImage: resolveHeroImage(config, page, mediaById),
+        ogImage,
+        sectionMedia: buildSectionMedia(config, mediaById),
+      },
+      presentationStatus: local.presentation?.status ?? "NOT_CONFIGURED",
+      breadcrumbs: buildUriBreadcrumbs(page.uri, page.title),
     },
     config,
-    resolved: {
-      heroImage: resolveHeroImage(config, page, mediaById),
-      ogImage,
-      sectionMedia: buildSectionMedia(config, mediaById),
-    },
-    presentationStatus: local.presentation?.status ?? "NOT_CONFIGURED",
-    breadcrumbs: buildUriBreadcrumbs(page.uri, page.title),
-  };
+  );
 }

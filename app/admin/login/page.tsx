@@ -10,7 +10,16 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminLoginPage() {
-  const session = await auth();
+  let session: Awaited<ReturnType<typeof auth>> = null;
+  let authError: string | null = null;
+
+  try {
+    session = await auth();
+  } catch {
+    authError =
+      "Auth is not configured on this deployment. Set AUTH_SECRET (and AUTH_URL) in Vercel Environment Variables, then redeploy.";
+  }
+
   if (session?.user) {
     redirect("/admin/dashboard");
   }
@@ -30,10 +39,20 @@ export default async function AdminLoginPage() {
             WordPress remains your content source of truth.
           </p>
         </div>
-        <LoginForm />
+        {authError ? (
+          <p
+            role="alert"
+            className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-small text-foreground"
+          >
+            {authError}
+          </p>
+        ) : (
+          <LoginForm />
+        )}
         <p className="mt-6 text-center text-[0.75rem] text-muted-foreground">
-          Connect <code className="text-foreground">DATABASE_URL</code> and seed
-          a user to enable sign-in.
+          Requires <code className="text-foreground">AUTH_SECRET</code>,{" "}
+          <code className="text-foreground">DATABASE_URL</code> (Render), and a
+          seeded admin user.
         </p>
       </div>
     </div>

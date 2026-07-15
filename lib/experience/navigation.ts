@@ -8,7 +8,9 @@ export type AdminNavItem = {
   icon:
     | "layoutDashboard"
     | "fileText"
+    | "layers"
     | "layoutTemplate"
+    | "clipboardList"
     | "stethoscope"
     | "messageSquareQuote"
     | "images"
@@ -22,6 +24,8 @@ export type AdminNavItem = {
 export const ADMIN_NAV: readonly AdminNavItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "layoutDashboard" },
   { label: "Pages", href: "/admin/pages", icon: "fileText" },
+  { label: "Static Pages", href: "/admin/static-pages", icon: "layers" },
+  { label: "Leads", href: "/admin/leads", icon: "clipboardList" },
   { label: "Templates", href: "/admin/templates", icon: "layoutTemplate" },
   { label: "Doctors", href: "/admin/doctors", icon: "stethoscope" },
   {

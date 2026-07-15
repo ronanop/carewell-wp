@@ -1,20 +1,20 @@
-import { Settings } from "lucide-react";
-
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { ModuleEmptyState } from "@/components/admin/ModuleEmptyState";
+import { ConsultationSettingsForm } from "@/components/admin/settings/ConsultationSettingsForm";
+import { createConsultationSettingsRepository } from "@/lib/experience/repositories/consultationSettingsRepository";
 
-export default function AdminSettingsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AdminSettingsPage() {
+  const settings =
+    await createConsultationSettingsRepository().getOrCreateDefault();
+
   return (
     <div>
       <AdminPageHeader
         title="Settings"
-        description="Website, cache, GraphQL connectivity, integrations, and analytics for Studio operators."
+        description="Global Experience Studio settings. Consultation Sidebar is page chrome — injected by the renderer on service pages."
       />
-      <ModuleEmptyState
-        icon={Settings}
-        title="Studio settings"
-        description="Operational settings for Experience Studio. Public site env vars remain in deployment configuration."
-      />
+      <ConsultationSettingsForm initial={settings} />
     </div>
   );
 }

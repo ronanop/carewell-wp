@@ -8,6 +8,7 @@ alwaysApply: true
 ## Stack
 - Next.js 15 App Router + TypeScript + Tailwind CSS + WordPress (WPGraphQL)
 - WordPress owns content. React owns presentation.
+- PostgreSQL + Prisma only inside named bounded application domains (ADR-011 / ADR-013).
 
 ## Public website (unchanged)
 Data flow:
@@ -20,17 +21,36 @@ Prohibited on the public website:
 - Custom content APIs, patient portals, or storing WordPress page/post bodies in a database
 - Importing Prisma or Auth session APIs into public routes or `lib/wordpress/**`
 
-## Experience Studio exception (ADR-011 / ADR-012)
-Prisma (PostgreSQL), Auth.js, RBAC, and the `/admin` dashboard are permitted **only** inside the Experience Studio bounded context:
+## Bounded application domains (Prisma allowed)
 
-- `app/admin/**`
-- `lib/experience/**`
-- `prisma/**`
-- `auth.ts` / `app/api/auth/**`
+| Domain | Owns | Code | ADR |
+|--------|------|------|-----|
+| Experience Studio | Presentation config only (WP + static pages) | `lib/experience/**`, Studio `/admin` | ADR-011 / ADR-012 / ADR-014 / ADR-015 |
+| Lead Engine | Patient enquiries, CRM, timeline | `lib/leads/**`, Lead `/admin` routes | ADR-013 |
 
-Experience Studio manages presentation only (templates, heroes, CTAs, theme, section visibility). It must never edit or duplicate WordPress article content.
+Shared: `prisma/**`, `auth.ts`, `app/api/auth/**` (Auth.js + RBAC).
 
-Platform foundation (ADR-012): blocks register via Plugin SDK under `lib/experience/platform/`. Components never import WordPress. Binding Engine resolves props. Do not hardcode pack components into Page Studio core.
+### Production hosting
+- **Vercel** — entire Next.js app (public site + `/admin` + Server Actions).
+- **Render** — PostgreSQL only (`render.yaml`); set External URL as `DATABASE_URL` on Vercel.
+- **Hostinger** — WordPress CMS. See `docs/18_DEPLOYMENT.md`.
+
+### Isolation (no cycles)
+- `lib/wordpress/**` ↔ `lib/experience/**` ↔ `lib/leads/**` must not form cyclic imports.
+- Lead Engine must not import WordPress or Experience Studio modules.
+- Experience Studio must not import Lead Engine modules.
+- Public UI talks to Lead Engine only via Lead Server Actions / facades (never Prisma).
+
+### Experience Studio
+Manages templates, heroes, CTAs, theme, section visibility for **WordPress and static/marketing pages** (ADR-014 / ADR-015). Never edit or duplicate WordPress article content. Plugin SDK under `lib/experience/platform/`. Static pages register via **StaticPageModule** (descriptor + React view) and open the **same** Visual Builder (`persistenceKind: "static"`), which mounts the **real** page component — never a synthetic `PresentationPage` shell. **ElementDescriptors** + `EditableElement` make canvas content editable; edits store in `PresentationConfig.elementOverrides` / `repeaterOverrides` / `elementBindings` / `elementResponsive` (ADR-016 / ADR-017).
+### Lead Engine
+Event-driven and timeline-first: repositories → services → Server Actions; append-only lead timeline; domain events for future CRM / WhatsApp / SMS / AI adapters.
+
+### Global Page Chrome (Phase 4.6A)
+Renderer-level UI — not PresentationConfig sections:
+- Page Classification Engine (`pageType`) drives chrome decisions
+- Global Widget Engine resolves consultation sidebar and future widgets
+- Sticky consultation sidebar auto-injects on `SERVICE` pages (configurable, not deletable)
 
 ## Rendering
 - Server Components by default; `"use client"` only for interactivity
@@ -38,11 +58,12 @@ Platform foundation (ADR-012): blocks register via Plugin SDK under `lib/experie
 - ISR for dynamic content; SSG for static pages
 
 ## Before Coding
-Read relevant docs in `docs/` and skills in `skills/`. See ADR-011 before touching `/admin`.
+Read relevant docs in `docs/` and skills in `skills/`. See ADR-011 / ADR-013 before touching `/admin` or leads.
 
 ## File Placement
 - Queries: `lib/wordpress/queries/`
 - Experience Studio: `lib/experience/`
+- Lead Engine: `lib/leads/`
 - Types: `types/`
 - UI primitives: `components/ui/`
 - Feature components: `components/features/{domain}/`

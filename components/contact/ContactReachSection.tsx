@@ -1,7 +1,16 @@
+"use client";
+
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
-import { ContactForm } from "@/components/contact/ContactForm";
+import { ConsultationLeadCapture } from "@/components/leads/ConsultationLeadCapture";
+import { EditableElement } from "@/components/pages/EditableElement";
+import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
+import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
 import { cn } from "@/lib/utils";
+
+const DEFAULT_HEADING = "Reach Us";
+const DEFAULT_BODY =
+  "If you have any general or medical inquiries, feel free to contact us. Our doctors will respond as soon as possible.";
 
 const CONTACT = {
   address:
@@ -17,31 +26,45 @@ const detailItemClass =
   "flex gap-3.5 rounded-xl border border-border/50 bg-white/80 p-4";
 
 export function ContactReachSection() {
+  const { config } = useStaticEditContext();
+
+  const heading = resolveElementText(
+    config,
+    "contact.reach.heading",
+    DEFAULT_HEADING,
+  );
+  const body = resolveElementText(config, "contact.reach.body", DEFAULT_BODY);
+
   return (
-    <section
-      className="bg-[#F5F6F8]"
-      aria-labelledby="reach-us-heading"
-    >
+    <section className="bg-[#F5F6F8]" aria-label={heading}>
       <div className="container-content section-padding">
         <div
           className={cn(
             "rounded-2xl border border-border/60 bg-white/70 p-6 shadow-[0_8px_30px_rgb(10_37_64/0.06)]",
-            "sm:p-8 lg:p-10"
+            "sm:p-8 lg:p-10",
           )}
         >
           <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
             {/* Left — Reach us */}
             <div>
-              <h2
-                id="reach-us-heading"
+              <EditableElement
+                id="contact.reach.heading"
+                kind="heading"
+                defaultValue={DEFAULT_HEADING}
+                as="h2"
                 className="font-heading text-h2 font-semibold text-[#0A2540]"
               >
-                Reach Us
-              </h2>
-              <p className="mt-3 text-body leading-relaxed text-muted-foreground">
-                If you have any general or medical inquiries, feel free to
-                contact us. Our doctors will respond as soon as possible.
-              </p>
+                {({ value }) => value || heading}
+              </EditableElement>
+              <EditableElement
+                id="contact.reach.body"
+                kind="paragraph"
+                defaultValue={DEFAULT_BODY}
+                as="p"
+                className="mt-3 text-body leading-relaxed text-muted-foreground"
+              >
+                {({ value }) => value || body}
+              </EditableElement>
 
               <ul className="mt-8 space-y-4">
                 <li className={detailItemClass}>
@@ -108,8 +131,15 @@ export function ContactReachSection() {
               </ul>
             </div>
 
-            {/* Right — Form card */}
-            <ContactForm />
+            {/* Right — Lead capture */}
+            <ConsultationLeadCapture
+              variant="inline"
+              page={{
+                pageTitle: "Contact Care Well Medical Centre",
+                pageSlug: "contact",
+                pageUri: "/contact",
+              }}
+            />
           </div>
         </div>
       </div>

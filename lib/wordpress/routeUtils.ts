@@ -6,6 +6,7 @@
 /**
  * Handcrafted App Router paths that must never be resolved via WordPress.
  * Next.js already prefers static routes; this list is defense-in-depth.
+ * Keep in sync with `lib/experience/static-pages/catalog.ts` StaticPageRegistry.
  */
 const HANDCRAFTED_PATHS = new Set<string>([
   "/",
@@ -14,13 +15,14 @@ const HANDCRAFTED_PATHS = new Set<string>([
   "/contact/",
   "/disclaimer/",
   "/privacy-policy/",
+  "/terms/",
+  "/thank-you/",
+  "/404/",
   "/design/",
   "/debug/content-renderer/",
   "/gallery/",
   "/doctors/",
   "/faq/",
-  "/terms/",
-  "/404/",
 ]);
 
 /**

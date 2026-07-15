@@ -14,3 +14,8 @@ export function presentationTemplateTag(slug: string): string {
 
 export const PRESENTATION_NAV_TAG = "presentation-navigation";
 export const PRESENTATION_HOME_TAG = "presentation-home";
+
+/** Cache tag for a catalog static page (home, about, …). */
+export function staticPageTag(slug: string): string {
+  return `static-page:${slug}`;
+}

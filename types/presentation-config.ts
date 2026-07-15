@@ -6,6 +6,11 @@
 import type { MediaRef } from "@/types/wordpress-media";
 import type { ContentOverrides } from "@/types/content-ast";
 import type { LayoutTree } from "@carewell/layout-engine";
+import type { PageType } from "@/lib/experience/engine/pageClassification";
+import type {
+  PageChromeConfig,
+  ResolvedPageChrome,
+} from "@/types/page-chrome";
 
 export type MediaImageSource = "featured" | "wordpress-media" | "none";
 
@@ -108,6 +113,8 @@ export type AdvancedConfig = {
 export type PresentationConfig = {
   schemaVersion: 1;
   templateSlug: string | null;
+  /** Optional explicit classification override (rare). */
+  pageTypeOverride?: PageType | null;
   hero: HeroConfig;
   navigation: NavigationConfig;
   content: ContentConfig;
@@ -126,6 +133,42 @@ export type PresentationConfig = {
    * Public PresentationPage ignores this and renders `sections` in order.
    */
   layoutTree?: LayoutTree | null;
+  /**
+   * Global page chrome overrides (consultation sidebar, etc.).
+   * Not content sections — cannot be deleted from the section tree.
+   */
+  chrome?: PageChromeConfig;
+  /**
+   * Static Experience Studio (ADR-015) — prop overrides keyed by section id.
+   * Never recreates the page; unbound props keep React component defaults.
+   */
+  propOverrides?: Record<string, Record<string, unknown>>;
+  /**
+   * Universal content editing (ADR-016) — element path → field overrides.
+   * Keys are dotted ids (e.g. home.hero.heading). Never mutates React source.
+   */
+  elementOverrides?: import("@/types/element-descriptor").ElementOverrides;
+  /**
+   * Repeater list overrides (ADR-017) — add/reorder/hide/bind list data.
+   */
+  repeaterOverrides?: Record<
+    string,
+    import("@/types/repeater-descriptor").RepeaterOverride
+  >;
+  /**
+   * Element → binding config (static vs WordPress CPT / fields).
+   */
+  elementBindings?: Record<
+    string,
+    import("@/types/repeater-descriptor").ElementBinding
+  >;
+  /**
+   * Element → responsive field patches (desktop/tablet/mobile).
+   */
+  elementResponsive?: Record<
+    string,
+    import("@/types/repeater-descriptor").ResponsiveFieldOverrides
+  >;
 };
 
 export type ResolvedMedia = {
@@ -159,4 +202,8 @@ export type PresentationPage = {
   };
   presentationStatus: "DRAFT" | "PUBLISHED" | "NOT_CONFIGURED";
   breadcrumbs: Array<{ label: string; href: string }>;
+  /** Page Classification Engine result. */
+  pageType: PageType;
+  /** Resolved global page chrome (widgets). */
+  chrome: ResolvedPageChrome;
 };

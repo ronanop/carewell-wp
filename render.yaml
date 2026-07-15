@@ -1,0 +1,23 @@
+# Render Blueprint — PostgreSQL for Experience Studio + Lead Engine
+# Next.js app deploys to Vercel; only the database runs on Render.
+#
+# Setup:
+#   1. Push this repo to GitHub
+#   2. Render Dashboard → New → Blueprint → select this repo
+#   3. Copy the database **External Database URL** into Vercel env as DATABASE_URL
+#      (append ?schema=public if missing)
+#   4. From local or CI: npx prisma db push && npx prisma db seed
+#
+# Docs: docs/18_DEPLOYMENT.md
+
+databases:
+  - name: carewell-experience-db
+    plan: basic-256mb
+    databaseName: carewell_experience
+    user: carewell
+    postgresMajorVersion: "16"
+    region: singapore
+    # Allow Vercel serverless IPs (and local tooling). Tighten later if needed.
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: vercel-and-ops

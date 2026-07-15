@@ -1,5 +1,6 @@
-// Experience Studio — PostgreSQL schema (ADR-011).
-// Presentation configuration only. Never store WordPress page/post HTML or media binaries.
+// Experience Studio (ADR-011) + Lead Engine (ADR-013) — PostgreSQL schema.
+// Studio: presentation configuration only. Never store WordPress page/post HTML.
+// Leads: patient enquiry / CRM / append-only timeline (see Lead models below).
 
 generator client {
   provider = "prisma-client-js"
@@ -72,13 +73,14 @@ model User {
 
 /// Tenant / site root for Experience Studio presentation data.
 model Site {
-  id        String          @id @default(cuid())
-  key       String          @unique @default("default")
-  name      String          @default("Care Well Medical Centre")
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  pages     WordPressPage[]
-  templates Template[]
+  id          String          @id @default(cuid())
+  key         String          @unique @default("default")
+  name        String          @default("Care Well Medical Centre")
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  pages       WordPressPage[]
+  templates   Template[]
+  staticPages StaticPage[]
 }
 
 /// WordPress page metadata only — never article HTML.
@@ -159,6 +161,56 @@ model PresentationVersion {
   note           String?
   createdById    String?
   createdAt      DateTime         @default(now())
+
+  @@unique([presentationId, version])
+  @@index([presentationId, createdAt])
+  @@index([presentationId, status])
+}
+
+/// Handcrafted / marketing page registered in StaticPageRegistry (Phase 4.7 / ADR-014).
+/// Not linked to WordPress — presentation only.
+model StaticPage {
+  id           String                   @id @default(cuid())
+  siteId       String
+  site         Site                     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  /// Catalog slug: home | about | contact | …
+  slug         String
+  path         String
+  title        String
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  presentation StaticPagePresentation?
+
+  @@unique([siteId, slug])
+  @@unique([siteId, path])
+  @@index([siteId])
+}
+
+/// PresentationConfig for one static page (same JSON contract as WordPress PagePresentation).
+model StaticPagePresentation {
+  id          String                      @id @default(cuid())
+  pageId      String                      @unique
+  page        StaticPage                  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  status      PresentationStatus          @default(DRAFT)
+  config      Json
+  publishedAt DateTime?
+  createdAt   DateTime                    @default(now())
+  updatedAt   DateTime                    @updatedAt
+  versions    StaticPresentationVersion[]
+
+  @@index([status])
+}
+
+model StaticPresentationVersion {
+  id             String                 @id @default(cuid())
+  presentationId String
+  presentation   StaticPagePresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
+  version        Int
+  status         VersionStatus          @default(DRAFT)
+  snapshot       Json
+  note           String?
+  createdById    String?
+  createdAt      DateTime               @default(now())
 
   @@unique([presentationId, version])
   @@index([presentationId, createdAt])
@@ -279,6 +331,39 @@ model ThemeSocialLink {
   @@index([themeId])
 }
 
+/// Global Consultation Sidebar settings (Phase 4.6A) — page chrome, not content.
+model ConsultationSidebarSettings {
+  id                       String   @id @default(cuid())
+  key                      String   @unique @default("default")
+  enabled                  Boolean  @default(true)
+  desktopWidthPx           Int      @default(340)
+  stickyOffsetPx           Int      @default(120)
+  minWidthPx               Int      @default(320)
+  maxWidthPx               Int      @default(360)
+  variant                  String   @default("premium")
+  theme                    String   @default("medical-white")
+  heading                  String   @default("Book Your Consultation")
+  subtitle                 String   @default("Speak directly with our specialists. Quick response within 30 minutes.")
+  ctaLabel                 String   @default("Book Consultation")
+  badgeLabel               String   @default("FREE CONSULTATION")
+  phoneNumber              String   @default("+91 9667-977-499")
+  whatsappNumber           String   @default("919667977499")
+  emergencyNumber          String   @default("+91 9667-977-499")
+  successMessage           String   @default("Thank you — we will contact you shortly.")
+  animation                String   @default("premium")
+  showTrustBadges          Boolean  @default(true)
+  googleRatingLabel        String   @default("★★★★★ Google Rating")
+  patientsLabel            String   @default("1000+ Happy Patients")
+  responseBadge            String   @default("Quick response within 30 minutes")
+  doctorAvailabilityLabel  String   @default("Specialists available today")
+  /// Partial Record<PageType, boolean>
+  visibilityByPageType     Json     @default("{}")
+  /// string[] of absolute URIs
+  excludedUris             Json     @default("[]")
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+}
+
 model AuditLog {
   id         String   @id @default(cuid())
   userId     String?
@@ -292,4 +377,162 @@ model AuditLog {
   @@index([userId])
   @@index([entityType, entityId])
   @@index([createdAt])
+}
+
+// =============================================================================
+// Lead Engine (ADR-013) — patient enquiries / mini CRM / append-only timeline.
+// Isolated from Experience Studio presentation models. Never store WP HTML.
+// =============================================================================
+
+enum LeadStatus {
+  NEW
+  CONTACT_ATTEMPTED
+  CONTACTED
+  INTERESTED
+  QUALIFIED
+  APPOINTMENT_SCHEDULED
+  APPOINTMENT_COMPLETED
+  TREATMENT_STARTED
+  CONVERTED
+  LOST
+  SPAM
+  ARCHIVED
+}
+
+enum LeadPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum PreferredContactMethod {
+  PHONE
+  WHATSAPP
+  EMAIL
+}
+
+enum PreferredTime {
+  MORNING
+  AFTERNOON
+  EVENING
+}
+
+enum LeadTimelineEventType {
+  LEAD_CREATED
+  LEAD_UPDATED
+  LEAD_ASSIGNED
+  STATUS_CHANGED
+  PRIORITY_CHANGED
+  INTERNAL_NOTE_ADDED
+  DOCTOR_ASSIGNED
+  STAFF_ASSIGNED
+  EMAIL_SENT
+  WHATSAPP_SENT
+  SMS_SENT
+  APPOINTMENT_SCHEDULED
+  APPOINTMENT_RESCHEDULED
+  APPOINTMENT_COMPLETED
+  LEAD_CONVERTED
+  LEAD_LOST
+  SPAM_MARKED
+  LEAD_REOPENED
+  DUPLICATE_DETECTED
+  FORM_ANALYTICS
+}
+
+/// Patient consultation enquiry captured from the public website.
+model Lead {
+  id                     String                 @id @default(cuid())
+  uuid                   String                 @unique @default(uuid())
+  name                   String
+  phone                  String
+  email                  String?
+  message                String?
+  treatment              String?
+  preferredContactMethod PreferredContactMethod @default(PHONE)
+  preferredTime          PreferredTime?
+
+  /// Originating page attribution (denormalized — never live WP fetches).
+  pageTitle              String?
+  pageSlug               String?
+  pageUri                String?
+  pageId                 String?
+  presentationPageId     String?
+  presentationVersion    String?
+  template               String?
+  theme                  String?
+  currentUrl             String?
+  referrer               String?
+
+  utmSource              String?
+  utmMedium              String?
+  utmCampaign            String?
+  utmContent             String?
+  utmTerm                String?
+
+  device                 String?
+  browser                String?
+  os                     String?
+  screenSize             String?
+  language               String?
+  country                String?
+  ip                     String?
+  sessionId              String?
+  visitorId              String?
+  timezone               String?
+
+  leadScore              Int                    @default(0)
+  status                 LeadStatus             @default(NEW)
+  priority               LeadPriority           @default(MEDIUM)
+  assignedDoctor         String?
+  assignedStaff          String?
+
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  lastActivityAt         DateTime               @default(now())
+  deletedAt              DateTime?
+
+  timeline               LeadTimelineEvent[]
+  notes                  LeadNote[]
+
+  @@index([status, priority])
+  @@index([phone])
+  @@index([email])
+  @@index([pageSlug])
+  @@index([createdAt])
+  @@index([lastActivityAt])
+  @@index([visitorId])
+  @@index([sessionId])
+  @@index([deletedAt])
+}
+
+/// Append-only activity history — never edit or delete for audit rewriting.
+model LeadTimelineEvent {
+  id                String                @id @default(cuid())
+  leadId            String
+  lead              Lead                  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  eventType         LeadTimelineEventType
+  title             String
+  description       String?
+  metadata          Json?
+  performedByUserId String?
+  systemGenerated   Boolean               @default(true)
+  createdAt         DateTime              @default(now())
+
+  @@index([leadId, createdAt])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+/// Internal CRM notes (each create also appends a timeline event).
+model LeadNote {
+  id              String   @id @default(cuid())
+  leadId          String
+  lead            Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  body            String
+  createdByUserId String?
+  createdAt       DateTime @default(now())
+
+  @@index([leadId, createdAt])
 }

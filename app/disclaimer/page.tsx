@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 
-import { DisclaimerBreadcrumb } from "@/components/disclaimer/DisclaimerBreadcrumb";
-import { DisclaimerContent } from "@/components/disclaimer/DisclaimerContent";
-import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
-import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
+import { DisclaimerPageView } from "@/components/pages/legal/DisclaimerPageView";
+import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schema";
 
@@ -32,11 +30,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DisclaimerPage() {
+export default async function DisclaimerPage() {
   const jsonLd = generateBreadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "Disclaimer", path: "/disclaimer" },
   ]);
+  const studioConfig = await getCachedPublishedStaticPageConfig("disclaimer");
 
   return (
     <>
@@ -46,12 +45,7 @@ export default function DisclaimerPage() {
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <NavbarPlaceholder />
-      <main className="flex-1">
-        <DisclaimerBreadcrumb />
-        <DisclaimerContent />
-      </main>
-      <FooterPlaceholder />
+      <DisclaimerPageView mode="public" config={studioConfig} />
     </>
   );
 }

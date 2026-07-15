@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 
-import { PrivacyBreadcrumb } from "@/components/privacy/PrivacyBreadcrumb";
-import { PrivacyContent } from "@/components/privacy/PrivacyContent";
-import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
-import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
+import { PrivacyPageView } from "@/components/pages/legal/PrivacyPageView";
+import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schema";
 
@@ -32,11 +30,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
   const jsonLd = generateBreadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "Privacy Policy", path: "/privacy-policy" },
   ]);
+  const studioConfig =
+    await getCachedPublishedStaticPageConfig("privacy-policy");
 
   return (
     <>
@@ -46,12 +46,7 @@ export default function PrivacyPolicyPage() {
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <NavbarPlaceholder />
-      <main className="flex-1">
-        <PrivacyBreadcrumb />
-        <PrivacyContent />
-      </main>
-      <FooterPlaceholder />
+      <PrivacyPageView mode="public" config={studioConfig} />
     </>
   );
 }

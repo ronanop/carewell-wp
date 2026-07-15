@@ -13,9 +13,9 @@ import {
 import { cn } from "@/lib/utils";
 
 type ServicesCarouselProps = {
-  label: string;
-  title: string;
-  description: string;
+  label: ReactNode;
+  title: ReactNode;
+  description: ReactNode;
   children: ReactNode;
 };
 
@@ -181,13 +181,9 @@ export function ServicesCarousel({
     <div ref={rootRef}>
       <div className="container-content flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
         <div className="max-w-3xl">
-          <p className="text-label uppercase text-primary">{label}</p>
-          <h2 className="mt-3 font-heading text-h2 font-bold text-[#0A2540]">
-            {title}
-          </h2>
-          <p className="mt-4 text-body-lg text-muted-foreground">
-            {description}
-          </p>
+          {label}
+          {title}
+          {description}
         </div>
 
         <div

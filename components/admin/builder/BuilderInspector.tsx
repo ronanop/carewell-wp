@@ -3,8 +3,16 @@
 import type { ReactNode } from "react";
 
 import { ContentNodeInspector } from "@/components/admin/builder/ContentNodeInspector";
+import { ElementInspector } from "@/components/admin/builder/ElementInspector";
 import { MediaPickerField } from "@/components/admin/media/MediaPickerField";
+import { useBuilderMeta } from "@/components/admin/builder/BuilderProvider";
+import { DescriptorPropField } from "@/lib/experience/descriptors/propertyRegistry";
+import {
+  normalizeSectionId,
+  setPropOverride,
+} from "@/lib/experience/static-pages/applyOverrides";
 import { useEditorStore } from "@/lib/experience/builder/editorStore";
+import { DEFAULT_PAGE_CHROME_CONFIG } from "@/types/page-chrome";
 import type {
   PresentationConfig,
   SectionConfig,
@@ -12,19 +20,141 @@ import type {
 
 /**
  * Inspector — content node when selected, otherwise section properties.
+ * Static pages: descriptor-generated prop fields (ADR-015).
  */
 export function BuilderInspector() {
+  const { persistenceKind, staticDescriptor } = useBuilderMeta();
   const selectedContentId = useEditorStore((s) => s.selectedContentId);
   const selectedIds = useEditorStore((s) => s.selectedIds);
+  const selectedChromeId = useEditorStore((s) => s.selectedChromeId);
+  const selectedElementId = useEditorStore((s) => s.selectedElementId);
   const sections = useEditorStore((s) => s.config.sections);
   const hero = useEditorStore((s) => s.config.hero);
+  const chrome = useEditorStore((s) => s.config.chrome);
+  const propOverrides = useEditorStore((s) => s.config.propOverrides);
   const updateConfig = useEditorStore((s) => s.updateConfig);
 
   if (selectedContentId) {
     return <ContentNodeInspector />;
   }
 
-  const selected = sections.find((section) => section.id === selectedIds[0]);
+  if (persistenceKind === "static" && selectedElementId) {
+    return <ElementInspector />;
+  }
+
+  if (selectedChromeId === "consultation-sidebar") {
+    const override =
+      chrome?.consultationSidebar ??
+      DEFAULT_PAGE_CHROME_CONFIG.consultationSidebar;
+
+    return (
+      <aside className="flex w-[15%] min-w-[240px] max-w-[300px] shrink-0 flex-col border-l border-border/80 bg-white/80 backdrop-blur-xl">
+        <div className="border-b border-border/80 px-5 py-4">
+          <p className="text-[0.6875rem] uppercase tracking-wide text-muted-foreground">
+            System chrome
+          </p>
+          <h2 className="mt-1 font-heading text-h4 font-semibold text-foreground">
+            Consultation Sidebar
+          </h2>
+          <p className="mt-2 text-[0.75rem] text-muted-foreground">
+            Injected by the renderer. Configurable, not removable.
+          </p>
+        </div>
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5">
+          <label className="block text-small">
+            <span className="font-medium text-foreground">Visibility</span>
+            <select
+              className="mt-1.5 w-full rounded-lg border border-border bg-surface px-3 py-2 text-small"
+              value={override.visibility}
+              onChange={(event) => {
+                const visibility = event.target.value as
+                  | "inherit"
+                  | "show"
+                  | "hide";
+                updateConfig((prev) => ({
+                  ...prev,
+                  chrome: {
+                    consultationSidebar: {
+                      ...(prev.chrome?.consultationSidebar ??
+                        DEFAULT_PAGE_CHROME_CONFIG.consultationSidebar),
+                      visibility,
+                    },
+                  },
+                }));
+              }}
+            >
+              <option value="inherit">Inherit (service pages on)</option>
+              <option value="show">Show on this page</option>
+              <option value="hide">Hide for this page</option>
+            </select>
+          </label>
+          <label className="block text-small">
+            <span className="font-medium text-foreground">Sticky offset (px)</span>
+            <input
+              type="number"
+              min={0}
+              max={240}
+              className="mt-1.5 w-full rounded-lg border border-border bg-surface px-3 py-2 text-small"
+              value={override.stickyOffsetPx ?? ""}
+              placeholder="120"
+              onChange={(event) => {
+                const raw = event.target.value;
+                updateConfig((prev) => ({
+                  ...prev,
+                  chrome: {
+                    consultationSidebar: {
+                      ...(prev.chrome?.consultationSidebar ??
+                        DEFAULT_PAGE_CHROME_CONFIG.consultationSidebar),
+                      stickyOffsetPx: raw === "" ? null : Number(raw),
+                    },
+                  },
+                }));
+              }}
+            />
+          </label>
+          <label className="block text-small">
+            <span className="font-medium text-foreground">Desktop width (px)</span>
+            <input
+              type="number"
+              min={280}
+              max={420}
+              className="mt-1.5 w-full rounded-lg border border-border bg-surface px-3 py-2 text-small"
+              value={override.desktopWidthPx ?? ""}
+              placeholder="340"
+              onChange={(event) => {
+                const raw = event.target.value;
+                updateConfig((prev) => ({
+                  ...prev,
+                  chrome: {
+                    consultationSidebar: {
+                      ...(prev.chrome?.consultationSidebar ??
+                        DEFAULT_PAGE_CHROME_CONFIG.consultationSidebar),
+                      desktopWidthPx: raw === "" ? null : Number(raw),
+                    },
+                  },
+                }));
+              }}
+            />
+          </label>
+          <p className="rounded-lg border border-border/70 bg-muted/40 p-3 text-[0.75rem] text-muted-foreground">
+            Global copy and phone numbers live under Settings → Consultation
+            Sidebar.
+          </p>
+        </div>
+      </aside>
+    );
+  }
+
+  const selectedId = selectedIds[0];
+  const selected = selectedId
+    ? sections.find((section) => {
+        if (section.id === selectedId) return true;
+        const canonical = normalizeSectionId(selectedId);
+        if (section.id === canonical) return true;
+        if (normalizeSectionId(section.id) === canonical) return true;
+        return false;
+      })
+    : undefined;
 
   if (!selected) {
     return (
@@ -33,7 +163,7 @@ export function BuilderInspector() {
           Inspector
         </h2>
         <p className="mt-3 text-small text-muted-foreground">
-          Select a section or any content block on the canvas to edit it.
+          Select a section, content block, or the consultation sidebar chrome.
         </p>
       </aside>
     );
@@ -63,6 +193,92 @@ export function BuilderInspector() {
       ...prev,
       hero: { ...prev.hero, ...patch },
     }));
+  }
+
+  if (persistenceKind === "static") {
+    const sectionDescriptor = staticDescriptor?.sections.find(
+      (section) =>
+        section.id === selected.id ||
+        section.id === normalizeSectionId(selected.id) ||
+        section.legacyIds?.includes(selected.id),
+    );
+    const canonicalId = sectionDescriptor?.id ?? normalizeSectionId(selected.id);
+    const overrides = propOverrides?.[canonicalId] ?? {};
+
+    return (
+      <aside className="flex w-[15%] min-w-[240px] max-w-[300px] shrink-0 flex-col border-l border-border/80 bg-white/80 backdrop-blur-xl">
+        <div className="border-b border-border/80 px-5 py-4">
+          <p className="text-[0.6875rem] uppercase tracking-wide text-muted-foreground">
+            Component
+          </p>
+          <h2 className="mt-1 font-heading text-h4 font-semibold text-foreground">
+            {sectionDescriptor?.displayName ?? selected.type}
+          </h2>
+          <p className="mt-1 font-mono text-[0.6875rem] text-muted-foreground">
+            {canonicalId}
+          </p>
+        </div>
+
+        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-5">
+          <Group title="Visibility">
+            <Field label="Enabled">
+              <Toggle
+                checked={selected.enabled}
+                onChange={(enabled) => patchSection({ enabled })}
+              />
+            </Field>
+            <Field label="Variant">
+              <input
+                className={inputClass}
+                value={selected.variant}
+                onChange={(event) =>
+                  patchSection({ variant: event.target.value })
+                }
+              />
+            </Field>
+            <Field label="Spacing">
+              <select
+                className={inputClass}
+                value={selected.spacing}
+                onChange={(event) =>
+                  patchSection({
+                    spacing: event.target.value as SectionConfig["spacing"],
+                  })
+                }
+              >
+                <option value="compact">Compact</option>
+                <option value="default">Default</option>
+                <option value="spacious">Spacious</option>
+              </select>
+            </Field>
+          </Group>
+
+          {(sectionDescriptor?.editableProps.length ?? 0) > 0 ? (
+            <Group title="Props">
+              {sectionDescriptor!.editableProps.map((schema) => (
+                <DescriptorPropField
+                  key={schema.key}
+                  schema={schema}
+                  value={overrides[schema.key]}
+                  onChange={(next) => {
+                    updateConfig((prev) =>
+                      setPropOverride(prev, canonicalId, schema.key, next),
+                    );
+                  }}
+                />
+              ))}
+            </Group>
+          ) : (
+            <Group title="Props">
+              <p className="text-[0.75rem] text-muted-foreground">
+                This section uses handcrafted defaults. Prop schemas can be
+                added on its SectionDescriptor.
+              </p>
+            </Group>
+          )}
+        </div>
+      </aside>
+    );
   }
 
   return (

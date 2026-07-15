@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 import { authConfig } from "@/auth.config";
 
@@ -9,7 +9,7 @@ import { authConfig } from "@/auth.config";
  */
 const { auth } = NextAuth(authConfig);
 
-export default auth((request) => {
+const studioAuth = auth((request) => {
   const { pathname } = request.nextUrl;
 
   if (!pathname.startsWith("/admin")) {
@@ -31,6 +31,22 @@ export default auth((request) => {
 
   return NextResponse.next();
 });
+
+export default function middleware(request: NextRequest) {
+  // Auth.js throws in production without AUTH_SECRET — avoid blank 500s.
+  if (!process.env.AUTH_SECRET) {
+    const { pathname } = request.nextUrl;
+    if (pathname.startsWith("/admin/login")) {
+      return NextResponse.next();
+    }
+    if (pathname.startsWith("/admin")) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+    return NextResponse.next();
+  }
+
+  return studioAuth(request);
+}
 
 export const config = {
   matcher: ["/admin/:path*"],

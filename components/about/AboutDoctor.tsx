@@ -1,8 +1,6 @@
 import { Check } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { existsSync } from "node:fs";
-import path from "node:path";
 
 import { doctorSpecialties } from "@/components/about/content";
 import { buttonVariants } from "@/components/ui/button";
@@ -10,15 +8,7 @@ import { cn } from "@/lib/utils";
 
 const DOCTOR_IMAGE_SRC = "/images/dr-sandeep-bhasin.jpg";
 
-function hasDoctorPortrait() {
-  return existsSync(
-    path.join(process.cwd(), "public", "images", "dr-sandeep-bhasin.jpg")
-  );
-}
-
 function DoctorPortrait() {
-  const showImage = hasDoctorPortrait();
-
   return (
     <div className="mx-auto w-full max-w-[18rem] lg:mx-0 lg:max-w-[20rem]">
       <div
@@ -27,40 +17,13 @@ function DoctorPortrait() {
           "border border-border/60 bg-surface shadow-[0_8px_30px_rgb(10_37_64/0.08)]"
         )}
       >
-        {showImage ? (
-          <Image
-            src={DOCTOR_IMAGE_SRC}
-            alt="Dr. Sandeep Bhasin, Medical Director at Care Well Medical Centre"
-            fill
-            className="object-cover object-top"
-            sizes="(max-width: 1024px) 18rem, 20rem"
-          />
-        ) : (
-          <div
-            className="absolute inset-0 flex flex-col items-center justify-end bg-gradient-to-br from-[#0A2540] via-[#123A5C] to-[#1B6B8A] p-6 text-center"
-            role="img"
-            aria-label="Dr. Sandeep Bhasin"
-          >
-            <div
-              className="pointer-events-none absolute inset-0 opacity-40"
-              style={{
-                backgroundImage:
-                  "radial-gradient(ellipse at 30% 20%, rgb(125 196 220 / 0.45), transparent 55%), radial-gradient(ellipse at 80% 70%, rgb(10 37 64 / 0.5), transparent 50%)",
-              }}
-            />
-            <div className="relative mb-auto mt-8 flex size-24 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm">
-              <span className="font-heading text-2xl font-semibold tracking-tight text-white">
-                SB
-              </span>
-            </div>
-            <p className="relative font-heading text-base font-semibold text-white">
-              Dr. Sandeep Bhasin
-            </p>
-            <p className="relative mt-1 text-sm text-white/75">
-              Medical Director
-            </p>
-          </div>
-        )}
+        <Image
+          src={DOCTOR_IMAGE_SRC}
+          alt="Dr. Sandeep Bhasin, Medical Director at Care Well Medical Centre"
+          fill
+          className="object-cover object-top"
+          sizes="(max-width: 1024px) 18rem, 20rem"
+        />
       </div>
     </div>
   );

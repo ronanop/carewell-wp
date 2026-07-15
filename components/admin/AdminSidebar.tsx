@@ -4,9 +4,11 @@ import type { ComponentType } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  ClipboardList,
   FileText,
   FolderOpen,
   Images,
+  Layers,
   LayoutDashboard,
   LayoutTemplate,
   Megaphone,
@@ -29,7 +31,9 @@ const ICONS: Record<
 > = {
   layoutDashboard: LayoutDashboard,
   fileText: FileText,
+  layers: Layers,
   layoutTemplate: LayoutTemplate,
+  clipboardList: ClipboardList,
   stethoscope: Stethoscope,
   messageSquareQuote: MessageSquareQuote,
   images: Images,

@@ -38,10 +38,29 @@ export {
 export { ensureSiteBootstrap, getDefaultSite } from "@/lib/experience/services/siteService";
 export { listStudioPages } from "@/lib/experience/services/pageListService";
 export {
+  ensureStaticPagesBootstrap,
+  listStaticStudioPages,
+  getStaticStudioPage,
+  getPublishedStaticPageConfig,
+  getCachedPublishedStaticPageConfig,
+  saveStaticPagePresentation,
+} from "@/lib/experience/services/staticPageService";
+export {
   createDefaultPresentationConfig,
   parsePresentationConfig,
   presentationConfigSchema,
 } from "@/lib/experience/validations/presentationConfig";
+export { STATIC_PAGE_CATALOG, registerStaticPage } from "@/lib/experience/static-pages/catalog";
+export { createStaticPageDefaultConfig } from "@/lib/experience/static-pages/defaults";
+export {
+  getStaticPageModule,
+  getStaticPageDescriptor,
+  listStaticPageModules,
+  registerStaticPageModule,
+} from "@/lib/experience/static-pages/registry";
+export { createStaticPageProvider } from "@/lib/experience/providers/staticPageProvider";
+export { createWordPressPageProvider } from "@/lib/experience/providers/wordpressPageProvider";
+export type { PageProvider, PageDefinition } from "@/lib/experience/providers/pageProvider";
 
 // Platform foundation (Plugin SDK, binding, tokens, rules, composition)
 export {

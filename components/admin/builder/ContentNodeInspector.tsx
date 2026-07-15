@@ -23,13 +23,13 @@ export function ContentNodeInspector() {
   const updateConfig = useEditorStore((s) => s.updateConfig);
 
   const node = useMemo(() => {
-    if (!selectedContentId) return null;
+    if (!selectedContentId || !basePage) return null;
     const doc = applyContentOverrides(
       parseHtmlToAst(basePage.contentHtml),
       contentOverrides,
     );
     return findNode(doc.nodes, selectedContentId);
-  }, [basePage.contentHtml, contentOverrides, selectedContentId]);
+  }, [basePage, contentOverrides, selectedContentId]);
 
   if (!node) {
     return (

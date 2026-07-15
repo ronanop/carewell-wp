@@ -125,6 +125,78 @@ export const presentationConfigSchema = z.object({
     .default({ nodes: {}, order: null, insertions: [] }),
   /** Layout engine tree — optional; ignored by public renderer. */
   layoutTree: z.any().nullable().optional(),
+  pageTypeOverride: z
+    .enum([
+      "HOME",
+      "SERVICE",
+      "DOCTOR",
+      "BLOG",
+      "LANDING",
+      "LEGAL",
+      "CONTACT",
+      "ABOUT",
+      "GALLERY",
+      "GENERIC",
+    ])
+    .nullable()
+    .optional(),
+  chrome: z
+    .object({
+      consultationSidebar: z.object({
+        visibility: z.enum(["inherit", "show", "hide"]).default("inherit"),
+        stickyOffsetPx: z.number().int().min(0).max(240).nullable().optional(),
+        desktopWidthPx: z.number().int().min(280).max(420).nullable().optional(),
+        variant: z.string().max(40).nullable().optional(),
+        theme: z.string().max(40).nullable().optional(),
+        animation: z.string().max(40).nullable().optional(),
+      }),
+    })
+    .optional(),
+  /** Static page section prop overrides (ADR-015). */
+  propOverrides: z
+    .record(z.string(), z.record(z.string(), z.unknown()))
+    .optional(),
+  /** Element-level overrides (ADR-016). */
+  elementOverrides: z
+    .record(z.string(), z.record(z.string(), z.unknown()))
+    .optional(),
+  repeaterOverrides: z
+    .record(
+      z.string(),
+      z.object({
+        items: z.array(z.record(z.string(), z.unknown())).optional(),
+        order: z.array(z.number().int().min(0)).optional(),
+        hidden: z.array(z.number().int().min(0)).optional(),
+        binding: z
+          .object({
+            mode: z.enum(["static", "wordpress", "api", "ai"]),
+            source: z.string().optional(),
+            query: z.string().optional(),
+          })
+          .optional(),
+      }),
+    )
+    .optional(),
+  elementBindings: z
+    .record(
+      z.string(),
+      z.object({
+        mode: z.enum(["static", "wordpress", "api", "ai"]),
+        source: z.string().optional(),
+        query: z.string().optional(),
+      }),
+    )
+    .optional(),
+  elementResponsive: z
+    .record(
+      z.string(),
+      z.object({
+        desktop: z.record(z.string(), z.unknown()).optional(),
+        tablet: z.record(z.string(), z.unknown()).optional(),
+        mobile: z.record(z.string(), z.unknown()).optional(),
+      }),
+    )
+    .optional(),
 });
 
 export type PresentationConfigInput = z.infer<typeof presentationConfigSchema>;
@@ -233,6 +305,23 @@ export function migratePresentationConfig(raw: unknown): unknown {
     value.layoutTree = null;
   }
 
+  if (!value.chrome || typeof value.chrome !== "object") {
+    value.chrome = {
+      consultationSidebar: {
+        visibility: "inherit",
+        stickyOffsetPx: null,
+        desktopWidthPx: null,
+        variant: null,
+        theme: null,
+        animation: null,
+      },
+    };
+  }
+
+  if (!("pageTypeOverride" in value)) {
+    value.pageTypeOverride = null;
+  }
+
   return value;
 }
 
@@ -328,6 +417,17 @@ export function createDefaultPresentationConfig(
       insertions: [],
     },
     layoutTree: null,
+    pageTypeOverride: null,
+    chrome: {
+      consultationSidebar: {
+        visibility: "inherit",
+        stickyOffsetPx: null,
+        desktopWidthPx: null,
+        variant: null,
+        theme: null,
+        animation: null,
+      },
+    },
   };
 }
 

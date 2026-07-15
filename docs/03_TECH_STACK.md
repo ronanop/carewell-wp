@@ -21,7 +21,8 @@ Document every technology used in the CWMC project, its role, version constraint
 | CVA + clsx + tailwind-merge | Component variant management and class merging |
 | tailwindcss-animate | Animation utilities for Shadcn components |
 | WordPress + WPGraphQL | Headless CMS content API |
-| Vercel | Frontend deployment and edge functions |
+| Vercel | Next.js app deployment (public site + admin) |
+| Render | Managed PostgreSQL (Experience Studio + Lead Engine) |
 | Cloudflare | CDN, DNS, DDoS protection |
 | Hostinger | WordPress hosting |
 
@@ -42,7 +43,7 @@ Next.js 15                       WordPress (existing)
 
 Deployment Stack
 ────────────────
-Vercel (Next.js) + Cloudflare (CDN) + Hostinger (WordPress)
+Vercel (Next.js) + Render (Postgres) + Cloudflare (CDN) + Hostinger (WordPress)
 ```
 
 ## Best Practices

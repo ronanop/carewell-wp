@@ -1,0 +1,152 @@
+/**
+ * Home Hero element descriptors (ADR-016).
+ */
+
+import type { ElementDescriptor } from "@/types/element-descriptor";
+
+export const HOME_HERO_ELEMENTS: ElementDescriptor[] = [
+  {
+    id: "home.hero.badge",
+    displayName: "Location badge",
+    kind: "badge",
+    sectionId: "home.hero",
+    inlineField: "text",
+    fields: [
+      { key: "text", label: "Label", type: "text", group: "Content" },
+    ],
+    supports: { inlineEdit: true, bind: true, responsive: true },
+    defaultValues: { text: "Chittaranjan Park · South Delhi" },
+  },
+  {
+    id: "home.hero.heading",
+    displayName: "Heading",
+    kind: "heading",
+    sectionId: "home.hero",
+    inlineField: "text",
+    fields: [
+      { key: "text", label: "Heading", type: "textarea", group: "Content" },
+    ],
+    supports: { inlineEdit: true, bind: true, responsive: true, animation: true },
+    defaultValues: {
+      text: "Cosmetic Surgery & Hair Transplant Clinic in South Delhi",
+    },
+    bindingSources: ["wordpress.page.title"],
+  },
+  {
+    id: "home.hero.subtitle",
+    displayName: "Subtitle",
+    kind: "paragraph",
+    sectionId: "home.hero",
+    inlineField: "text",
+    fields: [
+      { key: "text", label: "Subtitle", type: "textarea", group: "Content" },
+    ],
+    supports: { inlineEdit: true, bind: true, responsive: true },
+    defaultValues: {
+      text: "Advanced Hair Restoration, PRP Therapy, Skin, Anti-Aging & Body Contouring by Dr. Sandeep Bhasin.",
+    },
+  },
+  {
+    id: "home.hero.rating",
+    displayName: "Google rating",
+    kind: "statistic",
+    sectionId: "home.hero",
+    inlineField: "value",
+    fields: [
+      { key: "value", label: "Rating value", type: "text", group: "Content" },
+      { key: "label", label: "Accessible label", type: "text", group: "Accessibility" },
+    ],
+    supports: { inlineEdit: true },
+    defaultValues: { value: "4.3", label: "4.3 out of 5 on Google" },
+  },
+  {
+    id: "home.hero.experience",
+    displayName: "Experience badge",
+    kind: "badge",
+    sectionId: "home.hero",
+    inlineField: "text",
+    fields: [
+      { key: "text", label: "Label", type: "text", group: "Content" },
+    ],
+    supports: { inlineEdit: true },
+    defaultValues: { text: "20+ Yrs · 10,000+ Procedures" },
+  },
+  {
+    id: "home.hero.primaryButton",
+    displayName: "Primary button",
+    kind: "button",
+    sectionId: "home.hero",
+    inlineField: "label",
+    fields: [
+      { key: "label", label: "Label", type: "text", group: "Content" },
+      { key: "href", label: "Link", type: "link", group: "Content" },
+    ],
+    supports: { inlineEdit: true, bind: true },
+    defaultValues: { label: "Book Free Consultation", href: "/contact" },
+  },
+  {
+    id: "home.hero.secondaryButton",
+    displayName: "Secondary button",
+    kind: "button",
+    sectionId: "home.hero",
+    inlineField: "label",
+    fields: [
+      { key: "label", label: "Label", type: "text", group: "Content" },
+      { key: "href", label: "Link", type: "link", group: "Content" },
+    ],
+    supports: { inlineEdit: true, bind: true },
+    defaultValues: { label: "Explore Treatments", href: "/services" },
+  },
+  {
+    id: "home.hero.privacyNote",
+    displayName: "Privacy note",
+    kind: "caption",
+    sectionId: "home.hero",
+    inlineField: "text",
+    fields: [
+      { key: "text", label: "Text", type: "text", group: "Content" },
+    ],
+    supports: { inlineEdit: true },
+    defaultValues: {
+      text: "100% private · Response within 2 hours · No spam",
+    },
+  },
+  {
+    id: "home.hero.heroImage",
+    displayName: "Hero portrait",
+    kind: "image",
+    sectionId: "home.hero",
+    fields: [
+      { key: "src", label: "Image URL", type: "image", group: "Content" },
+      { key: "alt", label: "Alt text", type: "text", group: "Accessibility" },
+      {
+        key: "objectFit",
+        label: "Object fit",
+        type: "select",
+        group: "Layout",
+        options: [
+          { label: "Contain", value: "contain" },
+          { label: "Cover", value: "cover" },
+          { label: "Fill", value: "fill" },
+        ],
+      },
+    ],
+    supports: { replaceMedia: true, crop: true, responsive: true },
+    defaultValues: {
+      src: "/images/hero-model.png",
+      alt: "Care Well Medical Centre — patient portrait",
+      objectFit: "contain",
+    },
+  },
+  {
+    id: "home.hero.background",
+    displayName: "Background",
+    kind: "image",
+    sectionId: "home.hero",
+    fields: [
+      { key: "src", label: "Background URL", type: "image", group: "Background" },
+    ],
+    supports: { replaceMedia: true },
+    defaultValues: { src: "/images/hero-background.png" },
+  },
+];
