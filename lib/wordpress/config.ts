@@ -18,9 +18,13 @@ export const DEFAULT_BACKOFF_BASE_MS = 500;
 export const REQUIRED_WORDPRESS_ENV_VARS = [
   "NEXT_PUBLIC_SITE_URL",
   "WORDPRESS_GRAPHQL_ENDPOINT",
+  "WEBHOOK_SECRET",
+] as const;
+
+/** Optional — media upload / authenticated WP REST. Missing does not block the site. */
+export const OPTIONAL_WORDPRESS_CREDENTIAL_VARS = [
   "WORDPRESS_USERNAME",
   "WORDPRESS_APPLICATION_PASSWORD",
-  "WEBHOOK_SECRET",
 ] as const;
 
 /**
@@ -41,19 +45,8 @@ const wordpressEnvSchema = z.object({
     .trim()
     .min(1, "WORDPRESS_GRAPHQL_ENDPOINT must not be empty")
     .url("WORDPRESS_GRAPHQL_ENDPOINT must be a valid URL"),
-  WORDPRESS_USERNAME: z
-    .string({
-      error: "WORDPRESS_USERNAME is required (WordPress Application Password user)",
-    })
-    .trim()
-    .min(1, "WORDPRESS_USERNAME must not be empty"),
-  WORDPRESS_APPLICATION_PASSWORD: z
-    .string({
-      error:
-        "WORDPRESS_APPLICATION_PASSWORD is required (WordPress Application Password)",
-    })
-    .trim()
-    .min(1, "WORDPRESS_APPLICATION_PASSWORD must not be empty"),
+  WORDPRESS_USERNAME: z.string().trim().optional().default(""),
+  WORDPRESS_APPLICATION_PASSWORD: z.string().trim().optional().default(""),
   WEBHOOK_SECRET: z
     .string({
       error: "WEBHOOK_SECRET is required (on-demand revalidation shared secret)",
@@ -164,6 +157,10 @@ export function getWordPressConfig(
 export function createAuthorizationHeader(
   config: Pick<WordPressConfig, "username" | "applicationPassword">,
 ): string {
+  if (!config.username || !config.applicationPassword) {
+    return "";
+  }
+
   const token = Buffer.from(
     `${config.username}:${config.applicationPassword}`,
     "utf8",

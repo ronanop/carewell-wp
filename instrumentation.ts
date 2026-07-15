@@ -10,5 +10,17 @@ export async function register(): Promise<void> {
   }
 
   const { assertWordPressEnv } = await import("@/lib/wordpress/config");
-  assertWordPressEnv();
+  try {
+    assertWordPressEnv();
+  } catch (error) {
+    // Fail soft in production so a missing optional WP Application Password
+    // (or a mis-set webhook) does not take down every serverless route,
+    // including /admin/login. Surface loudly in logs instead.
+    const message =
+      error instanceof Error ? error.message : "Unknown WordPress env error";
+    console.error(`[instrumentation] ${message}`);
+    if (process.env.NODE_ENV === "development") {
+      throw error;
+    }
+  }
 }
