@@ -67,17 +67,6 @@ export function EditableElement({
 
   const fields = resolveFields(config, id, defaults);
   const isHidden = fields.hidden === true;
-  if (isHidden && mode === "public") {
-    return null;
-  }
-
-  const value =
-    kind === "image"
-      ? String(
-          resolveElementField(config, id, "src", defaultValue || defaults?.src || ""),
-        )
-      : resolveElementText(config, id, defaultValue, field);
-
   const isEditor = mode === "editor";
   const selected = selectedElementId === id;
   const editing = editingElementId === id;
@@ -122,6 +111,17 @@ export function EditableElement({
     },
     [id, isEditor, kind, selectElement, setEditingElement],
   );
+
+  if (isHidden && mode === "public") {
+    return null;
+  }
+
+  const value =
+    kind === "image"
+      ? String(
+          resolveElementField(config, id, "src", defaultValue || defaults?.src || ""),
+        )
+      : resolveElementText(config, id, defaultValue, field);
 
   const content =
     typeof children === "function"
