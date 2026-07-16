@@ -39,15 +39,22 @@ interface GetMediaItemsData {
   } | null;
 }
 
+export type MediaListOptions = {
+  /** When true (default for legacy callers), return images only. */
+  imagesOnly?: boolean;
+  /** Optional MIME prefix filter, e.g. "image/", "video/", "application/pdf". */
+  mimePrefix?: string;
+};
+
 export interface MediaRepository {
   getById: (
     id: number,
     options?: RepositoryFetchOptions,
+    listOptions?: MediaListOptions,
   ) => Promise<MediaAsset>;
 
   /**
-   * Lists a page of WordPress media items.
-   * Returns images only — filtering happens here, never in GraphQL enums.
+   * Lists a page of WordPress media items (images only — legacy).
    */
   listImages: (input: {
     first?: number;
@@ -55,10 +62,40 @@ export interface MediaRepository {
     options?: RepositoryFetchOptions;
   }) => Promise<MediaAssetConnection>;
 
+  /**
+   * Lists media of any type (AMS). Optional mimePrefix filters after map.
+   */
+  listMedia: (input: {
+    first?: number;
+    after?: string | null;
+    mimePrefix?: string;
+    options?: RepositoryFetchOptions;
+  }) => Promise<MediaAssetConnection>;
+
   getByIds: (
     ids: number[],
     options?: RepositoryFetchOptions,
+    listOptions?: MediaListOptions,
   ) => Promise<MediaAsset[]>;
+}
+
+function passesMimeFilter(
+  item: MediaAsset,
+  listOptions?: MediaListOptions,
+): boolean {
+  if (listOptions?.mimePrefix) {
+    return item.mimeType
+      .toLowerCase()
+      .startsWith(listOptions.mimePrefix.toLowerCase());
+  }
+  if (listOptions?.imagesOnly === false) {
+    return true;
+  }
+  // Default legacy behaviour: images only
+  if (listOptions?.imagesOnly === undefined && !listOptions?.mimePrefix) {
+    return true; // caller decides
+  }
+  return isImageMimeType(item.mimeType);
 }
 
 /**
@@ -69,7 +106,7 @@ export function createMediaRepository(
   client: WordPressGraphQLClient = getWordPressClient(),
 ): MediaRepository {
   return {
-    async getById(id, options = {}) {
+    async getById(id, options = {}, listOptions = { imagesOnly: true }) {
       const data = await client.fetchGraphQL<GetMediaItemData>(getMediaItemQuery, {
         ...options,
         variables: {
@@ -80,14 +117,31 @@ export function createMediaRepository(
       });
 
       const mapped = mapMediaAsset(data.mediaItem);
-      if (!mapped || !isImageMimeType(mapped.mimeType)) {
+      if (!mapped) {
         throw new NotFoundError("media", String(id));
       }
+
+      const imagesOnly = listOptions.imagesOnly !== false && !listOptions.mimePrefix;
+      if (imagesOnly && !isImageMimeType(mapped.mimeType)) {
+        throw new NotFoundError("media", String(id));
+      }
+      if (listOptions.mimePrefix && !passesMimeFilter(mapped, listOptions)) {
+        throw new NotFoundError("media", String(id));
+      }
+
       return mapped;
     },
 
     async listImages({ first = 40, after = null, options = {} }) {
-      // Over-fetch slightly so TypeScript image filtering still fills a page.
+      return this.listMedia({
+        first,
+        after,
+        mimePrefix: "image/",
+        options,
+      });
+    },
+
+    async listMedia({ first = 40, after = null, mimePrefix, options = {} }) {
       const fetchSize = Math.min(Math.max(first * 2, first), 100);
 
       const data = await client.fetchGraphQL<GetMediaItemsData>(getMediaItemsQuery, {
@@ -99,14 +153,19 @@ export function createMediaRepository(
         operationName: "GetMediaItems",
       });
 
-      const images = (data.mediaItems?.nodes ?? [])
+      const items = (data.mediaItems?.nodes ?? [])
         .map((node) => mapMediaAsset(node))
         .filter((item): item is MediaAsset => item !== null)
-        .filter((item) => isImageMimeType(item.mimeType))
+        .filter((item) => {
+          if (mimePrefix) {
+            return item.mimeType.toLowerCase().startsWith(mimePrefix.toLowerCase());
+          }
+          return true;
+        })
         .slice(0, first);
 
       return {
-        items: images,
+        items,
         pageInfo: {
           hasNextPage: Boolean(data.mediaItems?.pageInfo?.hasNextPage),
           endCursor: data.mediaItems?.pageInfo?.endCursor ?? null,
@@ -114,12 +173,12 @@ export function createMediaRepository(
       };
     },
 
-    async getByIds(ids, options = {}) {
+    async getByIds(ids, options = {}, listOptions = { imagesOnly: false }) {
       const unique = [...new Set(ids.filter((id) => Number.isFinite(id) && id > 0))];
       const results = await Promise.all(
         unique.map(async (id) => {
           try {
-            return await this.getById(id, options);
+            return await this.getById(id, options, listOptions);
           } catch {
             return null;
           }

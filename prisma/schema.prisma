@@ -380,6 +380,99 @@ model AuditLog {
 }
 
 // =============================================================================
+// Asset Management System (ADR-018) — Studio metadata only.
+// WordPress Media Library remains the sole binary store. Never store file bytes.
+// =============================================================================
+
+/// Virtual folder (no filesystem) — membership keyed by WordPress media ID.
+model AssetFolder {
+  id        String              @id @default(cuid())
+  slug      String              @unique
+  name      String
+  parentId  String?
+  parent    AssetFolder?        @relation("AssetFolderTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children  AssetFolder[]       @relation("AssetFolderTree")
+  sortOrder Int                 @default(0)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  members   AssetFolderMember[]
+
+  @@index([parentId])
+  @@index([sortOrder])
+}
+
+model AssetFolderMember {
+  id               String      @id @default(cuid())
+  folderId         String
+  folder           AssetFolder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  wordpressMediaId Int
+  createdAt        DateTime    @default(now())
+
+  @@unique([folderId, wordpressMediaId])
+  @@index([wordpressMediaId])
+}
+
+model AssetFavorite {
+  id               String   @id @default(cuid())
+  userId           String
+  wordpressMediaId Int
+  createdAt        DateTime @default(now())
+
+  @@unique([userId, wordpressMediaId])
+  @@index([wordpressMediaId])
+  @@index([userId])
+}
+
+/// Where an asset is referenced across Studio presentation configs.
+model AssetUsage {
+  id               String   @id @default(cuid())
+  wordpressMediaId Int
+  contextType      String
+  contextId        String
+  contextLabel     String
+  fieldPath        String
+  editorHref       String?
+  lastSeenAt       DateTime @default(now())
+  createdAt        DateTime @default(now())
+
+  @@unique([wordpressMediaId, contextType, contextId, fieldPath])
+  @@index([wordpressMediaId])
+  @@index([contextType, contextId])
+}
+
+/// Prior version snapshots for replace/rollback (URLs + metadata — not file bytes).
+model AssetVersion {
+  id                String   @id @default(cuid())
+  wordpressMediaId  Int
+  version           Int
+  previousMediaId   Int?
+  previousSourceUrl String
+  title             String?
+  alt               String?
+  mimeType          String?
+  width             Int?
+  height            Int?
+  metadata          Json?
+  createdById       String?
+  createdAt         DateTime @default(now())
+
+  @@unique([wordpressMediaId, version])
+  @@index([wordpressMediaId, createdAt])
+}
+
+/// Background sync cursor for WordPress → Studio metadata refresh.
+model AssetSyncState {
+  id                 String    @id @default(cuid())
+  key                String    @unique @default("default")
+  lastSyncedAt       DateTime?
+  lastCursor         String?
+  lastMediaModified  DateTime?
+  status             String    @default("idle")
+  lastError          String?
+  updatedAt          DateTime  @updatedAt
+}
+
+// =============================================================================
 // Lead Engine (ADR-013) — patient enquiries / mini CRM / append-only timeline.
 // Isolated from Experience Studio presentation models. Never store WP HTML.
 // =============================================================================

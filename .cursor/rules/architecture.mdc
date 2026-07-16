@@ -43,6 +43,9 @@ Shared: `prisma/**`, `auth.ts`, `app/api/auth/**` (Auth.js + RBAC).
 
 ### Experience Studio
 Manages templates, heroes, CTAs, theme, section visibility for **WordPress and static/marketing pages** (ADR-014 / ADR-015). Never edit or duplicate WordPress article content. Plugin SDK under `lib/experience/platform/`. Static pages register via **StaticPageModule** (descriptor + React view) and open the **same** Visual Builder (`persistenceKind: "static"`), which mounts the **real** page component — never a synthetic `PresentationPage` shell. **ElementDescriptors** + `EditableElement` make canvas content editable; edits store in `PresentationConfig.elementOverrides` / `repeaterOverrides` / `elementBindings` / `elementResponsive` (ADR-016 / ADR-017).
+
+### Asset Management System (ADR-018)
+Experience Studio DAM at `/admin/assets` (`lib/assets/**`). WordPress Media Library is the sole binary store. Studio talks only to **AssetProvider** (default WordPress). Prisma stores folders/favorites/usage/versions metadata — never file bytes. Universal **AssetPicker** replaces MediaPicker.
 ### Lead Engine
 Event-driven and timeline-first: repositories → services → Server Actions; append-only lead timeline; domain events for future CRM / WhatsApp / SMS / AI adapters.
 

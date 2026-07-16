@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 import { useAdminToast } from "@/components/admin/AdminToast";
-import { MediaPickerField } from "@/components/admin/media/MediaPickerField";
+import { MediaPickerField } from "@/components/admin/assets/AssetPickerField";
 import { LivePreviewCard } from "@/components/admin/page-studio/LivePreviewCard";
 import {
   PresentationStatusBadge,
@@ -724,7 +724,8 @@ export function PageStudio({
                               Gallery images
                             </p>
                             <p className="text-[0.6875rem] text-muted-foreground">
-                              Select WordPress media. Stored as mediaId + snapshot.
+              Select from Asset Manager. Stored as mediaId + snapshot.
+
                             </p>
                             <MediaPickerField
                               label="Add gallery image"

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { ContentNodeInspector } from "@/components/admin/builder/ContentNodeInspector";
 import { ElementInspector } from "@/components/admin/builder/ElementInspector";
-import { MediaPickerField } from "@/components/admin/media/MediaPickerField";
+import { MediaPickerField } from "@/components/admin/assets/AssetPickerField";
 import { useBuilderMeta } from "@/components/admin/builder/BuilderProvider";
 import { DescriptorPropField } from "@/lib/experience/descriptors/propertyRegistry";
 import {

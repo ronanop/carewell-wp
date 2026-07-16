@@ -78,7 +78,8 @@ export function BuilderLeftSidebar({
         {leftTab === "assets" ? (
           <EmptyPanel
             title="Assets"
-            body="WordPress media opens from image fields. Full asset dock expands next."
+            body="Asset Manager opens from image fields. Full DAM at /admin/assets."
+
           />
         ) : null}
       </div>

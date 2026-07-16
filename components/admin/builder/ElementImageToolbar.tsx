@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { ImageIcon } from "lucide-react";
 
 import { ImageReplaceUpload } from "@/components/admin/media/ImageReplaceUpload";
-import { MediaPickerField } from "@/components/admin/media/MediaPickerField";
+import { MediaPickerField } from "@/components/admin/assets/AssetPickerField";
 import { useEditorStore } from "@/lib/experience/builder/editorStore";
 import { findElementDescriptor } from "@/lib/experience/static-pages/elementRegistry";
 import {
@@ -149,7 +149,8 @@ export function ElementImageToolbar() {
       </button>
       {openPicker ? (
         <MediaPickerField
-          label="WordPress media"
+          label="Asset"
+
           value={
             typeof override.mediaId === "number" && override.mediaId > 0
               ? {

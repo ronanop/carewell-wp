@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import { MediaPickerField } from "@/components/admin/media/MediaPickerField";
+import { MediaPickerField } from "@/components/admin/assets/AssetPickerField";
 import {
   applyContentOverrides,
   emptyContentOverrides,

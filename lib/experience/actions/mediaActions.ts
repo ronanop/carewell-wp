@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
-import { getMediaService } from "@/lib/wordpress/services/mediaService";
+import { getAssetService } from "@/lib/assets/services/assetService";
 import type {
   MediaAsset,
   MediaAssetConnection,
@@ -13,8 +13,7 @@ export type MediaActionResult<T> =
   | { ok: false; message: string };
 
 /**
- * Loads the next page of WordPress images (repository filters mimeType).
- * Search is intentionally client-side — no GraphQL search assumptions.
+ * Legacy media actions — delegate to AssetService (ADR-018).
  */
 export async function listWordPressImagesAction(input: {
   after?: string | null;
@@ -26,11 +25,19 @@ export async function listWordPressImagesAction(input: {
   }
 
   try {
-    const data = await getMediaService().listImages({
+    const data = await getAssetService().list({
       after: input.after,
       first: input.first ?? 40,
+      kind: "image",
+      mimePrefix: "image/",
     });
-    return { ok: true, data };
+    return {
+      ok: true,
+      data: {
+        items: data.items,
+        pageInfo: data.pageInfo,
+      },
+    };
   } catch (error) {
     return {
       ok: false,
@@ -51,7 +58,7 @@ export async function getWordPressMediaByIdAction(
   }
 
   try {
-    const data = await getMediaService().getById(id);
+    const data = await getAssetService().getById(id);
     return { ok: true, data };
   } catch (error) {
     return {
@@ -71,13 +78,16 @@ export async function refreshMediaRefAction(
   }
 
   try {
-    const data = await getMediaService().refreshMediaRef(ref);
-    return { ok: true, data };
-  } catch (error) {
+    const asset = await getAssetService().getById(ref.mediaId);
+    return { ok: true, data: getAssetService().toRef(asset) };
+  } catch {
     return {
-      ok: false,
-      message:
-        error instanceof Error ? error.message : "Failed to refresh media",
+      ok: true,
+      data: {
+        ...ref,
+        missing: true,
+        lastSyncedAt: new Date().toISOString(),
+      },
     };
   }
 }

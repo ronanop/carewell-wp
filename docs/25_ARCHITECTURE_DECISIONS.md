@@ -305,6 +305,25 @@ Each entry follows this structure:
 
 ---
 
+## ADR-018: Enterprise Asset Management System (AMS)
+
+- **Status:** Accepted
+- **Date:** 2026-07-16
+- **Context:** Editors still needed WordPress Admin for media. Experience Studio had a read-only MediaBrowser and occasional local `/public/studio-uploads` fallback, which duplicated storage and broke the “WordPress is the media source of truth” rule.
+- **Decision:**
+  1. Introduce AMS under `lib/assets/**` with **AssetProvider** (default **WordPressAssetProvider**). Future S3/Cloudinary/Azure/GCS providers plug in without changing editor UI.
+  2. **Reads** via WPGraphQL; **writes** (upload/replace/rename/alt/caption/trash/restore) via WordPress REST — credentials only on the server (Server Actions → AssetService → provider).
+  3. Never store uploaded bytes in Next.js or PostgreSQL. Prisma holds Studio metadata only: virtual folders, favorites, usage index, version snapshots (URLs + metadata), sync cursor.
+  4. Admin route is `/admin/assets` (not `/admin/media`). Legacy `/admin/media` redirects.
+  5. Replace MediaPicker with universal **AssetPicker** / **AssetPickerField** across Experience Studio.
+  6. **Asset Usage Index** scans PresentationConfig JSON on WordPress + static pages; delete warns when usages exist.
+  7. Background **AssetSyncService** refreshes from WordPress so direct WP uploads appear in Studio.
+- **Rationale:** Editors never open WordPress Admin for media; zero duplicated libraries; provider-swappable storage later.
+- **Consequences:** (+) Single DAM UX; (−) Core WP REST cannot always rewrite attachment binaries in place — replace uploads a new media item, rewrites Studio refs, and trashes the old ID.
+- **Amends:** ADR-011 / ADR-016 (media remains WP-authoritative; Studio becomes the management UI).
+
+---
+
 ## Best Practices
 
 - Propose new ADRs before implementing significant architectural changes.
@@ -327,6 +346,6 @@ Each entry follows this structure:
 ## Future Expansion
 
 - ADR-015: On-demand revalidation webhook (when implemented)
-- ADR-016: Multi-language routing (if i18n added)
-- ADR-017: Search implementation (WordPress vs Algolia)
-- ADR-018: Extract `packages/lead-engine` monorepo package (optional)
+- ADR-019: Search implementation (WordPress vs Algolia)
+- ADR-020: Extract `packages/lead-engine` monorepo package (optional)
+- ADR-021: Pluggable CDN providers for AMS (Cloudflare Images / Cloudinary / Bunny)

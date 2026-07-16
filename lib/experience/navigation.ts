@@ -36,7 +36,7 @@ export const ADMIN_NAV: readonly AdminNavItem[] = [
   { label: "Gallery", href: "/admin/gallery", icon: "images" },
   { label: "CTA Manager", href: "/admin/cta", icon: "megaphone" },
   { label: "Theme", href: "/admin/theme", icon: "palette" },
-  { label: "Media", href: "/admin/media", icon: "folderOpen" },
+  { label: "Assets", href: "/admin/assets", icon: "folderOpen" },
   { label: "Users", href: "/admin/users", icon: "users" },
   { label: "Settings", href: "/admin/settings", icon: "settings" },
 ] as const;
