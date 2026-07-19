@@ -80,7 +80,7 @@ export function buildExperienceReviewReport(
   let spacingConsistency = 75;
   let typography = 78;
   let ctaProminence = intelligence.conversionScore;
-  let mobileUsability = 80;
+  const mobileUsability = 80;
   let accessibility = 78;
   let imageComposition = 70;
   let performanceBudget = 82;

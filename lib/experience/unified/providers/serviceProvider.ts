@@ -12,7 +12,6 @@ import {
 } from "@/lib/experience/unified/adapters";
 import type { ExperienceContentProvider } from "@/lib/experience/unified/provider";
 import { generateBreadcrumbSchema } from "@/lib/seo/schema";
-import type { ExperienceDocument } from "@/types/experience-document";
 
 export function createServiceExperienceProvider(): ExperienceContentProvider {
   return {
