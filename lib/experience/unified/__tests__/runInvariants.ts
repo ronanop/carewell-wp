@@ -266,8 +266,8 @@ assert(
   "generic-only sections → low confidence",
 );
 assert(
-  shouldUseServiceEditorialPath("low") === false,
-  "low confidence uses legacy PresentationPage",
+  shouldUseServiceEditorialPath("low") === true,
+  "low confidence still uses semantic editorial path",
 );
 assert(
   shouldUseServiceEditorialPath("medium") === true,

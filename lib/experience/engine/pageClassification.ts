@@ -54,6 +54,16 @@ const SERVICE_URI_HINTS = [
   "filler",
   "gynecomastia",
   "aesthetic",
+  "peptide",
+  "prp",
+  "mesotherapy",
+  "facelift",
+  "blepharoplasty",
+  "breast",
+  "tummy",
+  "circumcision",
+  "implant",
+  "plastic",
 ];
 
 function normalizeUri(uri: string): string {

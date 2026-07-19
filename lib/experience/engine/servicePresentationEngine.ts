@@ -11,7 +11,6 @@ import { ensureServiceSemanticRules } from "@/lib/experience/service/serviceSema
 import { extractServiceSemanticSlots } from "@/lib/experience/service/semanticSlots";
 import {
   scoreServiceSemanticConfidence,
-  shouldUseServiceEditorialPath,
 } from "@/lib/experience/service/confidence";
 import { analyzeArticleSemantics } from "@/lib/experience/semantic/analyzeArticle";
 import {
@@ -53,12 +52,23 @@ export async function getServiceDocument(
   const page = await getPresentationPage(uri);
   if (!page) return null;
 
-  // Editorial pipeline only for treatment-like WordPress pages.
-  // Other page types fall through to PresentationPage via the provider adapter.
+  // Run semantic pipeline for treatment-like pages and contentful generics.
+  // Skip chrome/system types that should stay on PresentationPage / static views.
+  const skipEditorial =
+    page.pageType === "HOME" ||
+    page.pageType === "LEGAL" ||
+    page.pageType === "CONTACT" ||
+    page.pageType === "ABOUT" ||
+    page.pageType === "GALLERY" ||
+    page.pageType === "BLOG";
+
+  const hasBody = (page.contentHtml?.replace(/<[^>]+>/g, "").trim().length ?? 0) >= 120;
+  if (skipEditorial) return null;
   if (
     page.pageType !== "SERVICE" &&
     page.pageType !== "LANDING" &&
-    page.pageType !== "DOCTOR"
+    page.pageType !== "DOCTOR" &&
+    !(page.pageType === "GENERIC" && hasBody)
   ) {
     return null;
   }
@@ -87,7 +97,6 @@ export async function getServiceDocument(
   const semantic = analyzeArticleSemantics(article);
   const slots = extractServiceSemanticSlots(semantic);
   const confidence = scoreServiceSemanticConfidence(semantic);
-  const useEditorial = shouldUseServiceEditorialPath(confidence);
 
   const layout = composeEditorialLayout({
     sections: semantic.sections,
@@ -178,7 +187,7 @@ export async function getServiceDocument(
       category: treatmentName,
       specialtySlug: slug,
     },
-    useLegacyPresentationFallback: !useEditorial,
+    useLegacyPresentationFallback: false,
     legacyPresentation: page.config,
     semanticConfidence: confidence,
   };

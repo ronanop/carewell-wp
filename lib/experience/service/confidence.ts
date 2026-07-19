@@ -24,9 +24,11 @@ export function scoreServiceSemanticConfidence(
   return "low";
 }
 
-/** Prefer editorial path for medium+; low falls back to PresentationPage. */
+/** Always use the semantic editorial path when a ServiceDocument exists.
+ * Confidence remains available for Studio review — it must not gate public UI.
+ */
 export function shouldUseServiceEditorialPath(
-  confidence: "high" | "medium" | "low",
+  _confidence: "high" | "medium" | "low",
 ): boolean {
-  return confidence === "high" || confidence === "medium";
+  return true;
 }

@@ -50,7 +50,6 @@ export function UnifiedExperienceRenderer({
   mode?: (typeof RenderMode)[keyof typeof RenderMode];
 }) {
   const hasEditorial = experienceHasEditorialPipeline(doc);
-  const preferLegacy = Boolean(doc.useLegacyPresentationFallback);
 
   // Blog editorial path
   if (doc.kind === "blog" && hasEditorial) {
@@ -60,13 +59,13 @@ export function UnifiedExperienceRenderer({
     }
   }
 
-  // Service / landing / doctor editorial path (Phase 8.0)
+  // Service / landing / doctor editorial path (Phase 8.0) —
+  // prefer semantic renderer whenever the pipeline produced article/layout.
   if (
     (doc.kind === "service" ||
       doc.kind === "landing" ||
       doc.kind === "doctor") &&
-    hasEditorial &&
-    !preferLegacy
+    hasEditorial
   ) {
     return (
       <ServiceExperienceRenderer document={doc} categories={categories} />
