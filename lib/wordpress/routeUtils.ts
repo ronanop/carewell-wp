@@ -23,8 +23,8 @@ const HANDCRAFTED_PATHS = new Set<string>([
   "/gallery/",
   "/doctors/",
   "/faq/",
-  "/blog/",
-  "/blogs/",
+  // /blog and /blogs are handled by app/blogs (+ catch-all archive fallback).
+  // Do not 404 them via isHandcraftedPath in the catch-all.
 ]);
 
 /**

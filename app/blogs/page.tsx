@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
 
-import { BlogArchive } from "@/components/blog/BlogArchive";
-import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
-import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
-import {
-  listAllBlogPosts,
-  listBlogCategories,
-} from "@/lib/blog/services/blogService";
+import { BlogsArchiveRoute } from "@/components/blog/BlogsArchiveRoute";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 
 export const revalidate = 1800;
@@ -29,18 +23,5 @@ export const metadata: Metadata = {
  * Public blog archive at /blogs — all WordPress posts with search & sort.
  */
 export default async function BlogsArchivePage() {
-  const [posts, categories] = await Promise.all([
-    listAllBlogPosts(),
-    listBlogCategories(),
-  ]);
-
-  return (
-    <>
-      <NavbarPlaceholder />
-      <main className="min-h-screen bg-background">
-        <BlogArchive posts={posts} categories={categories} />
-      </main>
-      <FooterPlaceholder />
-    </>
-  );
+  return <BlogsArchiveRoute />;
 }

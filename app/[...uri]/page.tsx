@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 
+import { BlogsArchiveRoute } from "@/components/blog/BlogsArchiveRoute";
 import { UnifiedExperienceRenderer } from "@/components/experience/UnifiedExperienceRenderer";
 import { listBlogCategories } from "@/lib/blog/services/blogService";
 import {
@@ -19,11 +20,25 @@ interface WordPressCatchAllPageProps {
 
 export const revalidate = 3600;
 
+function isBlogArchiveUri(uri: string): boolean {
+  return uri === "/blogs/" || uri === "/blog/";
+}
+
 export async function generateMetadata({
   params,
 }: WordPressCatchAllPageProps): Promise<Metadata> {
   const { uri } = await params;
   const normalizedUri = normalizeUri(uri);
+
+  if (isBlogArchiveUri(normalizedUri)) {
+    return {
+      title: `Blogs | ${SITE_NAME}`,
+      description:
+        "Browse all Care Well Medical Centre articles on hair restoration, aesthetics, peptide therapy, and wellness.",
+      alternates: { canonical: `${SITE_URL}/blogs` },
+    };
+  }
+
   if (isHandcraftedPath(normalizedUri)) {
     return { title: `Page Not Found | ${SITE_NAME}` };
   }
@@ -86,6 +101,15 @@ export default async function WordPressCatchAllPage({
 }: WordPressCatchAllPageProps) {
   const { uri } = await params;
   const normalizedUri = normalizeUri(uri);
+
+  // Defense: if catch-all receives /blogs (e.g. production route conflict),
+  // render the archive instead of the handcrafted-path 404.
+  if (normalizedUri === "/blog/") {
+    permanentRedirect("/blogs");
+  }
+  if (normalizedUri === "/blogs/") {
+    return <BlogsArchiveRoute />;
+  }
 
   if (isHandcraftedPath(normalizedUri)) {
     notFound();
