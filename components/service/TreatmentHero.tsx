@@ -150,7 +150,9 @@ function findFirstArticleImage(nodes: ContentNode[]): ResolvedMedia | null {
         databaseId: 0,
         sourceUrl: node.attributes.src,
         altText:
-          typeof node.attributes.alt === "string" ? node.attributes.alt : null,
+          typeof node.attributes.alt === "string" && node.attributes.alt
+            ? node.attributes.alt
+            : "",
         width:
           typeof node.attributes.width === "number"
             ? node.attributes.width
