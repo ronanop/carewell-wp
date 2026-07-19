@@ -40,6 +40,10 @@ function experienceToPresentationPage(doc: ExperienceDocument): PresentationPage
   };
 }
 
+function isServiceLikeKind(kind: ExperienceDocument["kind"]): boolean {
+  return kind === "service" || kind === "landing" || kind === "doctor";
+}
+
 export function UnifiedExperienceRenderer({
   document: doc,
   categories = [],
@@ -50,8 +54,9 @@ export function UnifiedExperienceRenderer({
   mode?: (typeof RenderMode)[keyof typeof RenderMode];
 }) {
   const hasEditorial = experienceHasEditorialPipeline(doc);
+  const preferLegacy = Boolean(doc.useLegacyPresentationFallback);
 
-  // Blog editorial path
+  // Blog editorial path — always prefer semantic pipeline when present
   if (doc.kind === "blog" && hasEditorial) {
     const blogDoc = experienceToBlogDocument(doc);
     if (blogDoc) {
@@ -59,20 +64,28 @@ export function UnifiedExperienceRenderer({
     }
   }
 
-  // Service / landing / doctor editorial path (Phase 8.0) —
-  // prefer semantic renderer whenever the pipeline produced article/layout.
-  if (
-    (doc.kind === "service" ||
-      doc.kind === "landing" ||
-      doc.kind === "doctor") &&
-    hasEditorial
-  ) {
+  // Service / landing / doctor editorial path (Phase 8.0).
+  // preferLegacy is reserved for absolute pipeline failure (parse throw / empty AST),
+  // never for medium/low confidence — see servicePresentationEngine.
+  if (isServiceLikeKind(doc.kind) && hasEditorial && !preferLegacy) {
     return (
       <ServiceExperienceRenderer document={doc} categories={categories} />
     );
   }
 
-  // Backward-compatible PresentationPage adapter
+  if (isServiceLikeKind(doc.kind) && preferLegacy) {
+    console.error("[CWMC]", {
+      context: "UnifiedExperienceRenderer",
+      uri: doc.uri,
+      kind: doc.kind,
+      confidence: doc.semanticConfidence,
+      hasEditorial,
+      message:
+        "PresentationPage fallback — absolute editorial failure only",
+    });
+  }
+
+  // Backward-compatible PresentationPage adapter (non-service kinds / absolute failure)
   return (
     <PresentationPageView
       page={experienceToPresentationPage(doc)}

@@ -39,6 +39,7 @@ const SERVICE_URI_HINTS = [
   "transplant",
   "surgery",
   "treatment",
+  "therapy",
   "urology",
   "wellness",
   "cosmetic",
@@ -64,6 +65,19 @@ const SERVICE_URI_HINTS = [
   "circumcision",
   "implant",
   "plastic",
+  "hydrafacial",
+  "hydra-facial",
+  "iv-therapy",
+  "fue",
+  "dhi",
+  "gfc",
+  "exosome",
+  "coolsculpting",
+  "facetite",
+  "bodytite",
+  "mommy-makeover",
+  "anti-aging",
+  "acne",
 ];
 
 function normalizeUri(uri: string): string {
@@ -110,6 +124,13 @@ export function classifyPage(input: PageClassificationInput): PageType {
   }
 
   if (looksLikeService(uri, input.title, input.slug)) {
+    return "SERVICE";
+  }
+
+  // Clinic WordPress site: remaining public pages are almost always treatment /
+  // marketing service content. Prefer SERVICE so chrome + Phase 8 editorial
+  // pipeline activate; Studio pageTypeOverride can still force GENERIC/LEGAL/etc.
+  if (uri !== "/") {
     return "SERVICE";
   }
 

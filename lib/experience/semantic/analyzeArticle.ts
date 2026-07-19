@@ -4,6 +4,7 @@
  */
 
 import { ensureMedicalCoreSemanticRules } from "@/lib/experience/semantic/medicalCoreRules";
+import { ensureServiceSemanticRules } from "@/lib/experience/service/serviceSemanticRules";
 import {
   evaluateSemanticRules,
   nodePlainText,
@@ -107,6 +108,9 @@ function splitIntoChunks(nodes: ContentNode[]): Array<{
 export function analyzeArticleSemantics(
   article: ArticleDocument,
 ): SemanticAnalysisResult {
+  // medical.core + medical.service — service pack is idempotent / no-op for blogs
+  // that import the shared analyzer via the service path.
+  ensureServiceSemanticRules();
   ensureMedicalCoreSemanticRules();
 
   const chunks = splitIntoChunks(article.content.nodes);

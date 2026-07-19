@@ -141,8 +141,10 @@ export type ExperienceDocument = {
   /** Phase 7.1 — Experience Review Mode report for Studio. */
   review?: import("@/lib/experience/quality/reviewMode").ExperienceReviewReport | null;
   /**
-   * Phase 8.0 — when true, UnifiedExperienceRenderer uses PresentationPage
-   * (low semantic confidence). Editorial path is preferred when false.
+   * Phase 8.0 — when true, indicates absolute editorial failure (no AST).
+   * UnifiedExperienceRenderer still prefers ServiceExperienceRenderer /
+   * BlogPresentationPage whenever article+semantic+layout exist; confidence
+   * alone must not force the Gutenberg PresentationPage shell.
    */
   useLegacyPresentationFallback?: boolean;
   semanticConfidence?: "high" | "medium" | "low";

@@ -262,12 +262,16 @@ const lowSemantic: SemanticAnalysisResult = {
   documentFaqs: [],
 };
 assert(
-  scoreServiceSemanticConfidence(lowSemantic) === "low",
-  "generic-only sections → low confidence",
+  scoreServiceSemanticConfidence(lowSemantic) === "medium",
+  "generic-only sections → medium floor (parsed content exists)",
 );
 assert(
-  shouldUseServiceEditorialPath("low") === true,
+  shouldUseServiceEditorialPath("low", { sectionCount: 1 }) === true,
   "low confidence still uses semantic editorial path",
+);
+assert(
+  shouldUseServiceEditorialPath("low", { sectionCount: 0 }) === false,
+  "empty sections may opt out of editorial",
 );
 assert(
   shouldUseServiceEditorialPath("medium") === true,

@@ -218,37 +218,76 @@ export async function getBlogDocument(
   const mediaById = await buildResolvedMediaMap(publicConfig);
   const heroImage = resolveHeroImage(publicConfig, post, mediaById);
   const ogImage = resolveFromMapOrSnapshot(publicConfig.seo.ogImage, mediaById);
-  const articleBase = parseHtmlToArticleAst(post.content ?? "");
-  const article = {
-    ...articleBase,
-    content: applyContentOverrides(
-      articleBase.content,
-      publicConfig.contentOverrides,
-    ),
-  };
-  const semantic = analyzeArticleSemantics(article);
-  const layout = composeEditorialLayout({
-    sections: semantic.sections,
-    signals: buildComposerSignals({
+
+  let article;
+  let semantic;
+  let layout;
+  try {
+    const articleBase = parseHtmlToArticleAst(post.content ?? "");
+    article = {
+      ...articleBase,
+      content: applyContentOverrides(
+        articleBase.content,
+        publicConfig.contentOverrides,
+      ),
+    };
+    semantic = analyzeArticleSemantics(article);
+    layout = composeEditorialLayout({
       sections: semantic.sections,
-      faqCount: article.faqs.length,
-      readingMinutes: article.readingTimeMinutes || post.readingTimeMinutes,
-    }),
-    overrides: {
-      templateId: publicConfig.layoutTemplateId,
-      heroLayout: publicConfig.heroLayout,
-      spacingPreset: publicConfig.spacingPreset,
-      presentationPolish:
-        (publicConfig as { presentationPolish?: import("@/types/editorial-layout").ExperiencePresentationPolish })
-          .presentationPolish ?? {
-          preferSoftSurfaces: true,
-          tightHeroHandoff: true,
-          readingMeasure: "comfortable",
-          defaultCardStyle: "editorial",
-          buttonHierarchy: "primary-secondary-tertiary",
-        },
-    },
-  });
+      signals: buildComposerSignals({
+        sections: semantic.sections,
+        faqCount: article.faqs.length,
+        readingMinutes: article.readingTimeMinutes || post.readingTimeMinutes,
+      }),
+      overrides: {
+        templateId: publicConfig.layoutTemplateId,
+        heroLayout: publicConfig.heroLayout,
+        spacingPreset: publicConfig.spacingPreset,
+        presentationPolish:
+          (publicConfig as { presentationPolish?: import("@/types/editorial-layout").ExperiencePresentationPolish })
+            .presentationPolish ?? {
+            preferSoftSurfaces: true,
+            tightHeroHandoff: true,
+            readingMeasure: "comfortable",
+            defaultCardStyle: "editorial",
+            buttonHierarchy: "primary-secondary-tertiary",
+          },
+      },
+    });
+  } catch (error) {
+    console.error("[CWMC]", {
+      context: "blogPresentationEngine.getBlogDocument",
+      uri: post.uri,
+      message:
+        error instanceof Error ? error.message : "Blog editorial pipeline soft-fail",
+    });
+    // Soft-fail: empty editorial shell — BlogPresentationPage still mounts;
+    // never silently drop to a page-only Gutenberg path for posts.
+    article = {
+      version: 1 as const,
+      content: { version: 1 as const, sourceHash: "empty", nodes: [] },
+      blockMeta: {},
+      toc: [],
+      faqs: [],
+      readingTimeMinutes: post.readingTimeMinutes || 1,
+      wordCount: 0,
+      sourceHash: "empty",
+    };
+    semantic = { version: 1 as const, sections: [], documentFaqs: [] };
+    layout = composeEditorialLayout({
+      sections: [],
+      signals: buildComposerSignals({
+        sections: [],
+        faqCount: 0,
+        readingMinutes: post.readingTimeMinutes || 1,
+      }),
+      overrides: {
+        templateId: publicConfig.layoutTemplateId,
+        heroLayout: publicConfig.heroLayout,
+        spacingPreset: publicConfig.spacingPreset,
+      },
+    });
+  }
 
   const primaryCategory = post.categories[0] ?? null;
   let related: BlogPostSummary[] = [];

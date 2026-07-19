@@ -11,6 +11,7 @@ import { ensureServiceSemanticRules } from "@/lib/experience/service/serviceSema
 import { extractServiceSemanticSlots } from "@/lib/experience/service/semanticSlots";
 import {
   scoreServiceSemanticConfidence,
+  shouldUseServiceEditorialPath,
 } from "@/lib/experience/service/confidence";
 import { analyzeArticleSemantics } from "@/lib/experience/semantic/analyzeArticle";
 import {
@@ -24,6 +25,9 @@ import {
 } from "@/lib/experience/unified/migrate";
 import { DEFAULT_SERVICE_SIDEBAR } from "@/types/service-document";
 import type { ServiceDocument } from "@/types/service-document";
+import type { ArticleDocument } from "@/types/article-ast";
+import type { SemanticAnalysisResult } from "@/types/semantic-article";
+import type { LayoutComposition } from "@/types/editorial-layout";
 import { SITE_URL } from "@/lib/seo/constants";
 import { applyContentOverrides } from "@/lib/experience/content/applyOverrides";
 
@@ -42,9 +46,26 @@ function deriveTreatmentName(title: string, slug: string): string {
     .join(" ");
 }
 
+function emptyArticle(): ArticleDocument {
+  return {
+    version: 1,
+    content: { version: 1, sourceHash: "empty", nodes: [] },
+    blockMeta: {},
+    toc: [],
+    faqs: [],
+    readingTimeMinutes: 1,
+    wordCount: 0,
+    sourceHash: "empty",
+  };
+}
+
+function emptySemantic(): SemanticAnalysisResult {
+  return { version: 1, sections: [], documentFaqs: [] };
+}
+
 /**
  * Build a ServiceDocument from a WordPress page URI.
- * Returns null if the URI is not a WordPress page.
+ * Returns null if the URI is not a WordPress page or not a service-like type.
  */
 export async function getServiceDocument(
   uri: string,
@@ -52,23 +73,12 @@ export async function getServiceDocument(
   const page = await getPresentationPage(uri);
   if (!page) return null;
 
-  // Run semantic pipeline for treatment-like pages and contentful generics.
-  // Skip chrome/system types that should stay on PresentationPage / static views.
-  const skipEditorial =
-    page.pageType === "HOME" ||
-    page.pageType === "LEGAL" ||
-    page.pageType === "CONTACT" ||
-    page.pageType === "ABOUT" ||
-    page.pageType === "GALLERY" ||
-    page.pageType === "BLOG";
-
-  const hasBody = (page.contentHtml?.replace(/<[^>]+>/g, "").trim().length ?? 0) >= 120;
-  if (skipEditorial) return null;
+  // Editorial pipeline for treatment-like WordPress pages.
+  // Other page types fall through to PresentationPage via the provider adapter.
   if (
     page.pageType !== "SERVICE" &&
     page.pageType !== "LANDING" &&
-    page.pageType !== "DOCTOR" &&
-    !(page.pageType === "GENERIC" && hasBody)
+    page.pageType !== "DOCTOR"
   ) {
     return null;
   }
@@ -85,49 +95,120 @@ export async function getServiceDocument(
     kind,
   );
 
-  const articleBase = parseHtmlToServiceAst(page.contentHtml ?? "");
-  const article = {
-    ...articleBase,
-    content: applyContentOverrides(
-      articleBase.content,
-      page.config.contentOverrides,
-    ),
-  };
+  ensureServiceSemanticRules();
 
-  const semantic = analyzeArticleSemantics(article);
+  let article: ArticleDocument;
+  let semantic: SemanticAnalysisResult;
+  let layout: LayoutComposition;
+  let pipelineFailed = false;
+
+  try {
+    const articleBase = parseHtmlToServiceAst(page.contentHtml ?? "");
+    article = {
+      ...articleBase,
+      content: applyContentOverrides(
+        articleBase.content,
+        page.config.contentOverrides,
+      ),
+    };
+    semantic = analyzeArticleSemantics(article);
+    layout = composeEditorialLayout({
+      sections: semantic.sections,
+      signals: buildComposerSignals({
+        sections: semantic.sections,
+        faqCount: article.faqs.length,
+        readingMinutes: article.readingTimeMinutes,
+      }),
+      overrides: {
+        templateId:
+          (experienceConfig.layoutTemplateId as
+            | "treatment-guide"
+            | "recovery-guide"
+            | "cost-guide"
+            | "before-after-showcase"
+            | "faq-heavy"
+            | "medical-research"
+            | "long-form-editorial"
+            | null
+            | undefined) ?? "treatment-guide",
+        heroLayout: experienceConfig.heroLayout ?? null,
+        spacingPreset: experienceConfig.spacingPreset ?? null,
+        presentationPolish: experienceConfig.presentationPolish ?? {
+          preferSoftSurfaces: true,
+          tightHeroHandoff: true,
+          readingMeasure: "comfortable",
+          defaultCardStyle: "medical",
+          buttonHierarchy: "primary-secondary-tertiary",
+        },
+      },
+    });
+  } catch (error) {
+    pipelineFailed = true;
+    console.error("[CWMC]", {
+      context: "servicePresentationEngine.getServiceDocument",
+      uri: page.uri,
+      message:
+        error instanceof Error ? error.message : "Editorial pipeline soft-fail",
+    });
+    // Soft-fail: keep a minimal pipeline so UnifiedExperienceRenderer can still
+    // prefer ServiceExperienceRenderer when contentHtml exists; only absolute
+    // emptiness should force the legacy PresentationPage adapter.
+    article = emptyArticle();
+    semantic = emptySemantic();
+    layout = composeEditorialLayout({
+      sections: [],
+      signals: buildComposerSignals({
+        sections: [],
+        faqCount: 0,
+        readingMinutes: 1,
+      }),
+      overrides: {
+        templateId: "treatment-guide",
+        heroLayout: experienceConfig.heroLayout ?? null,
+        spacingPreset: experienceConfig.spacingPreset ?? null,
+        presentationPolish: experienceConfig.presentationPolish ?? {
+          preferSoftSurfaces: true,
+          tightHeroHandoff: true,
+          readingMeasure: "comfortable",
+          defaultCardStyle: "medical",
+          buttonHierarchy: "primary-secondary-tertiary",
+        },
+      },
+    });
+  }
+
   const slots = extractServiceSemanticSlots(semantic);
   const confidence = scoreServiceSemanticConfidence(semantic);
+  const nodeCount = article.content.nodes.length;
+  const sectionCount = semantic.sections.length;
+  // Absolute failure only: thrown pipeline with no AST, or totally empty page.
+  // Low/medium confidence never forces PresentationPage when AST exists.
+  const useEditorial =
+    !pipelineFailed &&
+    (sectionCount > 0 || nodeCount > 0) &&
+    shouldUseServiceEditorialPath(confidence, { sectionCount: sectionCount || nodeCount });
 
-  const layout = composeEditorialLayout({
-    sections: semantic.sections,
-    signals: buildComposerSignals({
-      sections: semantic.sections,
-      faqCount: article.faqs.length,
-      readingMinutes: article.readingTimeMinutes,
-    }),
-    overrides: {
-      templateId:
-        (experienceConfig.layoutTemplateId as
-          | "treatment-guide"
-          | "recovery-guide"
-          | "cost-guide"
-          | "before-after-showcase"
-          | "faq-heavy"
-          | "medical-research"
-          | "long-form-editorial"
-          | null
-          | undefined) ?? "treatment-guide",
-      heroLayout: experienceConfig.heroLayout ?? null,
-      spacingPreset: experienceConfig.spacingPreset ?? null,
-      presentationPolish: experienceConfig.presentationPolish ?? {
-        preferSoftSurfaces: true,
-        tightHeroHandoff: true,
-        readingMeasure: "comfortable",
-        defaultCardStyle: "medical",
-        buttonHierarchy: "primary-secondary-tertiary",
-      },
-    },
-  });
+  if (!useEditorial) {
+    console.error("[CWMC]", {
+      context: "servicePresentationEngine.editorialGate",
+      uri: page.uri,
+      confidence,
+      pipelineFailed,
+      sectionCount,
+      nodeCount,
+      message:
+        "Falling back to PresentationPage — absolute editorial failure only",
+    });
+  } else if (confidence === "low") {
+    console.error("[CWMC]", {
+      context: "servicePresentationEngine.lowConfidence",
+      uri: page.uri,
+      confidence,
+      sectionCount,
+      message:
+        "Low semantic confidence — still using ServiceExperienceRenderer",
+    });
+  }
 
   const slug =
     page.uri
@@ -187,7 +268,8 @@ export async function getServiceDocument(
       category: treatmentName,
       specialtySlug: slug,
     },
-    useLegacyPresentationFallback: false,
+    // Only absolute failure (no usable content + empty sections) opts into legacy.
+    useLegacyPresentationFallback: !useEditorial,
     legacyPresentation: page.config,
     semanticConfidence: confidence,
   };

@@ -28,9 +28,16 @@ export function createServiceExperienceProvider(): ExperienceContentProvider {
         };
       }
 
-      // Non-service / short pages: plain presentation adapter
+      // Non-service page types (HOME/ABOUT/LEGAL/…): PresentationPage adapter only
       const page = await getPresentationPage(uri);
       if (!page) return null;
+      console.error("[CWMC]", {
+        context: "serviceProvider.getDocument",
+        uri: page.uri,
+        pageType: page.pageType,
+        message:
+          "No ServiceDocument — using PresentationPage adapter for non-service pageType",
+      });
       return {
         ...presentationPageToExperience(page),
         useLegacyPresentationFallback: true,

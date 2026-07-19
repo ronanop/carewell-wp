@@ -12,6 +12,7 @@ import {
 } from "@/lib/experience/blog/editorial/registry";
 import { emitEditorialEvent } from "@/lib/experience/blog/editorial/analytics";
 import { getEditorialPreset } from "@/lib/experience/blog/editorial/presets";
+import { ensureServiceEditorialComponents } from "@/lib/experience/service/registerServiceComponents";
 import { MAX_INLINE_CONSULTATION_CTAS } from "@/lib/experience/layout/compose";
 import { cn } from "@/lib/utils";
 import type { BlogPresentationConfig } from "@/lib/experience/validations/blogPresentationConfig";
@@ -24,7 +25,9 @@ import type {
 } from "@/types/editorial-layout";
 import type { EditorialPreset } from "@/types/semantic-article";
 
+// Client bundle has its own registry instance — register blog + service packs here.
 ensureDefaultEditorialComponents();
+ensureServiceEditorialComponents();
 
 export type SemanticArticleRendererProps = {
   article: ArticleDocument;

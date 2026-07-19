@@ -151,7 +151,7 @@ export type ServiceDocument = {
   presentationStatus: "DRAFT" | "PUBLISHED" | "NOT_CONFIGURED";
   chrome: ResolvedPageChrome;
   leadContext: ExperienceLeadContext;
-  /** When true, UnifiedExperienceRenderer may fall back to PresentationPage. */
+  /** When true, absolute editorial failure — PresentationPage may be used. */
   useLegacyPresentationFallback: boolean;
   legacyPresentation?: PresentationConfig;
   qualityWarnings?: ExperienceQualityWarning[];
