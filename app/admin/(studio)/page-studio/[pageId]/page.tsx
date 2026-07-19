@@ -63,7 +63,10 @@ export default async function PageStudioPage({ params }: PageStudioRouteProps) {
       sectionMedia: {},
     },
     presentationStatus: page.presentation?.status ?? "NOT_CONFIGURED",
-    breadcrumbs: buildUriBreadcrumbs(page.uri),
+    breadcrumbs: buildUriBreadcrumbs(page.uri).map(({ label, href }) => ({
+      label,
+      href,
+    })),
     pageType: "GENERIC",
     chrome: { consultation: null },
   };

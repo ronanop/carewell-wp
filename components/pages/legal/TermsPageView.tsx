@@ -4,9 +4,6 @@
 
 import Link from "next/link";
 
-import {
-  WordPressPageBreadcrumb,
-} from "@/components/features/wordpress-page/WordPressPageBreadcrumb";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
@@ -17,6 +14,7 @@ import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 export function TermsPageView({ mode, config = null }: StaticPageViewProps) {
   const enabled = (sectionId: string, fallback = true) =>
     isSectionEnabled(config, sectionId, fallback);
+  const breadcrumbs = buildUriBreadcrumbs("/terms/");
 
   return (
     <>
@@ -29,9 +27,28 @@ export function TermsPageView({ mode, config = null }: StaticPageViewProps) {
               aria-labelledby="terms-heading"
             >
               <div className="container-content section-padding">
-                <WordPressPageBreadcrumb
-                  items={buildUriBreadcrumbs("/terms/")}
-                />
+                <nav
+                  aria-label="Breadcrumb"
+                  className="text-small text-muted-foreground"
+                >
+                  <ol className="flex flex-wrap items-center gap-2">
+                    {breadcrumbs.map((item, index) => (
+                      <li key={item.href} className="flex items-center gap-2">
+                        {index > 0 ? <span aria-hidden>/</span> : null}
+                        {item.current ? (
+                          <span className="text-foreground">{item.label}</span>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="hover:text-foreground"
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
                 <h1
                   id="terms-heading"
                   className="mt-6 font-heading text-h1 font-bold tracking-tight text-[#0A2540]"

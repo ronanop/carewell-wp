@@ -226,7 +226,9 @@ export async function getPresentationPage(
   const mediaById = await buildResolvedMediaMap(publicConfig);
   const heroImage = resolveHeroImage(publicConfig, page, mediaById);
   const ogImage = resolveFromMapOrSnapshot(publicConfig.seo.ogImage, mediaById);
-  const breadcrumbs = buildUriBreadcrumbs(normalizedUri);
+  const breadcrumbs = buildUriBreadcrumbs(normalizedUri).map(
+    ({ label, href }) => ({ label, href }),
+  );
 
   return attachChrome(
     {
@@ -333,7 +335,10 @@ export async function getPresentationPagePreview(
         sectionMedia: buildSectionMedia(config, mediaById),
       },
       presentationStatus: local.presentation?.status ?? "NOT_CONFIGURED",
-      breadcrumbs: buildUriBreadcrumbs(page.uri),
+      breadcrumbs: buildUriBreadcrumbs(page.uri).map(({ label, href }) => ({
+        label,
+        href,
+      })),
     },
     config,
   );
