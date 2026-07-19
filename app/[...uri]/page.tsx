@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { PresentationPage, RenderMode } from "@carewell/page-renderer";
-import { getPresentationPage } from "@/lib/experience/engine/presentationEngine";
+import { UnifiedExperienceRenderer } from "@/components/experience/UnifiedExperienceRenderer";
+import { listBlogCategories } from "@/lib/blog/services/blogService";
+import {
+  resolveExperienceDocument,
+  resolveExperienceSchemas,
+} from "@/lib/experience/unified/resolve";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo/constants";
-import { generateBreadcrumbSchema } from "@/lib/seo/schema";
 import { isHandcraftedPath, normalizeUri } from "@/lib/wordpress/routeUtils";
+import { RenderMode } from "@carewell/page-renderer";
 
 interface WordPressCatchAllPageProps {
   params: Promise<{
     uri: string[];
   }>;
 }
+
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
@@ -22,47 +28,58 @@ export async function generateMetadata({
     return { title: `Page Not Found | ${SITE_NAME}` };
   }
 
-  const page = await getPresentationPage(normalizedUri);
-  if (!page) {
+  const doc = await resolveExperienceDocument(normalizedUri);
+  if (!doc) {
     return {
       title: `Page Not Found | ${SITE_NAME}`,
       robots: { index: false, follow: true },
     };
   }
 
-  const title = page.seo.title || `${page.title} | ${SITE_NAME}`;
+  const title = doc.seo.title || `${doc.title} | ${SITE_NAME}`;
   const description =
-    page.seo.description ||
-    `${page.title} at Care Well Medical Centre — advanced care in South Delhi.`;
+    doc.seo.description ||
+    `${doc.title} at Care Well Medical Centre — advanced care in South Delhi.`;
   const canonical =
-    page.seo.canonicalUrl ||
-    `${SITE_URL}${page.uri.startsWith("/") ? page.uri.replace(/\/$/, "") : `/${page.uri}`}`;
+    doc.seo.canonicalUrl ||
+    (doc.kind === "blog"
+      ? doc.hero.shareUrl
+      : `${SITE_URL}${doc.uri.startsWith("/") ? doc.uri.replace(/\/$/, "") : `/${doc.uri}`}`);
   const ogImage =
-    page.seo.openGraphImage || page.featuredImage?.sourceUrl || DEFAULT_OG_IMAGE;
+    doc.seo.openGraphImage ||
+    doc.hero.featuredImage?.sourceUrl ||
+    DEFAULT_OG_IMAGE;
 
   return {
     title,
     description,
     alternates: { canonical },
     openGraph: {
-      title: page.seo.openGraphTitle || title,
-      description: page.seo.openGraphDescription || description,
+      title: doc.seo.openGraphTitle || title,
+      description: doc.seo.openGraphDescription || description,
       url: canonical,
       siteName: SITE_NAME,
-      type: "website",
+      type: doc.kind === "blog" ? "article" : "website",
+      publishedTime:
+        doc.kind === "blog" ? (doc.hero.publishedAt ?? undefined) : undefined,
+      modifiedTime:
+        doc.kind === "blog" ? (doc.hero.modifiedAt ?? undefined) : undefined,
+      authors: doc.author ? [doc.author.name] : undefined,
       images: [{ url: ogImage }],
     },
     twitter: {
       card: "summary_large_image",
-      title: page.seo.openGraphTitle || title,
-      description: page.seo.openGraphDescription || description,
+      title: doc.seo.openGraphTitle || title,
+      description: doc.seo.openGraphDescription || description,
       images: [ogImage],
     },
   };
 }
 
 /**
- * Catch-all WordPress pages — rendered via PresentationEngine.
+ * Catch-all — Unified Editorial Experience Engine (Phase 7.0).
+ * Resolves WordPress Page or Post into ExperienceDocument; one renderer.
+ * Preserves all existing URLs.
  */
 export default async function WordPressCatchAllPage({
   params,
@@ -74,31 +91,33 @@ export default async function WordPressCatchAllPage({
     notFound();
   }
 
-  const page = await getPresentationPage(normalizedUri);
-  if (!page) {
+  const doc = await resolveExperienceDocument(normalizedUri);
+  if (!doc) {
     notFound();
   }
 
-  const jsonLd = page.config.seo.schemaEnabled
-    ? generateBreadcrumbSchema(
-        page.breadcrumbs.map((item) => ({
-          name: item.label,
-          path: item.href === "/" ? "/" : item.href.replace(/\/$/, ""),
-        })),
-      )
-    : null;
+  const categories =
+    doc.kind === "blog" ? await listBlogCategories() : [];
+  const schemas = doc.config.seo.schemaEnabled
+    ? await resolveExperienceSchemas(normalizedUri)
+    : [];
 
   return (
     <>
-      {jsonLd ? (
+      {schemas.map((schema, i) => (
         <script
+          key={i}
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+            __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
           }}
         />
-      ) : null}
-      <PresentationPage page={page} mode={RenderMode.PUBLIC} />
+      ))}
+      <UnifiedExperienceRenderer
+        document={doc}
+        categories={categories}
+        mode={RenderMode.PUBLIC}
+      />
     </>
   );
 }

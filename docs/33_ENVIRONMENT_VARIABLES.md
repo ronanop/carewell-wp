@@ -26,8 +26,8 @@ Canonical deployment: **Vercel** (Next.js) + **Render** (Postgres) + **Hostinger
 |----------|----------|-------------|-------------|
 | `AUTH_TRUST_HOST` | Server only | Trust host header on Vercel | `true` |
 | `AUTH_URL` | Server only | Auth callback base URL | same as `NEXT_PUBLIC_SITE_URL` |
-| `WORDPRESS_USERNAME` | Server only | WP Application Password user (media upload) | — |
-| `WORDPRESS_APPLICATION_PASSWORD` | Server only | WP Application Password | — |
+| `WORDPRESS_USERNAME` | Server only | WP Application Password user (REST media upload only — never sent on GraphQL) | — |
+| `WORDPRESS_APPLICATION_PASSWORD` | Server only | WP Application Password (REST media upload only — never sent on GraphQL) | — |
 | `STUDIO_BOOTSTRAP_EMAIL` | Server only | Seed script only | — |
 | `STUDIO_BOOTSTRAP_PASSWORD` | Server only | Seed script only | — |
 | `NEXT_PUBLIC_GA_ID` | Client | Google Analytics 4 | `G-XXXXXXXXXX` |

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { stripEmojiFromHtml } from "@/lib/content/editorialText";
 
 import { ContentContainer } from "@/components/content/ContentContainer";
 import { normalizeContentSpacing } from "@/components/content/content-utils";
@@ -26,7 +27,7 @@ export interface RichContentProps {
  * Styles Gutenberg markup via scoped `.rich-content` CSS only.
  */
 export function RichContent({ html, className }: RichContentProps) {
-  const content = normalizeContentSpacing(html);
+  const content = stripEmojiFromHtml(normalizeContentSpacing(html));
 
   if (!content) {
     return null;

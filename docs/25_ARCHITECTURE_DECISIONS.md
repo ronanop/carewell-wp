@@ -324,6 +324,59 @@ Each entry follows this structure:
 
 ---
 
+### ADR-019: Unified Editorial Experience Engine
+
+- **Status:** Accepted
+- **Date:** 2026-07-19
+- **Context:** Blogs (Phase 6) gained a premium semantic + layout + editorial pipeline, while services and static pages still used a separate PresentationPage path. Continuing with dual renderers would permanently fork design language, Studio UX, and component systems.
+- **Decision:**
+  1. Introduce **ExperienceDocument** (`types/experience-document.ts`) as the single normalized render schema for blog, service, static, landing, doctor, and home.
+  2. Every content kind implements **ExperienceContentProvider** (`getDocument`, `getMetadata`, `getSidebar`, `getSeo`, `getSchema`, `getRelated`, `getPresentation`).
+  3. Public catch-all resolves via **`resolveExperienceDocument`** → **`UnifiedExperienceRenderer`**, which adapts to existing BlogPresentationPage / PresentationPage for backward compatibility (no rewrite of live pages).
+  4. **ExperienceConfig** migrates BlogPresentationConfig and PresentationConfig without data loss (`lib/experience/unified/migrate.ts`).
+  5. Add **Layout Intelligence Engine**, **Design Quality Validator**, **Global Experience Library** (symbols), and **context-aware CTA orchestration** — non-blocking on public render; Studio-facing.
+  6. Semantic section types expand beyond blog headings (technology, location, insurance, consultation, etc.).
+  7. AI interfaces are stubs only (`lib/experience/unified/ai.ts`); no AI implementation in this phase.
+  8. Experience Studio parity: one inspector contract via `registerExperienceComponent` — no page-type-specific custom editors.
+- **Rationale:** One design system, one Studio workflow, WordPress remains content source of truth, Prisma remains presentation-only.
+- **Consequences:** (+) Unified architecture ready for service pages to adopt blog-grade UX incrementally; (−) Dual adapters remain until Visual Builder gains `persistenceKind: "blog"` and services fully adopt the semantic pipeline.
+- **Amends:** ADR-011 (Experience Studio), ADR-012 (Plugin SDK), ADR-014/015 (static pages remain real-view canvas).
+- **Follow-up:** Phase 7.1 Editorial Polish Engine — Premium Hero Composer, Visual Rhythm (cream/editorial surfaces), design-token audit, conversion CTA layer, motion utilities (`.cw-card` / `.cw-interactive` / `.cw-reveal`), Experience Review Mode scores in Blog Studio. Phase 8.0 Service Editorial Intelligence — see ADR-020.
+
+---
+
+### ADR-020: Service Editorial Intelligence Engine
+
+- **Status:** Accepted
+- **Date:** 2026-07-19
+- **Context:** ADR-019 unified documents and providers, but service pages still painted through PresentationPage + Gutenberg HTML. Blog pages already used Article AST → Semantic → Layout → registered components. Forking a second renderer would permanently diverge treatment UX from the Experience Platform.
+- **Decision:**
+  1. Introduce **ServiceDocument** (`types/service-document.ts`) with typed hero, semantic **slots** (benefits, procedure, recovery, technology, cost, …), shared Article AST, and confidence flags — never store Gutenberg HTML in Prisma.
+  2. **Service AST** reuses `parseHtmlToArticleAst` (`parseHtmlToServiceAst` alias). Unknown HTML remains CustomContent / RichContent fallback — never drop data.
+  3. Register **medical.service** semantic rules beside **medical.core** (`lib/experience/service/serviceSemanticRules.ts`). No blog rule replacement.
+  4. **ServiceExperienceProvider** builds ServiceDocument → ExperienceDocument; `resolveExperienceDocument` tries service/page first, then blog.
+  5. **UnifiedExperienceRenderer** routes medium+ confidence service/landing/doctor docs to **ServiceExperienceRenderer** (TreatmentHero + shared SemanticArticleRenderer). Low confidence sets `useLegacyPresentationFallback` → **PresentationPage** adapter only.
+  6. Service components **self-register** into the existing editorial registry (`ensureServiceEditorialComponents`) — no if/else renderer core, no component copy/fork.
+  7. Layout Composer defaults services to **treatment-guide** template; CTA injection remains capped (`MAX_INLINE_CONSULTATION_CTAS = 3`).
+- **Rationale:** One intelligence pipeline; providers and semantic packs differentiate content kinds; WordPress remains content SoT; Studio can edit semantic slots without knowing blog vs service.
+- **Consequences:** (+) Treatment pages reach blog-grade editorial quality; (−) Dedicated medical UI components (cost estimator, map, before/after polish) continue to land incrementally via registry; PresentationPage remains BC for low-confidence / non-service pages.
+- **Amends:** ADR-019 (services now consume the editorial pipeline), ADR-011 / ADR-012 (Plugin SDK registrations).
+- **Follow-up:** Studio semantic-section inspector for services; richer medical component library; Visual Builder `persistenceKind` parity across blog/service/static. **Phase 8.1** Experience Composition polish — see below.
+
+#### Phase 8.1 — Service Experience Polish & Composition Engine
+
+- **Status:** Accepted (extends ADR-020)
+- **Date:** 2026-07-19
+- **Decision:**
+  1. Add **`polishComposition`** (`lib/experience/layout/composition.ts`) after visual rhythm — assigns presentationMode, importance, neighbor-aware spacingTokens, cardStyle, and section-contextual CTA copy. Does not reorder WordPress content or fork UnifiedExperienceRenderer.
+  2. Contextual CTA messaging lives in `contextualCta.ts`; InlineConsultationCta accepts composed `ctaCopy`; ContactActions enforce primary → secondary → tertiary hierarchy.
+  3. Service chrome polish: TreatmentHero refinements + ServiceTrustStrip; FAQ accordion gains search / expand-all; consultation sidebar adds calm response-time cue (no flashy hover lift).
+  4. Experience Review gains **composition**, **rhythm**, **conversionReadiness** dimensions.
+  5. Studio: `ExperienceConfig.presentationPolish` + `PresentationPolishControls` for soft surfaces, reading measure, card style, button hierarchy.
+- **Constraint:** Restraint over drama — soft surfaces, disciplined hierarchy, original image aspect; no oversized hero media.
+
+---
+
 ## Best Practices
 
 - Propose new ADRs before implementing significant architectural changes.
@@ -346,6 +399,10 @@ Each entry follows this structure:
 ## Future Expansion
 
 - ADR-015: On-demand revalidation webhook (when implemented)
-- ADR-019: Search implementation (WordPress vs Algolia)
-- ADR-020: Extract `packages/lead-engine` monorepo package (optional)
 - ADR-021: Pluggable CDN providers for AMS (Cloudflare Images / Cloudinary / Bunny)
+- ADR-022: Search implementation (WordPress vs Algolia)
+- ADR-023: Extract `packages/lead-engine` monorepo package (optional)
+- Phase 8.1: Richer service medical components (CostEstimator, LocationMap, InsuranceCards) via registry
+- Phase 8.2: Visual Builder semantic-section editing parity (blog + service)
+- Phase 7.2: Visual Builder `persistenceKind: "blog"` — Studio parity for posts
+- Phase 7.3: Global symbols persistence in Prisma + bulk update workflow

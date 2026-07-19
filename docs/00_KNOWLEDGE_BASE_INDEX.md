@@ -94,7 +94,7 @@ Skills and rules must not contradict domain docs. Update the domain doc first, t
 | `18` | Deployment | Vercel, Cloudflare, Hostinger, env setup |
 | `20` | Development Workflow | Branching, PRs, agent workflow |
 | `24` | Project Checklist | Phase tracking, launch readiness |
-| `25` | Architecture Decisions | ADR log — **ADR-011 Experience Studio**, **ADR-013 Lead Engine**, **ADR-014 Static Experience Studio**, **ADR-015 Static Component Descriptors**, **ADR-016 Universal Content Editing**, **ADR-017 Complete Universal Editability** |
+| `25` | Architecture Decisions | ADR log — **ADR-011 Experience Studio**, **ADR-013 Lead Engine**, **ADR-014–017 Static/Universal Edit**, **ADR-018 AMS**, **ADR-019 Unified Editorial Experience Engine**, **ADR-020 Service Editorial Intelligence** |
 | `26` | Agent Onboarding | AI agent session startup protocol |
 
 ---

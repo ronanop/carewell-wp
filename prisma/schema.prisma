@@ -79,8 +79,73 @@ model Site {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   pages       WordPressPage[]
+  posts       WordPressPost[]
   templates   Template[]
   staticPages StaticPage[]
+}
+
+/// WordPress post metadata only — never article HTML (Blog Engine / Phase 6.0).
+model WordPressPost {
+  id                    String            @id @default(cuid())
+  siteId                String
+  site                  Site              @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  databaseId            Int
+  uri                   String
+  slug                  String
+  title                 String
+  status                String
+  excerpt               String?
+  featuredImageUrl      String?
+  seoTitle              String?
+  authorName            String?
+  authorSlug            String?
+  /// Comma-separated category slugs for Studio filters.
+  categorySlugs         String            @default("")
+  categoryNames         String            @default("")
+  lastWordPressModified DateTime
+  lastSyncedAt          DateTime
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  presentation          BlogPresentation?
+
+  @@unique([siteId, databaseId])
+  @@unique([siteId, uri])
+  @@index([siteId, slug])
+  @@index([siteId, status])
+  @@index([authorSlug])
+  @@index([lastWordPressModified])
+}
+
+/// PresentationConfig JSON for one WordPress post (mirrors PagePresentation).
+model BlogPresentation {
+  id          String                   @id @default(cuid())
+  postId      String                   @unique
+  post        WordPressPost            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  status      PresentationStatus       @default(DRAFT)
+  /// BlogPresentationConfig JSON — presentation only, never WP content.
+  config      Json
+  publishedAt DateTime?
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  versions    BlogPresentationVersion[]
+
+  @@index([status])
+}
+
+model BlogPresentationVersion {
+  id             String           @id @default(cuid())
+  presentationId String
+  presentation   BlogPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
+  version        Int
+  status         VersionStatus    @default(DRAFT)
+  snapshot       Json
+  note           String?
+  createdById    String?
+  createdAt      DateTime         @default(now())
+
+  @@unique([presentationId, version])
+  @@index([presentationId, createdAt])
+  @@index([presentationId, status])
 }
 
 /// WordPress page metadata only — never article HTML.

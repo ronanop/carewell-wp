@@ -87,5 +87,9 @@ export async function ensureSiteBootstrap() {
 }
 
 export async function getDefaultSite() {
+  const existing = await prisma.site.findUnique({
+    where: { key: DEFAULT_SITE_KEY },
+  });
+  if (existing) return existing;
   return ensureSiteBootstrap();
 }

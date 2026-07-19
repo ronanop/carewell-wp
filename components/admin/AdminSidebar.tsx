@@ -13,6 +13,7 @@ import {
   LayoutTemplate,
   Megaphone,
   MessageSquareQuote,
+  Newspaper,
   Palette,
   Settings,
   Stethoscope,
@@ -31,6 +32,7 @@ const ICONS: Record<
 > = {
   layoutDashboard: LayoutDashboard,
   fileText: FileText,
+  newspaper: Newspaper,
   layers: Layers,
   layoutTemplate: LayoutTemplate,
   clipboardList: ClipboardList,
@@ -71,7 +73,9 @@ export function AdminSidebar() {
               pathname === item.href ||
               pathname.startsWith(`${item.href}/`) ||
               (item.href === "/admin/pages" &&
-                pathname.startsWith("/admin/page-studio"));
+                pathname.startsWith("/admin/page-studio")) ||
+              (item.href === "/admin/blogs" &&
+                pathname.startsWith("/admin/blog-studio"));
 
             return (
               <li key={item.href}>

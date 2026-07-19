@@ -149,10 +149,13 @@ export function getWordPressConfig(
 }
 
 /**
- * Creates an HTTP Basic Authorization header value from credentials.
+ * Creates an HTTP Basic Authorization header from Application Password credentials.
+ *
+ * Use only for WordPress REST API mutations (media upload/update). Do not send
+ * this header on public WPGraphQL reads — authenticated GraphQL can 500 on some hosts.
  *
  * @param config - WordPress configuration.
- * @returns `Basic …` header value.
+ * @returns `Basic …` header value, or `""` when credentials are missing.
  */
 export function createAuthorizationHeader(
   config: Pick<WordPressConfig, "username" | "applicationPassword">,

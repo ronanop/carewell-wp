@@ -3,6 +3,10 @@ import "server-only";
 import { toAsset } from "@/lib/assets/domain";
 import type { AssetProvider } from "@/lib/assets/providers/types";
 import {
+  createAuthorizationHeader,
+  getWordPressConfig,
+} from "@/lib/wordpress/config";
+import {
   getMediaRepository,
   type MediaRepository,
 } from "@/lib/wordpress/repositories/mediaRepository";
@@ -45,14 +49,13 @@ function wordpressRestBase(): string {
 }
 
 function requireAuthHeader(): string {
-  const username = process.env.WORDPRESS_USERNAME?.trim();
-  const password = process.env.WORDPRESS_APPLICATION_PASSWORD?.trim();
-  if (!username || !password) {
+  const auth = createAuthorizationHeader(getWordPressConfig());
+  if (!auth) {
     throw new Error(
       "WordPress Application Password is not configured (WORDPRESS_USERNAME / WORDPRESS_APPLICATION_PASSWORD)",
     );
   }
-  return `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
+  return auth;
 }
 
 function mapRestToAsset(json: WpMediaRest): Asset {

@@ -14,6 +14,12 @@ export const metadata: Metadata = {
 };
 
 export default async function NotFound() {
-  const studioConfig = await getCachedPublishedStaticPageConfig("not-found");
+  let studioConfig = null;
+  try {
+    studioConfig = await getCachedPublishedStaticPageConfig("not-found");
+  } catch {
+    // Studio overlay is optional — always render the handcrafted 404 view.
+    studioConfig = null;
+  }
   return <NotFoundPageView mode="public" config={studioConfig} />;
 }

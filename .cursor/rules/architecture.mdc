@@ -55,10 +55,19 @@ Renderer-level UI — not PresentationConfig sections:
 - Global Widget Engine resolves consultation sidebar and future widgets
 - Sticky consultation sidebar auto-injects on `SERVICE` pages (configurable, not deletable)
 
+### Unified Editorial Pipeline (ADR-019 / ADR-020 / Phase 8.1)
+Public catch-all: `resolveExperienceDocument` → `UnifiedExperienceRenderer`.
+- **Blogs:** BlogProvider → ExperienceDocument → BlogPresentationPage (semantic pipeline)
+- **Services:** ServiceProvider → ServiceDocument → ServiceExperienceRenderer (same AST/semantic/layout engines; TreatmentHero + registered medical components)
+- **Composition polish:** `polishComposition` assigns presentationMode, importance, neighbor spacing, contextual CTA copy — no renderer fork
+- **Fallback:** low semantic confidence or non-service pages → PresentationPage adapter only
+- Never fork renderers; differentiate via providers + semantic registries (`lib/experience/service/**`)
+
 ## Rendering
 - Server Components by default; `"use client"` only for interactivity
 - Fetch WordPress data in Server Components only
 - ISR for dynamic content; SSG for static pages
+- HTML is not the primary rendering primitive for blogs/services — semantic sections are
 
 ## Before Coding
 Read relevant docs in `docs/` and skills in `skills/`. See ADR-011 / ADR-013 before touching `/admin` or leads.

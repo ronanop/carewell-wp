@@ -6,10 +6,7 @@ import {
   ResponseError,
   TimeoutError,
 } from "@/lib/wordpress/errors";
-import {
-  createAuthorizationHeader,
-  type WordPressConfig,
-} from "@/lib/wordpress/config";
+import type { WordPressConfig } from "@/lib/wordpress/config";
 
 /**
  * HTTP status codes that must never be retried.
@@ -300,6 +297,10 @@ export interface BuildHttpRequestOptions extends WordPressFetchCacheOptions {
 /**
  * Builds a {@link WordPressHttpRequest} from config and body.
  *
+ * Public GraphQL reads are unauthenticated. Application Password Basic Auth is
+ * only for WordPress REST media upload/update (see AssetProvider) — never attach
+ * it here; some WP hosts return HTTP 500 when GraphQL is called with Basic Auth.
+ *
  * @param config - WordPress configuration.
  * @param body - JSON-serialized GraphQL body.
  * @param options - Cache, headers, signal, and label options.
@@ -312,7 +313,6 @@ export function buildHttpRequest(
   return {
     endpoint: config.endpoint,
     body,
-    authorization: createAuthorizationHeader(config),
     headers: options.headers,
     signal: options.signal,
     timeoutMs: config.timeoutMs,

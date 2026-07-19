@@ -440,8 +440,20 @@ export function emptyToNull(value: string | null | undefined): string | null {
 export function parsePresentationConfig(value: unknown): PresentationConfig {
   const migrated = migratePresentationConfig(value);
   const parsed = presentationConfigSchema.safeParse(migrated);
-  if (parsed.success) {
-    return parsed.data as PresentationConfig;
+  const base = parsed.success
+    ? (parsed.data as PresentationConfig)
+    : createDefaultPresentationConfig();
+
+  // Phase 8.1 — presentationPolish is ExperienceConfig overlay; preserve if present.
+  const raw =
+    value && typeof value === "object"
+      ? (value as Record<string, unknown>)
+      : null;
+  if (raw && raw.presentationPolish && typeof raw.presentationPolish === "object") {
+    return {
+      ...base,
+      presentationPolish: raw.presentationPolish,
+    } as PresentationConfig;
   }
-  return createDefaultPresentationConfig();
+  return base;
 }

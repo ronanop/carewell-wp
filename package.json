@@ -11,6 +11,7 @@
     "test:renderer": "tsx packages/page-renderer/src/__tests__/runInvariants.ts",
     "test:layout-runtime": "tsx packages/layout-runtime/src/__tests__/runInvariants.ts",
     "test:assets": "tsx lib/assets/__tests__/runInvariants.ts",
+    "test:experience": "tsx lib/experience/unified/__tests__/runInvariants.ts",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",

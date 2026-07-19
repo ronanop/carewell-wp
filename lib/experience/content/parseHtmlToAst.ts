@@ -176,6 +176,17 @@ function mapNode(
     const faq = detectFaq(className, el, path, order);
     if (faq) return faq;
 
+    // Flatten Gutenberg button wrapper → single button node
+    if (/\bwp-block-button\b/.test(className) && !/\bwp-block-buttons\b/.test(className)) {
+      const link =
+        el.tagName.toLowerCase() === "a"
+          ? el
+          : (el.querySelector("a.wp-block-button__link, a[href]") as HTMLElement | null);
+      if (link) {
+        return createButton(path, link, order);
+      }
+    }
+
     // Gutenberg group / columns — map children, or custom-html if mixed complexity
     const children = mapChildren(el, path);
     if (children.length && isMostlyBlockChildren(el)) {

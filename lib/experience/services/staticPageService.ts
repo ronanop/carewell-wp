@@ -125,11 +125,15 @@ export async function getPublishedStaticPageConfig(
       parsePresentationConfig(page.presentation.config),
     );
   } catch (error) {
-    console.error("[CWMC]", {
-      context: "getPublishedStaticPageConfig",
-      slug,
-      message: error instanceof Error ? error.message : "Database unavailable",
-    });
+    // Soft failure — public routes must render without Studio overlays.
+    // Use a string warn so Next.js Dev Overlay does not show "[CWMC] {}".
+    const message =
+      error instanceof Error ? error.message : "Database unavailable";
+    if (process.env.NODE_ENV === "development") {
+      console.warn(
+        `[CWMC] getPublishedStaticPageConfig(${slug}): ${message}`,
+      );
+    }
     return null;
   }
 }

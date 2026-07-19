@@ -23,6 +23,8 @@ const HANDCRAFTED_PATHS = new Set<string>([
   "/gallery/",
   "/doctors/",
   "/faq/",
+  "/blog/",
+  "/blogs/",
 ]);
 
 /**

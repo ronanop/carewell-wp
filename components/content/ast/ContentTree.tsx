@@ -1,6 +1,11 @@
 import { memo, type CSSProperties, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
+import {
+  formatEditorialListItem,
+  stripEmoji,
+  stripEmojiFromHtml,
+} from "@/lib/content/editorialText";
 import type { ContentNode, ContentTextRun } from "@/types/content-ast";
 
 export type ContentNodeRenderContext = {
@@ -173,7 +178,7 @@ function renderNodeBody(
     case "list-item":
       return (
         <li className={cn("content-ast-list-item", className)} style={style}>
-          <Runs runs={node.runs} />
+          <Runs runs={node.runs} cleanListItem />
           {node.children.map((child) => (
             <ContentNodeView key={child.id} node={child} wrapNode={wrapNode} />
           ))}
@@ -186,15 +191,14 @@ function renderNodeBody(
           target={node.attributes.target}
           rel={node.attributes.rel}
           className={cn(
-            "content-ast-button inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-small font-medium text-primary-foreground no-underline",
+            "content-ast-button cw-interactive inline-flex min-h-11 items-center justify-center rounded-[var(--radius-lg)] bg-primary px-5 py-2.5 text-small font-medium text-primary-foreground no-underline",
             className,
           )}
           style={style}
         >
           <Runs runs={node.runs} />
         </a>
-      );
-    case "callout": {
+      );    case "callout": {
       const tone = node.attributes.calloutTone ?? "info";
       const toneClass =
         tone === "warning"
@@ -227,18 +231,33 @@ function renderNodeBody(
         <div
           className={cn("content-ast-raw", className)}
           style={style}
-          dangerouslySetInnerHTML={{ __html: node.attributes.rawHtml }}
+          dangerouslySetInnerHTML={{
+            __html: stripEmojiFromHtml(node.attributes.rawHtml),
+          }}
         />
       );
-    case "group":
+    case "group": {
+      const classNameStr = className ?? "";
+      const isColumns = /\bwp-block-columns\b/.test(classNameStr);
+      const isButtons = /\bwp-block-buttons\b/.test(classNameStr);
+      const isColumn = /\bwp-block-column\b/.test(classNameStr) && !isColumns;
       return (
-        <div className={cn("content-ast-group", className)} style={style}>
+        <div
+          className={cn(
+            "content-ast-group",
+            isColumns && "content-ast-columns",
+            isButtons && "content-ast-button-row",
+            isColumn && "content-ast-column",
+            className,
+          )}
+          style={style}
+        >
           {node.children.map((child) => (
             <ContentNodeView key={child.id} node={child} wrapNode={wrapNode} />
           ))}
         </div>
       );
-    case "gallery":
+    }    case "gallery":
       return (
         <div
           className={cn(
@@ -257,12 +276,25 @@ function renderNodeBody(
   }
 }
 
-function Runs({ runs }: { runs?: ContentTextRun[] }) {
+function Runs({
+  runs,
+  cleanListItem = false,
+}: {
+  runs?: ContentTextRun[];
+  cleanListItem?: boolean;
+}) {
   if (!runs?.length) return null;
   return (
     <>
       {runs.map((run, index) => {
-        let el: ReactNode = run.text;
+        let text = stripEmoji(run.text);
+        if (cleanListItem && index === 0) {
+          text = formatEditorialListItem(run.text);
+        } else if (cleanListItem) {
+          text = stripEmoji(run.text).trim();
+        }
+        if (!text && !(run.marks?.length)) return null;
+        let el: ReactNode = text;
         for (const mark of run.marks ?? []) {
           if (mark.type === "bold") el = <strong key={`b${index}`}>{el}</strong>;
           else if (mark.type === "italic") el = <em key={`i${index}`}>{el}</em>;
