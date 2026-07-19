@@ -8,6 +8,7 @@ import {
   createDefaultPresentationConfig,
   parsePresentationConfig,
 } from "@/lib/experience/validations/presentationConfig";
+import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
 import type { PresentationPage } from "@/types/presentation-config";
 
 type PageStudioRouteProps = {
@@ -62,10 +63,7 @@ export default async function PageStudioPage({ params }: PageStudioRouteProps) {
       sectionMedia: {},
     },
     presentationStatus: page.presentation?.status ?? "NOT_CONFIGURED",
-    breadcrumbs: [
-      { label: "Home", href: "/" },
-      { label: page.title, href: page.uri },
-    ],
+    breadcrumbs: buildUriBreadcrumbs(page.uri),
     pageType: "GENERIC",
     chrome: { consultation: null },
   };

@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+
 import { HOME_SERVICES_DEFAULTS } from "@/components/home/homeContent.elements";
 import { ServiceCard3D } from "@/components/home/ServiceCard3D";
 import { ServicesCarousel } from "@/components/home/ServicesCarousel";
@@ -15,6 +17,7 @@ const DEFAULT_DESCRIPTION =
   "At Care Well Medical Centre, we provide doctor-led treatments across hair, skin, cosmetic, and surgical care, focused on safety, natural results, and personalised treatment planning.";
 
 export function ServicesSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const { config } = useStaticEditContext();
 
   const label = resolveElementText(config, "home.services.label", DEFAULT_LABEL);
@@ -37,8 +40,12 @@ export function ServicesSection() {
   );
 
   return (
-    <section className="overflow-x-clip bg-background section-padding">
+    <section
+      ref={sectionRef}
+      className="overflow-x-clip bg-background section-padding"
+    >
       <ServicesCarousel
+        sectionRef={sectionRef}
         label={
           <EditableElement
             id="home.services.label"

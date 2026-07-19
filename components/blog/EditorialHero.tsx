@@ -103,6 +103,7 @@ export const EditorialHero = memo(function EditorialHero({
     <ContactActions
       className="mt-6"
       bookLabel={cta.label}
+      stickyOnMobile
     />
   );
 

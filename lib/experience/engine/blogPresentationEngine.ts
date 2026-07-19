@@ -27,7 +27,7 @@ import {
 } from "@/lib/blog/services/blogService";
 import { SITE_URL } from "@/lib/seo/constants";
 import { getMediaService } from "@/lib/wordpress/services/mediaService";
-import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
+import { buildBlogUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
 import { normalizePageUri } from "@/lib/wordpress/repositories/pageRepository";
 import type { BlogAdjacentPost, BlogPost, BlogPostSummary } from "@/types/blog";
 import type { BlogDocument } from "@/types/blog-document";
@@ -324,22 +324,7 @@ export async function getBlogDocument(
   });
 
   const shareUrl = `${SITE_URL}${post.uri.replace(/\/$/, "")}`;
-  const breadcrumbs = [
-    { label: "Home", href: "/" },
-    { label: "Blog", href: "/blog/" },
-    ...buildUriBreadcrumbs(post.uri, post.title)
-      .filter((b) => !b.current && b.href !== "/")
-      .slice(-1)
-      .map((b) => ({ label: b.label, href: b.href })),
-    { label: post.title, href: post.uri },
-  ];
-  // Deduplicate breadcrumb labels
-  const seen = new Set<string>();
-  const uniqueBreadcrumbs = breadcrumbs.filter((b) => {
-    if (seen.has(b.href)) return false;
-    seen.add(b.href);
-    return true;
-  });
+  const uniqueBreadcrumbs = buildBlogUriBreadcrumbs(post.uri);
 
   return {
     uri: post.uri,

@@ -25,6 +25,7 @@ import {
   generateOrganizationSchema,
   generatePhysicianSchema,
 } from "@/lib/seo/schema";
+import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
 
 const doctor = drSandeepBhasin;
 
@@ -69,11 +70,12 @@ export default function DrSandeepBhasinPage() {
   const jsonLd = [
     generateOrganizationSchema(),
     generatePhysicianSchema(doctor),
-    generateBreadcrumbSchema([
-      { name: "Home", path: "/" },
-      { name: "About", path: "/about" },
-      { name: doctor.name, path: `/about/${doctor.slug}` },
-    ]),
+    generateBreadcrumbSchema(
+      buildUriBreadcrumbs(`/about/${doctor.slug}/`).map((item) => ({
+        name: item.label,
+        path: item.href === "/" ? "/" : item.href.replace(/\/$/, ""),
+      })),
+    ),
   ];
 
   return (

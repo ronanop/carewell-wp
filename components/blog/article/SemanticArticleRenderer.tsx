@@ -25,7 +25,8 @@ import type {
 } from "@/types/editorial-layout";
 import type { EditorialPreset } from "@/types/semantic-article";
 
-// Client bundle has its own registry instance — register blog + service packs here.
+// Sole registration site for blog + service editorial packs (client bundle).
+// Server renderers must not import registerDefaults — see ServiceExperienceRenderer.
 ensureDefaultEditorialComponents();
 ensureServiceEditorialComponents();
 

@@ -110,15 +110,12 @@ export interface UriBreadcrumbItem {
 
 /**
  * Builds breadcrumb items from a normalized hierarchical URI.
+ * Labels are always derived from path segments (humanized slugs), never page titles.
  *
  * @param uri - Normalized URI (e.g. `/urology/circumcision/zsr/`).
- * @param pageTitle - Optional final crumb label (WordPress page title).
- * @returns Breadcrumb items including Home.
+ * @returns Breadcrumb items including Home; hrefs match real path prefixes.
  */
-export function buildUriBreadcrumbs(
-  uri: string,
-  pageTitle?: string,
-): UriBreadcrumbItem[] {
+export function buildUriBreadcrumbs(uri: string): UriBreadcrumbItem[] {
   if (uri === "/") {
     return [{ label: "Home", href: "/", current: true }];
   }
@@ -132,11 +129,42 @@ export function buildUriBreadcrumbs(
     const href = `/${segments.slice(0, index + 1).join("/")}/`;
     const isLast = index === segments.length - 1;
     items.push({
-      label: isLast && pageTitle ? pageTitle : humanizeSegment(segment),
+      label: humanizeSegment(segment),
       href,
       current: isLast,
     });
   });
 
   return items;
+}
+
+/**
+ * Blog breadcrumbs from the post URI, ensuring a `/blog/` hub crumb when the
+ * post lives outside that prefix (common when WP uses root-level post URIs).
+ */
+export function buildBlogUriBreadcrumbs(
+  uri: string,
+): Array<{ label: string; href: string }> {
+  const fromUri = buildUriBreadcrumbs(uri).map(({ label, href }) => ({
+    label,
+    href,
+  }));
+
+  const underBlog = uri === "/blog/" || uri.startsWith("/blog/");
+  if (underBlog || fromUri.length < 2) {
+    return fromUri;
+  }
+
+  const withBlog = [
+    fromUri[0]!,
+    { label: "Blog", href: "/blog/" },
+    ...fromUri.slice(1),
+  ];
+
+  const seen = new Set<string>();
+  return withBlog.filter((crumb) => {
+    if (seen.has(crumb.href)) return false;
+    seen.add(crumb.href);
+    return true;
+  });
 }

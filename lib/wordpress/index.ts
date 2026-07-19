@@ -82,6 +82,7 @@ export {
 } from "@/lib/wordpress/routeResolver";
 
 export {
+  buildBlogUriBreadcrumbs,
   buildUriBreadcrumbs,
   humanizeSegment,
   isHandcraftedPath,

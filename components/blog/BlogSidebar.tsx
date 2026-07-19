@@ -176,7 +176,7 @@ export function BlogSidebar({
 
 function ReadingProgressCard({ minutes }: { minutes: number }) {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4">
+    <div className="hidden rounded-2xl border border-border bg-surface p-4 lg:block">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         Reading
       </p>

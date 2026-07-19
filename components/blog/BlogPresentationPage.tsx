@@ -14,8 +14,10 @@ import { BlogSidebar } from "@/components/blog/BlogSidebar";
 import { MedicalDisclaimer } from "@/components/blog/editorial";
 import { ConsultationMobileSheet } from "@/components/leads/ConsultationSidebar";
 import { ContentCTA } from "@/components/content/ContentCTA";
+import { ReadingProgress } from "@/components/content/ReadingProgress";
 import { SpecialtyFooterCta } from "@/components/blog/SpecialtyFooterCta";
 import type { BlogPresentationConfig } from "@/lib/experience/validations/blogPresentationConfig";
+import { cn } from "@/lib/utils";
 import type { BlogDocument } from "@/types/blog-document";
 import type { BlogCategory } from "@/types/blog";
 
@@ -44,9 +46,16 @@ export function BlogPresentationPage({
 
   return (
     <>
+      <ReadingProgress />
       {!hideChrome ? <NavbarPlaceholder /> : null}
 
-      <article className="min-h-screen bg-background">
+      <article
+        className={cn(
+          "min-h-screen bg-background",
+          /* Room for sticky ContactActions bar on mobile/tablet */
+          config.hero.enabled && "pb-20 lg:pb-0",
+        )}
+      >
         {config.hero.enabled ? <EditorialHero doc={doc} /> : null}
 
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">

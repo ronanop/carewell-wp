@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { ReadingProgress } from "@/components/content/ReadingProgress";
 import { emitEditorialEvent } from "@/lib/experience/blog/editorial/analytics";
 import { cn } from "@/lib/utils";
 import type { ArticleTocItem } from "@/types/article-ast";
@@ -13,7 +14,7 @@ export type ReadingExperienceProps = {
 };
 
 /**
- * Persistent reading progress — bar, active section, time remaining, scroll depth hooks.
+ * Persistent reading chrome — shared top progress bar plus active section / time remaining.
  */
 export function ReadingExperienceBar({
   toc,
@@ -28,26 +29,37 @@ export function ReadingExperienceBar({
     const article = document.querySelector("[data-content-enhancer-article]");
     if (!article) return;
 
-    const onScroll = () => {
-      const rect = article.getBoundingClientRect();
-      const scrollable = rect.height - window.innerHeight;
-      const pct =
-        scrollable <= 0
-          ? 100
-          : Math.min(100, Math.max(0, (-rect.top / scrollable) * 100));
-      setProgress(pct);
+    let rafId = 0;
+    let ticking = false;
 
-      for (const mark of [25, 50, 75, 100]) {
-        if (pct >= mark && !milestones.has(mark)) {
-          milestones.add(mark);
-          emitEditorialEvent({ type: "reading_completed", percent: mark });
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      rafId = window.requestAnimationFrame(() => {
+        ticking = false;
+        const rect = article.getBoundingClientRect();
+        const scrollable = rect.height - window.innerHeight;
+        const pct =
+          scrollable <= 0
+            ? 100
+            : Math.min(100, Math.max(0, (-rect.top / scrollable) * 100));
+        setProgress(pct);
+
+        for (const mark of [25, 50, 75, 100]) {
+          if (pct >= mark && !milestones.has(mark)) {
+            milestones.add(mark);
+            emitEditorialEvent({ type: "reading_completed", percent: mark });
+          }
         }
-      }
+      });
     };
 
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [milestones]);
 
   useEffect(() => {
@@ -77,21 +89,10 @@ export function ReadingExperienceBar({
   const activeLabel = toc.find((t) => t.id === activeId)?.text;
 
   return (
-    <div
-      className={cn(
-        "pointer-events-none fixed inset-x-0 top-0 z-50 hidden md:block",
-        className,
-      )}
-      aria-hidden
-    >
-      <div className="h-0.5 w-full bg-transparent">
-        <div
-          className="h-full bg-primary transition-[width] duration-150 ease-out"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
+    <div className={cn("pointer-events-none", className)} aria-hidden>
+      <ReadingProgress />
       {activeLabel ? (
-        <div className="pointer-events-none mx-auto flex max-w-6xl justify-end px-4 pt-2">
+        <div className="pointer-events-none fixed inset-x-0 top-1 z-[60] mx-auto flex max-w-6xl justify-end px-4 pt-2 md:block">
           <div className="rounded-full border border-border/60 bg-surface/90 px-3 py-1 text-[0.6875rem] text-muted-foreground shadow-sm backdrop-blur">
             <span className="font-medium text-foreground/80">{activeLabel}</span>
             <span className="mx-1.5 opacity-40">·</span>

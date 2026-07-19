@@ -11,19 +11,40 @@ export interface ReadingProgressProps {
 }
 
 /**
- * Thin brand-colored reading progress bar. Hidden on small screens.
+ * Thin brand-colored reading progress bar fixed to the top of the viewport.
+ * Tracks scroll through the article/main content (0% → 100%).
  */
 export function ReadingProgress({
   className,
   targetSelector = "[data-content-enhancer-article]",
 }: ReadingProgressProps) {
   const [progress, setProgress] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
-    const update = () => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotion = () => setReduceMotion(mq.matches);
+    syncMotion();
+    mq.addEventListener("change", syncMotion);
+    return () => mq.removeEventListener("change", syncMotion);
+  }, []);
+
+  useEffect(() => {
+    let rafId = 0;
+    let ticking = false;
+
+    const measure = () => {
+      ticking = false;
       const target = document.querySelector(targetSelector);
       if (!target) {
-        setProgress(0);
+        // Fall back to document scroll when no article marker is present.
+        const el = document.documentElement;
+        const scrollable = el.scrollHeight - window.innerHeight;
+        setProgress(
+          scrollable <= 0
+            ? 100
+            : Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100)),
+        );
         return;
       }
 
@@ -34,38 +55,50 @@ export function ReadingProgress({
         return;
       }
 
-      const scrolled = Math.min(
-        Math.max(-rect.top, 0),
-        scrollable,
-      );
+      const scrolled = Math.min(Math.max(-rect.top, 0), scrollable);
       setProgress((scrolled / scrollable) * 100);
     };
 
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update, { passive: true });
+    const onScrollOrResize = () => {
+      if (ticking) return;
+      ticking = true;
+      rafId = window.requestAnimationFrame(measure);
+    };
+
+    measure();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize, { passive: true });
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
     };
   }, [targetSelector]);
+
+  const value = Math.round(progress);
 
   return (
     <div
       className={cn(
-        "pointer-events-none fixed inset-x-0 top-0 z-50 hidden h-0.5 md:block",
+        "pointer-events-none fixed inset-x-0 top-0 z-[60] h-0.5",
         className,
       )}
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-valuenow={Math.round(progress)}
+      aria-valuenow={value}
       aria-label="Reading progress"
     >
       <div
-        className="h-full origin-left bg-primary transition-[width] duration-150 ease-out"
+        className={cn(
+          "h-full origin-left bg-primary",
+          !reduceMotion && "transition-[width] duration-150 ease-out",
+        )}
         style={{ width: `${progress}%` }}
       />
     </div>
   );
 }
+
+/** Alias for shared editorial chrome. */
+export const ReadingProgressBar = ReadingProgress;

@@ -1044,22 +1044,33 @@
   }
 }
 
-/* Hero: 10% visual shrink via zoom. */
+/* Hero: slight visual shrink on desktop only — mobile keeps true 1× for touch UX. */
 .hero-compact {
-  zoom: 0.9;
+  zoom: 1;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
 }
 
+@media (min-width: 1024px) {
+  .hero-compact {
+    zoom: 0.9;
+  }
+}
+
 @supports not (zoom: 1) {
   .hero-compact {
     zoom: unset;
-    transform: scale(0.9);
-    transform-origin: top center;
-    width: 111.1111%; /* 100 / 0.9 */
-    max-width: none;
-    margin-inline: -5.5556%; /* center the oversized box */
+  }
+
+  @media (min-width: 1024px) {
+    .hero-compact {
+      transform: scale(0.9);
+      transform-origin: top center;
+      width: 111.1111%; /* 100 / 0.9 */
+      max-width: none;
+      margin-inline: -5.5556%; /* center the oversized box */
+    }
   }
 }
 

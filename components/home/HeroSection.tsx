@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowRight, Lock, MapPin, ShieldCheck, Star } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  MapPin,
+  ShieldCheck,
+  Star,
+  UserRound,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,6 +26,27 @@ const DEFAULT_TITLE =
   "Cosmetic Surgery & Hair Transplant Clinic in South Delhi";
 const DEFAULT_SUBTITLE =
   "Advanced Hair Restoration, PRP Therapy, Skin, Anti-Aging & Body Contouring by Dr. Sandeep Bhasin.";
+
+const TRUST_STRIP = [
+  {
+    id: "home.hero.trustStrip.surgeons",
+    icon: UserRound,
+    title: "Expert Surgeons",
+    subtitle: "MBBS | MS | MCh",
+  },
+  {
+    id: "home.hero.trustStrip.safe",
+    icon: ShieldCheck,
+    title: "Safe & Trusted",
+    subtitle: "NABH Standards",
+  },
+  {
+    id: "home.hero.trustStrip.appointments",
+    icon: CalendarDays,
+    title: "Quick Appointments",
+    subtitle: "Flexible Timings",
+  },
+] as const;
 
 /** @deprecated Prefer elementOverrides; kept for ADR-015 propOverrides compat. */
 export type HeroSectionProps = {
@@ -100,22 +128,70 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
     "href",
     "/services",
   );
-  const privacyNote = resolveElementText(
-    config,
-    "home.hero.privacyNote",
-    "100% private · Response within 2 hours · No spam",
-  );
 
   const titleIsDefault = title === DEFAULT_TITLE;
 
+  const renderCtaButtons = () => (
+    <>
+      <EditableElement
+        id="home.hero.primaryButton"
+        kind="button"
+        field="label"
+        defaultValue="Book Free Consultation"
+        as="div"
+        className="w-full sm:w-auto"
+      >
+        {({ fields }) => (
+          <Link
+            href={String(fields.href ?? primaryHref)}
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "h-12 w-full rounded-xl bg-[#18181B] px-6 text-white shadow-md hover:bg-[#18181B]/90 no-underline hover:no-underline sm:h-11 sm:w-auto sm:rounded-lg",
+            )}
+          >
+            {String(fields.label ?? primaryLabel)}
+            <ArrowRight className="size-4" aria-hidden />
+          </Link>
+        )}
+      </EditableElement>
+
+      <EditableElement
+        id="home.hero.secondaryButton"
+        kind="button"
+        field="label"
+        defaultValue="Explore Treatments"
+        as="div"
+        className="w-full sm:w-auto"
+      >
+        {({ fields }) => (
+          <Link
+            href={String(fields.href ?? secondaryHref)}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-12 w-full rounded-xl border-[#0A2540]/15 bg-white px-6 text-[#0A2540] hover:bg-white/90 no-underline hover:no-underline sm:h-11 sm:w-auto sm:rounded-lg sm:border-[#2D2926]/25",
+            )}
+          >
+            {String(fields.label ?? secondaryLabel)}
+          </Link>
+        )}
+      </EditableElement>
+    </>
+  );
+
   return (
-    <section className="hero-compact relative overflow-hidden bg-background">
+    <section
+      className={cn(
+        "hero-compact relative overflow-hidden",
+        "bg-[linear-gradient(180deg,#FBF8F4_0%,#F3EEE6_55%,#EDE7DE_100%)]",
+      )}
+    >
+      {/* Soft medical atmosphere — photo bg on desktop, subtle lines on mobile */}
       <EditableElement
         id="home.hero.background"
         kind="image"
         field="src"
         defaultValue={DEFAULT_HERO_BACKGROUND_SRC}
-        className="absolute inset-0"
+        className="pointer-events-none absolute inset-0 hidden lg:block"
       >
         {() => (
           <Image
@@ -124,21 +200,49 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
             fill
             priority
             aria-hidden
-            className="object-cover object-center"
+            className="object-cover object-center opacity-90"
             sizes="100vw"
           />
         )}
       </EditableElement>
+      <div
+        className="pointer-events-none absolute inset-0 lg:hidden"
+        aria-hidden
+      >
+        <svg
+          className="absolute -right-8 bottom-[18%] h-[42%] w-[70%] text-white/50"
+          viewBox="0 0 320 240"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0 180C60 140 110 200 160 160C210 120 260 150 320 110"
+            stroke="currentColor"
+            strokeWidth="1.25"
+          />
+          <path
+            d="M0 210C70 170 120 230 170 190C220 150 270 180 320 145"
+            stroke="currentColor"
+            strokeWidth="1.25"
+          />
+          <path
+            d="M40 240C90 200 140 250 190 210C240 170 280 200 320 175"
+            stroke="currentColor"
+            strokeWidth="1.25"
+          />
+        </svg>
+      </div>
 
       <div className="container-content relative">
-        <div className="grid items-center gap-8 py-10 md:py-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-stretch lg:gap-10 lg:pb-0 lg:pt-12">
-          <div className="max-w-[34rem] lg:self-center lg:pb-12">
+        <div className="grid items-center gap-0 pb-0 pt-6 sm:gap-5 sm:pt-10 md:pt-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-stretch lg:gap-10 lg:pb-0 lg:pt-12">
+          {/* Copy column — centered on mobile, left on desktop */}
+          <div className="mx-auto w-full max-w-[24.375rem] text-center lg:mx-0 lg:max-w-[34rem] lg:self-center lg:pb-12 lg:text-left">
             <EditableElement
               id="home.hero.badge"
               kind="badge"
               defaultValue="Chittaranjan Park · South Delhi"
               as="div"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#0A2540]/06 bg-white/70 px-3 py-1.5 shadow-sm backdrop-blur-sm"
             >
               {({ value }) => (
                 <>
@@ -159,7 +263,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
               kind="heading"
               defaultValue={DEFAULT_TITLE}
               as="h1"
-              className="mt-5 text-[clamp(2rem,3.2vw+0.75rem,3.125rem)] font-bold leading-[1.12] tracking-[-0.02em] text-[#0A2540]"
+              className="mt-4 text-[2.03rem] font-bold leading-[1.15] tracking-[-0.02em] text-[#0A2540] sm:mt-5 sm:text-[clamp(2.32rem,3.71vw+0.87rem,3.625rem)] sm:leading-[1.12]"
             >
               {({ value }) =>
                 (value || title) === DEFAULT_TITLE || titleIsDefault ? (
@@ -179,18 +283,18 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
               kind="paragraph"
               defaultValue={DEFAULT_SUBTITLE}
               as="p"
-              className="mt-5 max-w-xl text-[1.0625rem] leading-relaxed text-[#4B5563] md:text-[1.125rem]"
+              className="mt-3 text-[0.9375rem] leading-relaxed text-[#64748B] sm:mt-5 sm:max-w-xl sm:text-[1.0625rem] md:text-[1.125rem] lg:mx-0"
             >
               {({ value }) => value || subtitle}
             </EditableElement>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-7 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-3 lg:justify-start">
               <EditableElement
                 id="home.hero.rating"
                 kind="statistic"
                 field="value"
                 defaultValue="4.3"
-                className="inline-flex items-center gap-2.5 rounded-full border border-border/80 bg-surface px-3.5 py-2 shadow-xs"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/80 bg-white px-3 py-2.5 shadow-[0_8px_24px_-12px_rgb(10_37_64/0.35)] sm:rounded-full sm:px-3.5 sm:py-2 sm:shadow-xs"
               >
                 {({ value }) => (
                   <>
@@ -198,12 +302,12 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                       {Array.from({ length: 5 }).map((_, index) => (
                         <Star
                           key={index}
-                          className="size-3.5 fill-[#FABB05] text-[#FABB05]"
+                          className="size-3 fill-[#FABB05] text-[#FABB05] sm:size-3.5"
                           strokeWidth={0}
                         />
                       ))}
                     </div>
-                    <span className="text-[0.875rem] font-semibold text-foreground">
+                    <span className="text-[0.875rem] font-semibold text-[#0A2540]">
                       {value || rating}
                     </span>
                     <GoogleMark />
@@ -218,18 +322,18 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                 id="home.hero.experience"
                 kind="badge"
                 defaultValue="20+ Yrs · 10,000+ Procedures"
-                className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-surface px-3.5 py-2 shadow-xs"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/80 bg-white px-3 py-2.5 shadow-[0_8px_24px_-12px_rgb(10_37_64/0.35)] sm:rounded-full sm:px-3.5 sm:py-2 sm:shadow-xs"
               >
                 {({ value }) => (
                   <>
-                    <span className="flex size-5 items-center justify-center rounded-full bg-success-500">
+                    <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-600">
                       <ShieldCheck
                         className="size-3 text-white"
                         strokeWidth={2.5}
                         aria-hidden
                       />
                     </span>
-                    <span className="text-[0.875rem] font-medium text-foreground">
+                    <span className="text-left text-[0.75rem] font-medium leading-snug text-[#0A2540] sm:text-[0.875rem]">
                       {value || experience}
                     </span>
                   </>
@@ -237,74 +341,19 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
               </EditableElement>
             </div>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <EditableElement
-                id="home.hero.primaryButton"
-                kind="button"
-                field="label"
-                defaultValue="Book Free Consultation"
-                as="div"
-              >
-                {({ fields }) => (
-                  <Link
-                    href={String(fields.href ?? primaryHref)}
-                    className={cn(
-                      buttonVariants({ size: "lg" }),
-                      "rounded-lg bg-[#2D2926] px-6 text-white hover:bg-[#2D2926]/90 no-underline hover:no-underline",
-                    )}
-                  >
-                    {String(fields.label ?? primaryLabel)}
-                    <ArrowRight className="size-4" aria-hidden />
-                  </Link>
-                )}
-              </EditableElement>
-
-              <EditableElement
-                id="home.hero.secondaryButton"
-                kind="button"
-                field="label"
-                defaultValue="Explore Treatments"
-                as="div"
-              >
-                {({ fields }) => (
-                  <Link
-                    href={String(fields.href ?? secondaryHref)}
-                    className={cn(
-                      buttonVariants({ variant: "outline", size: "lg" }),
-                      "rounded-lg border-[#2D2926]/25 bg-surface px-6 text-[#2D2926] hover:bg-surface/90 no-underline hover:no-underline",
-                    )}
-                  >
-                    {String(fields.label ?? secondaryLabel)}
-                  </Link>
-                )}
-              </EditableElement>
+            {/* Desktop CTAs — copy column only */}
+            <div className="mt-5 hidden w-full flex-col gap-2.5 sm:mt-7 sm:flex-row sm:items-center sm:justify-center lg:flex lg:justify-start">
+              {renderCtaButtons()}
             </div>
-
-            <EditableElement
-              id="home.hero.privacyNote"
-              kind="caption"
-              defaultValue="100% private · Response within 2 hours · No spam"
-              as="p"
-              className="mt-4 flex items-center gap-1.5 text-[0.8125rem] text-[#9CA3AF]"
-            >
-              {({ value }) => (
-                <>
-                  <Lock
-                    className="size-3.5 shrink-0 text-[#E07A3D]"
-                    aria-hidden
-                  />
-                  {value || privacyNote}
-                </>
-              )}
-            </EditableElement>
           </div>
 
+          {/* Portrait — fades into background on mobile */}
           <EditableElement
             id="home.hero.heroImage"
             kind="image"
             field="src"
             defaultValue={DEFAULT_HERO_IMAGE_SRC}
-            className="relative mx-auto flex w-full max-w-md items-end self-end lg:mx-0 lg:h-full lg:min-h-[32rem] lg:max-w-none"
+            className="relative mx-auto -mt-14 flex w-full max-w-[22rem] items-end self-end sm:mt-0 sm:max-w-md lg:mx-0 lg:h-full lg:min-h-[32rem] lg:max-w-none"
           >
             {() => (
               <div className="relative aspect-[4/5] w-full overflow-hidden bg-transparent lg:absolute lg:inset-0 lg:aspect-auto">
@@ -323,9 +372,58 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                   )}
                   sizes="(max-width: 1024px) 100vw, 42vw"
                 />
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#EDE7DE] via-[#EDE7DE]/70 to-transparent lg:hidden"
+                  aria-hidden
+                />
               </div>
             )}
           </EditableElement>
+        </div>
+
+        {/* Trust strip — glued to image bottom via negative margin */}
+        <div className="relative z-10 -mt-6 px-0 sm:-mt-8 lg:mt-0 lg:pb-10">
+          <ul
+            className="mx-auto grid max-w-[24.375rem] grid-cols-3 divide-x divide-[#0A2540]/08 overflow-hidden rounded-2xl border border-white/80 bg-white shadow-[0_16px_40px_-20px_rgb(10_37_64/0.35)] sm:max-w-xl lg:max-w-3xl"
+            aria-label="Clinic trust signals"
+          >
+            {TRUST_STRIP.map((item) => {
+              const Icon = item.icon;
+              return (
+                <li
+                  key={item.id}
+                  className="flex flex-col items-center gap-1 px-2 py-3.5 text-center sm:px-4 sm:py-4"
+                >
+                  <span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary sm:size-9">
+                    <Icon className="size-4 sm:size-[1.125rem]" aria-hidden />
+                  </span>
+                  <EditableElement
+                    id={`${item.id}.title`}
+                    kind="label"
+                    defaultValue={item.title}
+                    as="p"
+                    className="text-[0.6875rem] font-semibold leading-tight text-[#0A2540] sm:text-[0.8125rem]"
+                  >
+                    {({ value }) => value || item.title}
+                  </EditableElement>
+                  <EditableElement
+                    id={`${item.id}.subtitle`}
+                    kind="caption"
+                    defaultValue={item.subtitle}
+                    as="p"
+                    className="text-[0.625rem] leading-snug text-[#64748B] sm:text-[0.75rem]"
+                  >
+                    {({ value }) => value || item.subtitle}
+                  </EditableElement>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {/* Mobile CTAs — below trust strip */}
+        <div className="mx-auto mt-4 flex w-full max-w-[24.375rem] flex-col gap-2.5 pb-5 sm:mt-5 sm:max-w-xl sm:flex-row sm:items-center sm:justify-center sm:pb-8 lg:hidden">
+          {renderCtaButtons()}
         </div>
       </div>
     </section>
@@ -337,7 +435,7 @@ function GoogleMark() {
     <svg
       aria-hidden
       viewBox="0 0 24 24"
-      className="size-4 shrink-0"
+      className="size-3.5 shrink-0 sm:size-4"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

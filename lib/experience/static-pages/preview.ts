@@ -6,6 +6,7 @@
 
 import { classifyPage } from "@/lib/experience/engine/pageClassification";
 import { resolvePageChrome } from "@/lib/experience/chrome/widgetEngine";
+import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
 import type { PresentationConfig, PresentationPage } from "@/types/presentation-config";
 import type { StaticPageDefinition } from "@/types/static-page";
 
@@ -52,13 +53,10 @@ export function buildStaticPresentationPage(input: {
       sectionMedia: {},
     },
     presentationStatus,
-    breadcrumbs:
-      uri === "/"
-        ? [{ label: "Home", href: "/" }]
-        : [
-            { label: "Home", href: "/" },
-            { label: def.title, href: uri },
-          ],
+    breadcrumbs: buildUriBreadcrumbs(uri).map(({ label, href }) => ({
+      label,
+      href,
+    })),
     pageType,
     chrome: resolvePageChrome({
       uri,

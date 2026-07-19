@@ -12,17 +12,21 @@ import { BlogSidebar } from "@/components/blog/BlogSidebar";
 import { MedicalDisclaimer } from "@/components/blog/editorial";
 import { SpecialtyFooterCta } from "@/components/blog/SpecialtyFooterCta";
 import { ContentCTA } from "@/components/content/ContentCTA";
+import { ReadingProgress } from "@/components/content/ReadingProgress";
 import { ConsultationMobileSheet } from "@/components/leads/ConsultationSidebar";
-import { ensureDefaultEditorialComponents } from "@/lib/experience/blog/editorial/registerDefaults";
-import { ensureServiceEditorialComponents } from "@/lib/experience/service/registerServiceComponents";
 import { experienceConfigToBlogPresentationConfig } from "@/lib/experience/unified/migrate";
 import type { ExperienceDocument } from "@/types/experience-document";
 import type { BlogDocument } from "@/types/blog-document";
 import type { BlogCategory } from "@/types/blog";
 import type { BlogPresentationConfig } from "@/lib/experience/validations/blogPresentationConfig";
 
-ensureDefaultEditorialComponents();
-ensureServiceEditorialComponents();
+/**
+ * Editorial component registration lives in SemanticArticleRenderer (client).
+ * Do not call ensureDefault/ensureService helpers here — this module is a Server
+ * Component imported by UnifiedExperienceRenderer for every catch-all page;
+ * pulling "use client" section factories into the RSC webpack graph corrupts
+ * HMR module IDs (__webpack_modules__[moduleId] is not a function).
+ */
 
 function toBlogSidebarDoc(
   doc: ExperienceDocument,
@@ -100,6 +104,7 @@ export function ServiceExperienceRenderer({
 
   return (
     <>
+      <ReadingProgress />
       {!hideChrome ? <NavbarPlaceholder /> : null}
 
       <article className="min-h-screen bg-background">

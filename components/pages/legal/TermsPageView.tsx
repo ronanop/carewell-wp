@@ -4,10 +4,14 @@
 
 import Link from "next/link";
 
+import {
+  WordPressPageBreadcrumb,
+} from "@/components/features/wordpress-page/WordPressPageBreadcrumb";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
 import { isSectionEnabled } from "@/lib/experience/static-pages/applyOverrides";
+import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 
 export function TermsPageView({ mode, config = null }: StaticPageViewProps) {
@@ -25,15 +29,9 @@ export function TermsPageView({ mode, config = null }: StaticPageViewProps) {
               aria-labelledby="terms-heading"
             >
               <div className="container-content section-padding">
-                <nav aria-label="Breadcrumb" className="text-small text-muted-foreground">
-                  <Link href="/" className="hover:text-foreground">
-                    Home
-                  </Link>
-                  <span className="mx-2" aria-hidden>
-                    /
-                  </span>
-                  <span className="text-foreground">Terms of Use</span>
-                </nav>
+                <WordPressPageBreadcrumb
+                  items={buildUriBreadcrumbs("/terms/")}
+                />
                 <h1
                   id="terms-heading"
                   className="mt-6 font-heading text-h1 font-bold tracking-tight text-[#0A2540]"

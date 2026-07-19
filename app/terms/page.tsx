@@ -4,6 +4,7 @@ import { TermsPageView } from "@/components/pages/legal/TermsPageView";
 import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schema";
+import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
 
 const title = "Terms of Use | Care Well Medical Centre";
 const description =
@@ -24,10 +25,12 @@ export const metadata: Metadata = {
 };
 
 export default async function TermsPage() {
-  const jsonLd = generateBreadcrumbSchema([
-    { name: "Home", path: "/" },
-    { name: "Terms of Use", path: "/terms" },
-  ]);
+  const jsonLd = generateBreadcrumbSchema(
+    buildUriBreadcrumbs("/terms/").map((item) => ({
+      name: item.label,
+      path: item.href === "/" ? "/" : item.href.replace(/\/$/, ""),
+    })),
+  );
   const studioConfig = await getCachedPublishedStaticPageConfig("terms");
 
   return (

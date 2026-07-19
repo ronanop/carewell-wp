@@ -37,6 +37,10 @@ export type ContactActionsProps = {
    * primary-secondary-tertiary: Book (primary) → WhatsApp (secondary tone) → Call (ghost/outline)
    */
   hierarchy?: "primary-secondary-tertiary" | "primary-only" | "equal";
+  /**
+   * Mobile/tablet: fixed bottom bar (hide inline). Desktop `lg+`: inline only.
+   */
+  stickyOnMobile?: boolean;
 };
 
 /**
@@ -53,63 +57,109 @@ export function ContactActions({
   className,
   size = "default",
   hierarchy = "primary-secondary-tertiary",
+  stickyOnMobile = false,
 }: ContactActionsProps) {
   const whatsappVariant =
     hierarchy === "equal" ? "whatsapp" : hierarchy === "primary-only" ? "ghost" : "outline";
   const callVariant = hierarchy === "equal" ? "call" : "ghost";
 
+  const actions = (opts?: { stretch?: boolean; compact?: boolean }) => {
+    const stretch = opts?.stretch;
+    const compact = opts?.compact;
+    const btnSize = compact ? "sm" : size;
+    const shareRow =
+      stretch &&
+      "min-w-0 flex-1 justify-center gap-1.5 px-2 text-[13px] sm:gap-2 sm:px-3 sm:text-small";
+    const bookText =
+      compact && bookLabel === "Book consultation" ? "Book" : bookLabel;
+
+    return (
+      <>
+        <Link
+          href={bookHref}
+          onClick={onBookClick}
+          className={cn(
+            buttonVariants({ variant: "default", size: btnSize }),
+            "rounded-xl text-white [&_svg]:text-white",
+            shareRow,
+          )}
+        >
+          <span className={cn("text-white", stretch && "truncate")}>
+            {bookText}
+          </span>
+        </Link>
+        {hierarchy !== "primary-only" ? (
+          <>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onWhatsAppClick}
+              className={cn(
+                buttonVariants({
+                  variant: whatsappVariant === "whatsapp" ? "whatsapp" : whatsappVariant,
+                  size: btnSize,
+                }),
+                "rounded-xl",
+                hierarchy !== "equal" &&
+                  whatsappVariant === "outline" &&
+                  "border-[#25D366]/50 text-[#128C7E] hover:bg-[#25D366]/8 hover:border-[#25D366]/70",
+                shareRow,
+              )}
+            >
+              <WhatsAppIcon className="size-4 shrink-0" />
+              <span className={cn(stretch && "truncate")}>WhatsApp</span>
+            </a>
+            <a
+              href={phoneHref}
+              onClick={onCallClick}
+              className={cn(
+                buttonVariants({ variant: callVariant, size: btnSize }),
+                "rounded-xl text-muted-foreground",
+                shareRow,
+              )}
+            >
+              <Phone className="size-4 shrink-0" aria-hidden />
+              <span className={cn(stretch && "truncate")}>Call</span>
+            </a>
+          </>
+        ) : null}
+      </>
+    );
+  };
+
+  const rowClass = cn(
+    "flex w-full max-w-full flex-nowrap items-stretch gap-2",
+    hierarchy === "primary-only" && "max-w-sm",
+  );
+
+  if (stickyOnMobile) {
+    return (
+      <>
+        <div className={cn("hidden lg:flex", rowClass, className)}>
+          {actions({ stretch: true })}
+        </div>
+
+        <nav
+          aria-label="Contact actions"
+          className={cn(
+            "fixed inset-x-0 bottom-0 z-40 lg:hidden",
+            "border-t border-[#0A2540]/10 bg-white/95 shadow-[0_-4px_24px_rgba(10,37,64,0.08)] backdrop-blur-md",
+            "px-3 pt-2.5",
+            "pb-[max(0.625rem,env(safe-area-inset-bottom))]",
+          )}
+        >
+          <div className={cn("mx-auto max-w-lg", rowClass)}>
+            {actions({ stretch: true, compact: true })}
+          </div>
+        </nav>
+      </>
+    );
+  }
+
   return (
-    <div
-      className={cn(
-        "flex flex-wrap items-center gap-2.5",
-        hierarchy === "primary-secondary-tertiary" && "gap-2",
-        className,
-      )}
-    >
-      <Link
-        href={bookHref}
-        onClick={onBookClick}
-        className={cn(
-          buttonVariants({ variant: "default", size }),
-          "rounded-xl",
-        )}
-      >
-        {bookLabel}
-      </Link>
-      {hierarchy !== "primary-only" ? (
-        <>
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={onWhatsAppClick}
-            className={cn(
-              buttonVariants({
-                variant: whatsappVariant === "whatsapp" ? "whatsapp" : whatsappVariant,
-                size,
-              }),
-              "rounded-xl",
-              hierarchy !== "equal" &&
-                whatsappVariant === "outline" &&
-                "border-[#25D366]/50 text-[#128C7E] hover:bg-[#25D366]/8 hover:border-[#25D366]/70",
-            )}
-          >
-            <WhatsAppIcon className="size-4 shrink-0" />
-            WhatsApp
-          </a>
-          <a
-            href={phoneHref}
-            onClick={onCallClick}
-            className={cn(
-              buttonVariants({ variant: callVariant, size }),
-              "rounded-xl text-muted-foreground",
-            )}
-          >
-            <Phone className="size-4 shrink-0" aria-hidden />
-            Call
-          </a>
-        </>
-      ) : null}
+    <div className={cn(rowClass, className)}>
+      {actions({ stretch: true })}
     </div>
   );
 }
