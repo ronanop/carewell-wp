@@ -19,6 +19,7 @@ import {
 } from "@/components/home/homeContent.elements";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
@@ -270,7 +271,7 @@ export function WhyChooseUs() {
   return (
     <section className="bg-white">
       <div className="container-content section-padding">
-        <div className="mx-auto max-w-3xl text-center">
+        <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
           <EditableElement
             id="home.why.label"
             kind="label"
@@ -302,10 +303,10 @@ export function WhyChooseUs() {
           >
             {({ value }) => value || description}
           </EditableElement>
-        </div>
+        </StaggerReveal>
 
         <div className="mt-10 grid items-start gap-8 lg:mt-14 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,20rem)] lg:items-stretch lg:gap-24 xl:gap-32">
-          <ul className="flex flex-col gap-3.5 sm:gap-5">
+          <StaggerReveal as="ul" stepMs={85} className="flex flex-col gap-3.5 sm:gap-5">
             {features.map((feature) => {
               const index = feature.__index;
               const Icon =
@@ -388,9 +389,9 @@ export function WhyChooseUs() {
                 </li>
               );
             })}
-          </ul>
+          </StaggerReveal>
 
-          <div className="flex justify-center lg:h-full lg:justify-end">
+          <StaggerReveal className="flex justify-center lg:h-full lg:justify-end">
             <DoctorPortrait
               imageSrc={doctorImageSrc}
               imageAlt={doctorImageAlt}
@@ -398,11 +399,14 @@ export function WhyChooseUs() {
               title={doctorTitle}
               location={doctorLocation}
             />
-          </div>
+          </StaggerReveal>
         </div>
 
-        <ul className="mt-10 grid grid-cols-1 gap-3 sm:mt-14 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
-          {trustItems.map((item) => {
+        <StaggerReveal
+          as="ul"
+          stepMs={70}
+          className="mt-10 grid grid-cols-1 gap-3 sm:mt-14 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4"
+        >          {trustItems.map((item) => {
             const Icon =
               TRUST_ICONS[item.__index % TRUST_ICONS.length] ?? ShieldCheck;
             const title = String(item.title ?? "");
@@ -427,9 +431,9 @@ export function WhyChooseUs() {
               </li>
             );
           })}
-        </ul>
+        </StaggerReveal>
 
-        <div className="mt-10 text-center sm:mt-14">
+        <StaggerReveal className="mt-10 text-center sm:mt-14" stepMs={70}>
           <EditableElement
             id="home.why.footerHeading"
             kind="heading"
@@ -451,7 +455,7 @@ export function WhyChooseUs() {
           >
             {({ value }) => value || footerBody}
           </EditableElement>
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );

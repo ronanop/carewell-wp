@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { AppointmentBanner } from "@/components/doctors/AppointmentBanner";
 import { DoctorBiography } from "@/components/doctors/DoctorBiography";
-import { DoctorBreadcrumb } from "@/components/doctors/DoctorBreadcrumb";
 import { DoctorGallery } from "@/components/doctors/DoctorGallery";
 import { DoctorHero } from "@/components/doctors/DoctorHero";
 import { DoctorQuickFacts } from "@/components/doctors/DoctorQuickFacts";
@@ -86,7 +85,6 @@ export default function DrSandeepBhasinPage() {
       />
       <NavbarPlaceholder />
       <main className="flex-1">
-        <DoctorBreadcrumb doctor={doctor} />
         <DoctorHero doctor={doctor} />
         <DoctorQuickFacts facts={doctor.quickFacts} />
         <DoctorBiography biography={doctor.biography} />

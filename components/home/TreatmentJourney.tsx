@@ -18,6 +18,7 @@ import { HOME_JOURNEY_DEFAULTS } from "@/components/home/homeContent.elements";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { buttonVariants } from "@/components/ui/button";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
 import { resolveRepeaterItems } from "@/lib/experience/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
@@ -137,7 +138,7 @@ export function TreatmentJourney() {
   return (
     <section className="bg-background">
       <div className="container-content section-padding">
-        <div className="mx-auto max-w-3xl text-center">
+        <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
           <EditableElement
             id="home.journey.label"
             kind="label"
@@ -168,10 +169,13 @@ export function TreatmentJourney() {
           >
             {({ value }) => value || description}
           </EditableElement>
-        </div>
+        </StaggerReveal>
 
-        <ol className="mt-10 flex flex-col items-center sm:mt-14 lg:mt-16 lg:flex-row lg:items-start lg:justify-center">
-          {steps.flatMap((step, index) => {
+        <StaggerReveal
+          as="ol"
+          stepMs={90}
+          className="mt-10 flex flex-col items-center sm:mt-14 lg:mt-16 lg:flex-row lg:items-start lg:justify-center"
+        >          {steps.flatMap((step, index) => {
             const Icon = STEP_ICONS[step.__index % STEP_ICONS.length] ?? Search;
             const theme =
               STEP_THEMES[step.__index % STEP_THEMES.length] ?? STEP_THEMES[0];
@@ -272,9 +276,12 @@ export function TreatmentJourney() {
               </li>,
             ];
           })}
-        </ol>
+        </StaggerReveal>
 
-        <div className="mx-auto mt-10 max-w-4xl rounded-2xl bg-[#F4F6F8] px-4 py-4 shadow-[0_8px_30px_-18px_rgba(10,37,64,0.28)] sm:mt-16 sm:px-7 sm:py-6">
+        <StaggerReveal
+          stepMs={80}
+          className="mx-auto mt-10 max-w-4xl rounded-2xl bg-[#F4F6F8] px-4 py-4 shadow-[0_8px_30px_-18px_rgba(10,37,64,0.28)] sm:mt-16 sm:px-7 sm:py-6"
+        >
           <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:gap-5 sm:text-left">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE] text-[#2563EB] sm:size-12">
               <Shield className="size-5" strokeWidth={1.75} aria-hidden />
@@ -298,9 +305,13 @@ export function TreatmentJourney() {
               </span>
             </Link>
           </div>
-        </div>
+        </StaggerReveal>
 
-        <ul className="mx-auto mt-8 flex max-w-3xl flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-3">
+        <StaggerReveal
+          as="ul"
+          stepMs={70}
+          className="mx-auto mt-8 flex max-w-3xl flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-3"
+        >
           {TRUST_ITEMS.map((item) => (
             <li
               key={item.label}
@@ -314,7 +325,7 @@ export function TreatmentJourney() {
               <span>{item.label}</span>
             </li>
           ))}
-        </ul>
+        </StaggerReveal>
       </div>
     </section>
   );

@@ -11,6 +11,7 @@ import {
 import { ConsultationSpecialties } from "@/components/home/ConsultationSpecialties";
 import { CTABanner } from "@/components/home/CTABanner";
 import { DoctorsSection } from "@/components/home/DoctorsSection";
+import { GoogleReviewsSection } from "@/components/home/GoogleReviewsSection";
 import { HeroSection } from "@/components/home/HeroSection";
 import { LocationLeadSection } from "@/components/home/LocationLeadSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
@@ -25,8 +26,10 @@ import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticEditProvider } from "@/components/pages/StaticEditProvider";
 import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { isSectionEnabled } from "@/lib/experience/static-pages/applyOverrides";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
+import type { ReactNode } from "react";
 
 export type HomePageViewProps = StaticPageViewProps & {
   /** Latest WordPress posts for BlogSection (public route only). */
@@ -34,6 +37,25 @@ export type HomePageViewProps = StaticPageViewProps & {
   /** Latest YouTube videos for TestimonialsSection (public route only). */
   latestYouTubeVideos?: HomeYouTubeVideo[];
 };
+
+/** Section-level fade entry as the homepage is scrolled. */
+function HomeSectionEnter({
+  children,
+  immediate = false,
+}: {
+  children: ReactNode;
+  immediate?: boolean;
+}) {
+  return (
+    <StaggerReveal
+      immediate={immediate}
+      stepMs={0}
+      className="w-full"
+    >
+      {children}
+    </StaggerReveal>
+  );
+}
 
 export function HomePageView({
   mode,
@@ -50,18 +72,24 @@ export function HomePageView({
       <main className="flex-1">
         {enabled("home.hero") ? (
           <StaticSectionFrame id="home.hero" type="hero" mode={mode}>
-            <HeroSection />
+            <HomeSectionEnter immediate>
+              <HeroSection />
+            </HomeSectionEnter>
           </StaticSectionFrame>
         ) : null}
         <div className="homepage-compact">
           {enabled("home.trust") ? (
             <StaticSectionFrame id="home.trust" type="trust" mode={mode}>
-              <TrustIndicators />
+              <HomeSectionEnter>
+                <TrustIndicators />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.journey") ? (
             <StaticSectionFrame id="home.journey" type="timeline" mode={mode}>
-              <TreatmentJourney />
+              <HomeSectionEnter>
+                <TreatmentJourney />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.services") ? (
@@ -70,32 +98,44 @@ export function HomePageView({
               type="related-treatments"
               mode={mode}
             >
-              <ServicesSection />
+              <HomeSectionEnter>
+                <ServicesSection />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.ai-skin") ? (
             <StaticSectionFrame id="home.ai-skin" type="content" mode={mode}>
-              <AiSkinAnalysis />
+              <HomeSectionEnter>
+                <AiSkinAnalysis />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.doctors") ? (
             <StaticSectionFrame id="home.doctors" type="doctor" mode={mode}>
-              <DoctorsSection />
+              <HomeSectionEnter>
+                <DoctorsSection />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.about") ? (
             <StaticSectionFrame id="home.about" type="content" mode={mode}>
-              <AboutSection />
+              <HomeSectionEnter>
+                <AboutSection />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.specialties") ? (
             <StaticSectionFrame id="home.specialties" type="content" mode={mode}>
-              <ConsultationSpecialties />
+              <HomeSectionEnter>
+                <ConsultationSpecialties />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.why") ? (
             <StaticSectionFrame id="home.why" type="faq" mode={mode}>
-              <WhyChooseUs />
+              <HomeSectionEnter>
+                <WhyChooseUs />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.testimonials") ? (
@@ -104,22 +144,41 @@ export function HomePageView({
               type="testimonials"
               mode={mode}
             >
-              <TestimonialsSection videos={latestYouTubeVideos} />
+              <HomeSectionEnter>
+                <TestimonialsSection videos={latestYouTubeVideos} />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.blog") ? (
             <StaticSectionFrame id="home.blog" type="related-blogs" mode={mode}>
-              <BlogSection posts={latestBlogPosts} />
+              <HomeSectionEnter>
+                <BlogSection posts={latestBlogPosts} />
+              </HomeSectionEnter>
+            </StaticSectionFrame>
+          ) : null}
+          {enabled("home.reviews") ? (
+            <StaticSectionFrame
+              id="home.reviews"
+              type="testimonials"
+              mode={mode}
+            >
+              <HomeSectionEnter>
+                <GoogleReviewsSection />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.location") ? (
             <StaticSectionFrame id="home.location" type="location" mode={mode}>
-              <LocationLeadSection />
+              <HomeSectionEnter>
+                <LocationLeadSection />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.cta") ? (
             <StaticSectionFrame id="home.cta" type="cta" mode={mode}>
-              <CTABanner />
+              <HomeSectionEnter>
+                <CTABanner />
+              </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
         </div>

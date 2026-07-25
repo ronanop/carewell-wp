@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { emitEditorialEvent } from "@/lib/experience/blog/editorial/analytics";
@@ -38,30 +38,71 @@ export function BlogTableOfContents({
   const [activeId, setActiveId] = useState<string | null>(items[0]?.id ?? null);
   const [open, setOpen] = useState(true);
   const [query, setQuery] = useState("");
+  const listRef = useRef<HTMLUListElement>(null);
+  const itemRefs = useRef(new Map<string, HTMLLIElement>());
 
+  /** Scrollspy: active TOC entry tracks the heading currently in view. */
   useEffect(() => {
     if (!items.length) return;
-    const elements = items
+
+    const headingEls = items
       .map((item) => document.getElementById(item.id))
       .filter((el): el is HTMLElement => Boolean(el));
 
-    if (!elements.length) return;
+    if (!headingEls.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]?.target?.id) {
-          setActiveId(visible[0].target.id);
+    const updateActive = () => {
+      const marker = window.innerHeight * 0.28;
+      let current = headingEls[0]?.id ?? null;
+
+      for (const el of headingEls) {
+        if (el.getBoundingClientRect().top <= marker) {
+          current = el.id;
+        } else {
+          break;
         }
-      },
-      { rootMargin: "-20% 0px -55% 0px", threshold: [0, 0.25, 0.5, 1] },
-    );
+      }
 
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+      setActiveId((prev) => (prev === current ? prev : current));
+    };
+
+    updateActive();
+    window.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
+    return () => {
+      window.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+    };
   }, [items]);
+
+  /** Keep the active TOC row visible inside the overflow list. */
+  useEffect(() => {
+    if (!activeId || !open) return;
+
+    const list = listRef.current;
+    const item = itemRefs.current.get(activeId);
+    if (!list || !item) return;
+
+    const listRect = list.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+    const padding = 12;
+
+    const above = itemRect.top < listRect.top + padding;
+    const below = itemRect.bottom > listRect.bottom - padding;
+    if (!above && !below) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const nextTop =
+      item.offsetTop - list.clientHeight / 2 + item.offsetHeight / 2;
+
+    list.scrollTo({
+      top: Math.max(0, nextTop),
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  }, [activeId, open, query]);
 
   if (!items.length) return null;
 
@@ -124,28 +165,55 @@ export function BlogTableOfContents({
               aria-label="Search table of contents"
             />
           ) : null}
-          <ul className="mt-3 max-h-[50vh] space-y-1 overflow-y-auto text-sm">
-            {filtered.map((item) => (
-              <li key={item.id} style={{ paddingLeft: (item.level - 2) * 12 }}>
-                <a
-                  href={`#${item.id}`}
-                  onClick={() =>
-                    emitEditorialEvent({
-                      type: "toc_navigated",
-                      anchorId: item.id,
-                    })
-                  }
-                  className={cn(
-                    "block rounded-md px-2 py-1.5 transition",
-                    activeId === item.id
-                      ? "bg-primary/10 font-medium text-primary"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
+          <ul
+            ref={listRef}
+            className="mt-3 max-h-[50vh] space-y-1 overflow-y-auto scroll-smooth text-sm"
+          >
+            {filtered.map((item) => {
+              const number = items.findIndex((entry) => entry.id === item.id) + 1;
+              const isActive = activeId === item.id;
+              return (
+                <li
+                  key={item.id}
+                  ref={(node) => {
+                    if (node) itemRefs.current.set(item.id, node);
+                    else itemRefs.current.delete(item.id);
+                  }}
+                  style={{ paddingLeft: (item.level - 2) * 12 }}
                 >
-                  {item.text}
-                </a>
-              </li>
-            ))}
+                  <a
+                    href={`#${item.id}`}
+                    aria-current={isActive ? "location" : undefined}
+                    onClick={() => {
+                      setActiveId(item.id);
+                      emitEditorialEvent({
+                        type: "toc_navigated",
+                        anchorId: item.id,
+                      });
+                    }}
+                    className={cn(
+                      "flex items-start gap-2 rounded-md px-2 py-1.5 transition",
+                      isActive
+                        ? "bg-primary/10 font-medium text-primary"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "mt-px w-5 shrink-0 text-[0.6875rem] font-semibold tabular-nums leading-5",
+                        isActive
+                          ? "text-primary"
+                          : "text-muted-foreground/70",
+                      )}
+                      aria-hidden
+                    >
+                      {String(number).padStart(2, "0")}
+                    </span>
+                    <span className="min-w-0 leading-snug">{item.text}</span>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </>
       ) : null}

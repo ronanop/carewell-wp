@@ -7,15 +7,15 @@ import type { ElementDescriptor } from "@/types/element-descriptor";
 export const ABOUT_HERO_ELEMENTS: ElementDescriptor[] = [
   {
     id: "about.hero.label",
-    displayName: "Label",
+    displayName: "Brand name",
     kind: "label",
     sectionId: "about.hero",
     inlineField: "text",
     fields: [
-      { key: "text", label: "Label", type: "text", group: "Content" },
+      { key: "text", label: "Brand name", type: "text", group: "Content" },
     ],
     supports: { inlineEdit: true, bind: true, responsive: true },
-    defaultValues: { text: "Care Well Medical Centre Clinic" },
+    defaultValues: { text: "Care Well Medical Centre" },
   },
   {
     id: "about.hero.heading",
@@ -33,7 +33,7 @@ export const ABOUT_HERO_ELEMENTS: ElementDescriptor[] = [
       animation: true,
     },
     defaultValues: {
-      text: "About Care Well Medical Centre – Our Vision, Team & Commitment",
+      text: "Beauty, restored with clinical care.",
     },
     bindingSources: ["wordpress.page.title"],
   },
@@ -48,12 +48,12 @@ export const ABOUT_HERO_ELEMENTS: ElementDescriptor[] = [
     ],
     supports: { inlineEdit: true, responsive: true },
     defaultValues: {
-      text: "Your Trusted Destination for Advanced Cosmetic & Aesthetic Treatments",
+      text: "For over twenty years in South Delhi, we have specialized in hair restoration, cosmetic surgery, and anti-aging — natural results, patient-first ethics.",
     },
   },
   {
     id: "about.hero.body.1",
-    displayName: "Body",
+    displayName: "Secondary body (hidden)",
     kind: "paragraph",
     sectionId: "about.hero",
     inlineField: "text",
@@ -61,13 +61,11 @@ export const ABOUT_HERO_ELEMENTS: ElementDescriptor[] = [
       { key: "text", label: "Body", type: "textarea", group: "Content" },
     ],
     supports: { inlineEdit: true, responsive: true },
-    defaultValues: {
-      text: "Care Well Medical Centre is a trusted hair transplant and aesthetic clinic in South Delhi, led by Dr. Sandeep Bhasin. For over 20 years, we have specialized in advanced hair restoration, cosmetic surgery, and anti-aging treatments, delivering natural results with a patient-first approach.",
-    },
+    defaultValues: { text: "" },
   },
   {
     id: "about.hero.image",
-    displayName: "Hero image",
+    displayName: "Hero background",
     kind: "image",
     sectionId: "about.hero",
     fields: [
@@ -76,8 +74,37 @@ export const ABOUT_HERO_ELEMENTS: ElementDescriptor[] = [
     ],
     supports: { replaceMedia: true, crop: true, responsive: true },
     defaultValues: {
-      src: "/images/about-consultation.jpg",
-      alt: "Consultation at Care Well Medical Centre",
+      src: "/images/service-hero-background.jpg",
+      alt: "Care Well Medical Centre — premium aesthetic care in South Delhi",
+    },
+  },
+  {
+    id: "about.hero.primaryButton",
+    displayName: "Primary CTA",
+    kind: "button",
+    sectionId: "about.hero",
+    inlineField: "label",
+    fields: [
+      { key: "label", label: "Label", type: "text", group: "Content" },
+      { key: "href", label: "Link", type: "link", group: "Content" },
+    ],
+    supports: { inlineEdit: true },
+    defaultValues: { label: "Book consultation", href: "/contact" },
+  },
+  {
+    id: "about.hero.secondaryButton",
+    displayName: "Secondary CTA",
+    kind: "button",
+    sectionId: "about.hero",
+    inlineField: "label",
+    fields: [
+      { key: "label", label: "Label", type: "text", group: "Content" },
+      { key: "href", label: "Link", type: "link", group: "Content" },
+    ],
+    supports: { inlineEdit: true },
+    defaultValues: {
+      label: "Meet Dr. Bhasin",
+      href: "/about/dr-sandeep-bhasin",
     },
   },
 ];
@@ -93,7 +120,7 @@ export const ABOUT_CTA_ELEMENTS: ElementDescriptor[] = [
       { key: "text", label: "Heading", type: "textarea", group: "Content" },
     ],
     supports: { inlineEdit: true },
-    defaultValues: { text: "Visit Us & Begin Your Transformation" },
+    defaultValues: { text: "Begin your transformation" },
   },
   {
     id: "about.cta.button",
@@ -106,7 +133,7 @@ export const ABOUT_CTA_ELEMENTS: ElementDescriptor[] = [
       { key: "href", label: "Link", type: "link", group: "Content" },
     ],
     supports: { inlineEdit: true },
-    defaultValues: { label: "Book Consultation", href: "/contact" },
+    defaultValues: { label: "Book consultation", href: "/contact" },
   },
 ];
 

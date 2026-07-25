@@ -1,5 +1,5 @@
+import { DoctorReveal } from "@/components/doctors/DoctorReveal";
 import type { DoctorProfile } from "@/types/doctor";
-import { cn } from "@/lib/utils";
 
 interface TreatmentPhilosophyProps {
   philosophy: DoctorProfile["philosophy"];
@@ -9,38 +9,40 @@ export function TreatmentPhilosophy({ philosophy }: TreatmentPhilosophyProps) {
   return (
     <section className="bg-background" aria-labelledby="philosophy-heading">
       <div className="container-content section-padding">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-label uppercase text-[#3B82F6]">
+        <DoctorReveal className="mx-auto max-w-2xl text-center">
+          <p className="text-label uppercase tracking-[0.16em] text-accent-gold-600">
             {philosophy.overline}
           </p>
           <h2
             id="philosophy-heading"
-            className="mt-3 font-heading text-h2 font-bold text-[#0A2540]"
+            className="mt-3 font-heading text-h2 font-bold tracking-tight text-[#0A2540]"
           >
             {philosophy.title}
           </h2>
           <p className="mt-5 text-body-lg leading-relaxed text-muted-foreground">
             {philosophy.lead}
           </p>
-        </div>
+        </DoctorReveal>
 
-        <ul className="mx-auto mt-12 grid max-w-5xl gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {philosophy.pillars.map((pillar) => (
-            <li
-              key={pillar.title}
-              className={cn(
-                "rounded-2xl border border-border/60 bg-white p-6 shadow-[0_4px_20px_rgb(10_37_64/0.05)]",
-                "sm:p-7",
-                "lg:last:col-span-1 lg:[&:nth-child(4)]:col-span-1 lg:[&:nth-child(5)]:col-span-1"
-              )}
-            >
-              <h3 className="font-heading text-h4 font-semibold text-[#0A2540]">
-                {pillar.title}
-              </h3>
-              <p className="mt-2 text-small leading-relaxed text-muted-foreground">
-                {pillar.description}
-              </p>
-            </li>
+        <ul className="mx-auto mt-14 grid max-w-5xl gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
+          {philosophy.pillars.map((pillar, index) => (
+            <DoctorReveal key={pillar.title} delay={index * 0.04}>
+              <li className="relative pt-1">
+                <span
+                  className="font-heading text-sm font-semibold tabular-nums tracking-[0.14em] text-accent-gold-600"
+                  aria-hidden
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="mt-3 h-px w-10 bg-primary-300" aria-hidden />
+                <h3 className="mt-4 font-heading text-h4 font-semibold text-[#0A2540]">
+                  {pillar.title}
+                </h3>
+                <p className="mt-2 text-small leading-relaxed text-muted-foreground">
+                  {pillar.description}
+                </p>
+              </li>
+            </DoctorReveal>
           ))}
         </ul>
       </div>

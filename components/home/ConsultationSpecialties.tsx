@@ -6,6 +6,7 @@ import Link from "next/link";
 import { HOME_SPECIALTY_DEFAULTS } from "@/components/home/homeDoctorsLocation.elements";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
 import { resolveRepeaterItems } from "@/lib/experience/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
@@ -95,7 +96,7 @@ export function ConsultationSpecialties() {
   return (
     <section className="bg-muted/30">
       <div className="container-content section-padding">
-        <div className="mx-auto max-w-3xl text-center">
+        <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
           <EditableElement
             id="home.specialties.label"
             kind="label"
@@ -123,10 +124,13 @@ export function ConsultationSpecialties() {
           >
             {({ value }) => value || description}
           </EditableElement>
-        </div>
+        </StaggerReveal>
 
-        <ul className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-10 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
-          {specialties.map((specialty) => {
+        <StaggerReveal
+          as="ul"
+          stepMs={55}
+          className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-10 sm:gap-4 md:grid-cols-3 lg:grid-cols-6"
+        >          {specialties.map((specialty) => {
             const code = String(specialty.code ?? "");
             const name = String(specialty.name ?? "");
 
@@ -182,7 +186,7 @@ export function ConsultationSpecialties() {
               </li>
             );
           })}
-        </ul>
+        </StaggerReveal>
       </div>
     </section>
   );

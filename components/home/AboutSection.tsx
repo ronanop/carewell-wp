@@ -24,6 +24,7 @@ import {
 } from "@/components/home/homeDoctorsLocation.elements";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
@@ -261,7 +262,7 @@ export function AboutSection() {
       <div className="container-content section-padding">
         <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] lg:gap-12 xl:gap-14">
           {/* Left column */}
-          <div className="min-w-0">
+          <StaggerReveal className="min-w-0" stepMs={75}>
             <EditableElement
               id="home.about.label"
               kind="label"
@@ -353,12 +354,14 @@ export function AboutSection() {
                 )}
               </EditableElement>
             </div>
-          </div>
+          </StaggerReveal>
 
           {/* Right column — value cards */}
-          <div className="min-w-0">
-            <ul className="grid grid-cols-2 gap-2.5 sm:gap-5">
-              {values.map((item) => {
+          <StaggerReveal
+            as="ul"
+            stepMs={80}
+            className="grid min-w-0 grid-cols-2 gap-2.5 sm:gap-5"
+          >              {values.map((item) => {
                 const fallback =
                   HOME_ABOUT_VALUE_DEFAULTS[
                     item.__index % HOME_ABOUT_VALUE_DEFAULTS.length
@@ -378,8 +381,7 @@ export function AboutSection() {
                   </li>
                 );
               })}
-            </ul>
-          </div>
+          </StaggerReveal>
         </div>
       </div>
     </section>

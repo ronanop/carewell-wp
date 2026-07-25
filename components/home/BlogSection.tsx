@@ -8,6 +8,7 @@ import { HOME_BLOG_DEFAULTS } from "@/components/home/homeContent.elements";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { buttonVariants } from "@/components/ui/button";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
 import { resolveRepeaterItems } from "@/lib/experience/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
@@ -75,7 +76,7 @@ export function BlogSection({
   return (
     <section className="bg-background">
       <div className="container-content section-padding">
-        <div>
+        <StaggerReveal stepMs={70}>
           <EditableElement
             id="home.blog.overline"
             kind="label"
@@ -103,10 +104,10 @@ export function BlogSection({
           >
             {({ value }) => value || description}
           </EditableElement>
-        </div>
+        </StaggerReveal>
 
         {posts.length > 0 ? (
-          <div className="mt-8 grid-cw sm:mt-12">
+          <StaggerReveal stepMs={90} className="mt-8 grid-cw sm:mt-12">
             {posts.map((post) => {
               const card = (
                 <Link
@@ -197,10 +198,10 @@ export function BlogSection({
                 </article>
               );
             })}
-          </div>
+          </StaggerReveal>
         ) : null}
 
-        <div className="mt-8 sm:mt-12">
+        <StaggerReveal className="mt-8 sm:mt-12">
           <Link
             href="/blogs"
             className={cn(
@@ -210,7 +211,7 @@ export function BlogSection({
           >
             Read our blog
           </Link>
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );

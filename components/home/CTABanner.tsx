@@ -15,6 +15,7 @@ import Link from "next/link";
 import { HOME_CTA_VALUE_DEFAULTS } from "@/components/home/homeCta.elements";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
@@ -187,7 +188,10 @@ export function CTABanner() {
       <Atmosphere />
 
       <div className="container-content relative section-padding">
-        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+        <StaggerReveal
+          stepMs={80}
+          className="mx-auto flex max-w-4xl flex-col items-center text-center"
+        >
           <EditableElement
             id="home.cta.heading"
             kind="heading"
@@ -356,7 +360,7 @@ export function CTABanner() {
               );
             })}
           </ul>
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );

@@ -30,6 +30,10 @@ import {
 } from "@/components/home/homeDoctorsLocation.elements";
 import { HOME_CTA_ELEMENTS } from "@/components/home/homeCta.elements";
 import { HOME_HERO_ELEMENTS } from "@/components/home/homeHero.elements";
+import {
+  HOME_GOOGLE_REVIEWS_ELEMENTS,
+  homeGoogleReviewsRepeater,
+} from "@/components/home/homeReviews.elements";
 import { HOME_TRUST_ELEMENTS } from "@/components/home/homeTrust.elements";
 import type { ElementDescriptor } from "@/types/element-descriptor";
 import type { RepeaterDescriptor } from "@/types/repeater-descriptor";
@@ -94,6 +98,7 @@ const SEED_ELEMENTS: ElementDescriptor[] = [
   ...HOME_AI_ELEMENTS,
   ...HOME_ABOUT_HOME_ELEMENTS,
   ...HOME_SPECIALTY_ELEMENTS,
+  ...HOME_GOOGLE_REVIEWS_ELEMENTS,
   ...ABOUT_ELEMENTS,
   ...CONTACT_ELEMENTS,
 ];
@@ -108,6 +113,7 @@ const SEED_REPEATERS: RepeaterDescriptor[] = [
   homeDoctorHighlightsRepeater,
   homeSpecialtiesRepeater,
   homeAboutValuesRepeater,
+  homeGoogleReviewsRepeater,
 ];
 
 registerElementDescriptors(SEED_ELEMENTS);

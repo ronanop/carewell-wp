@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { AboutReveal } from "@/components/about/AboutReveal";
 import { clinicDetails } from "@/components/about/content";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
@@ -12,8 +13,8 @@ import {
 } from "@/lib/experience/static-pages/elementOverrides";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_HEADING = "Visit Us & Begin Your Transformation";
-const DEFAULT_BUTTON_LABEL = "Book Consultation";
+const DEFAULT_HEADING = "Begin your transformation";
+const DEFAULT_BUTTON_LABEL = "Book consultation";
 const DEFAULT_BUTTON_HREF = "/contact";
 
 export function AboutVisitCta() {
@@ -38,30 +39,37 @@ export function AboutVisitCta() {
   );
 
   return (
-    <section className="bg-primary" aria-label={heading}>
-      <div className="container-content section-padding">
-        <div className="mx-auto max-w-3xl text-center">
+    <section
+      className="relative overflow-hidden bg-primary-900"
+      aria-label={heading}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.12]"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse at 30% 20%, var(--accent-gold-400), transparent 55%), radial-gradient(ellipse at 80% 80%, var(--primary-400), transparent 50%)",
+        }}
+        aria-hidden
+      />
+
+      <div className="container-content relative section-padding">
+        <AboutReveal className="mx-auto max-w-2xl text-center">
           <EditableElement
             id="about.cta.heading"
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="font-heading text-h2 text-primary-foreground"
+            className="font-heading text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tight text-white"
           >
             {({ value }) => value || heading}
           </EditableElement>
-          <p className="mt-4 text-body-lg leading-relaxed text-primary-foreground/80">
-            If you are looking for the best cosmetic and aesthetic treatments in
-            Delhi, Care Well Medical Centre is your trusted partner in
-            transformation. Whether you need skin rejuvenation, hair restoration,
-            body contouring, or plastic surgery, we are here to help.
-          </p>
-          <p className="mt-4 text-body text-primary-foreground/75">
-            Let our experts guide you on your journey to a more confident and
-            beautiful you.
+          <p className="mt-5 text-body-lg leading-relaxed text-primary-100/90">
+            Looking for trusted cosmetic and aesthetic care in Delhi? From skin
+            rejuvenation and hair restoration to body contouring and plastic
+            surgery — we are here to guide you.
           </p>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <EditableElement
               id="about.cta.button"
               kind="button"
@@ -74,7 +82,7 @@ export function AboutVisitCta() {
                   href={String(fields.href ?? buttonHref)}
                   className={cn(
                     buttonVariants({ size: "lg" }),
-                    "bg-surface text-primary hover:bg-surface/90 no-underline hover:no-underline",
+                    "h-12 rounded-lg bg-white px-7 text-primary-900 hover:bg-white/92 no-underline hover:no-underline",
                   )}
                 >
                   {String(fields.label ?? buttonLabel)}
@@ -84,14 +92,14 @@ export function AboutVisitCta() {
             <a
               href={clinicDetails.phoneHref}
               className={cn(
-                buttonVariants({ size: "lg", variant: "secondary" }),
-                "border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 no-underline hover:no-underline",
+                buttonVariants({ size: "lg", variant: "outline" }),
+                "h-12 rounded-lg border-white/40 bg-transparent px-7 text-white hover:bg-white/10 no-underline hover:no-underline",
               )}
             >
               {clinicDetails.phone}
             </a>
           </div>
-        </div>
+        </AboutReveal>
       </div>
     </section>
   );

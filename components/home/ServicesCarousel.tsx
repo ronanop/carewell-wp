@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { cn } from "@/lib/utils";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 
 type ServicesCarouselProps = {
   label: ReactNode;
@@ -265,11 +266,11 @@ export function ServicesCarousel({
   return (
     <div>
       <div className="container-content flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-        <div className="max-w-3xl">
+        <StaggerReveal className="max-w-3xl" stepMs={70}>
           {label}
           {title}
           {description}
-        </div>
+        </StaggerReveal>
 
         <div
           className="flex shrink-0 items-center gap-2 self-end"

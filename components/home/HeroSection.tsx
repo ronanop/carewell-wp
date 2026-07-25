@@ -14,6 +14,7 @@ import Link from "next/link";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { buttonVariants } from "@/components/ui/button";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
@@ -236,7 +237,11 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
       <div className="container-content relative">
         <div className="grid items-center gap-0 pb-0 pt-6 sm:gap-5 sm:pt-10 md:pt-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-stretch lg:gap-10 lg:pb-0 lg:pt-12">
           {/* Copy column — centered on mobile, left on desktop */}
-          <div className="mx-auto w-full max-w-[24.375rem] text-center lg:mx-0 lg:max-w-[34rem] lg:self-center lg:pb-12 lg:text-left">
+          <StaggerReveal
+            immediate
+            stepMs={80}
+            className="mx-auto w-full max-w-[24.375rem] text-center lg:mx-0 lg:max-w-[34rem] lg:self-center lg:pb-12 lg:text-left"
+          >
             <EditableElement
               id="home.hero.badge"
               kind="badge"
@@ -345,7 +350,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
             <div className="mt-5 hidden w-full flex-col gap-2.5 sm:mt-7 sm:flex-row sm:items-center sm:justify-center lg:flex lg:justify-start">
               {renderCtaButtons()}
             </div>
-          </div>
+          </StaggerReveal>
 
           {/* Portrait — fades into background on mobile */}
           <EditableElement
@@ -382,7 +387,11 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
         </div>
 
         {/* Trust strip — glued to image bottom via negative margin; mobile/tablet only */}
-        <div className="relative z-10 -mt-6 px-0 sm:-mt-8 lg:hidden">
+        <StaggerReveal
+          immediate
+          stepMs={90}
+          className="relative z-10 -mt-6 px-0 sm:-mt-8 lg:hidden"
+        >
           <ul
             className="mx-auto grid max-w-[24.375rem] grid-cols-3 divide-x divide-[#0A2540]/08 overflow-hidden rounded-2xl border border-white/80 bg-white shadow-[0_16px_40px_-20px_rgb(10_37_64/0.35)] sm:max-w-xl"
             aria-label="Clinic trust signals"
@@ -419,12 +428,12 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
               );
             })}
           </ul>
-        </div>
 
-        {/* Mobile CTAs — below trust strip */}
-        <div className="mx-auto mt-4 flex w-full max-w-[24.375rem] flex-col gap-2.5 pb-5 sm:mt-5 sm:max-w-xl sm:flex-row sm:items-center sm:justify-center sm:pb-8 lg:hidden">
-          {renderCtaButtons()}
-        </div>
+          {/* Mobile CTAs — below trust strip */}
+          <div className="mx-auto mt-4 flex w-full max-w-[24.375rem] flex-col gap-2.5 pb-5 sm:mt-5 sm:max-w-xl sm:flex-row sm:items-center sm:justify-center sm:pb-8">
+            {renderCtaButtons()}
+          </div>
+        </StaggerReveal>
       </div>
     </section>
   );

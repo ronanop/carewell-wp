@@ -18,6 +18,7 @@ import {
   HOME_SPECIALTY_ELEMENTS,
 } from "@/components/home/homeDoctorsLocation.elements";
 import { HOME_HERO_ELEMENTS } from "@/components/home/homeHero.elements";
+import { HOME_GOOGLE_REVIEWS_ELEMENTS } from "@/components/home/homeReviews.elements";
 import { HOME_TRUST_ELEMENTS } from "@/components/home/homeTrust.elements";
 import type { SectionDescriptor } from "@/types/static-page-descriptor";
 
@@ -139,6 +140,16 @@ export const homeBlogDescriptor: SectionDescriptor = {
   supports: { drag: true, animation: true, responsive: true },
 };
 
+export const homeReviewsDescriptor: SectionDescriptor = {
+  id: "home.reviews",
+  displayName: "Google reviews",
+  type: "testimonials",
+  legacyIds: ["home-reviews", "home-google-reviews"],
+  editableProps: [],
+  elements: HOME_GOOGLE_REVIEWS_ELEMENTS,
+  supports: { drag: true, animation: true, responsive: true },
+};
+
 export const homeLocationDescriptor: SectionDescriptor = {
   id: "home.location",
   displayName: "Location",
@@ -171,6 +182,7 @@ export const HOME_SECTION_DESCRIPTORS: SectionDescriptor[] = [
   homeWhyDescriptor,
   homeTestimonialsDescriptor,
   homeBlogDescriptor,
+  homeReviewsDescriptor,
   homeLocationDescriptor,
   homeCtaDescriptor,
 ];

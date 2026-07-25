@@ -6,6 +6,7 @@ import { AiSkinAnalysisScan } from "@/components/home/AiSkinAnalysisScan";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { buttonVariants } from "@/components/ui/button";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
@@ -53,7 +54,8 @@ export function AiSkinAnalysis() {
   return (
     <section className="bg-background" aria-labelledby="ai-skin-analysis-heading">
       <div className="container-content section-padding">
-        <div
+        <StaggerReveal
+          stepMs={80}
           className={cn(
             // Mobile: compact vertical promo card
             "relative flex min-w-0 flex-col items-stretch gap-5 overflow-hidden rounded-2xl bg-surface px-5 py-6",
@@ -121,7 +123,7 @@ export function AiSkinAnalysis() {
           <div className="order-1 flex shrink-0 justify-center lg:order-2 lg:pr-4">
             <AiSkinAnalysisScan />
           </div>
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );

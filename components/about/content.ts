@@ -1,9 +1,27 @@
+export const aboutStats = [
+  { value: "20+", label: "Years of clinical excellence" },
+  { value: "10k+", label: "Procedures performed" },
+  { value: "South Delhi", label: "Chittaranjan Park clinic" },
+  { value: "Patient-first", label: "Ethical, natural results" },
+] as const;
+
 export const treatmentSpecialties = [
-  "Liposuction, Tummy Tuck, & Breast Augmentation",
-  "Scarless & Classic Breast Reduction",
-  "Scarless Gynecomastia Surgery (Male Breast Reduction)",
-  "Cosmetic & Reconstructive Surgery for Male & Female Genitals",
-  "Hair Transplant & Laser Resurfacing Treatment",
+  {
+    title: "Body Contouring",
+    description: "Liposuction, tummy tuck & breast procedures",
+  },
+  {
+    title: "Hair Restoration",
+    description: "Transplant & laser resurfacing treatments",
+  },
+  {
+    title: "Facial Aesthetics",
+    description: "Rhinoplasty, injectables & rejuvenation",
+  },
+  {
+    title: "Skin & Anti-Aging",
+    description: "Hydrafacial, peels & laser therapies",
+  },
 ] as const;
 
 export const whyChoosePillars = [
@@ -12,7 +30,7 @@ export const whyChoosePillars = [
     title: "Expertise & Experience",
     paragraphs: [
       "Led by Dr. Sandeep Bhasin, a highly experienced cosmetic and plastic surgeon with a passion for excellence.",
-      "A team of skilled dermatologists, plastic surgeons, and medical professionals dedicated to providing safe, effective, and customized treatments.",
+      "A team of skilled dermatologists, plastic surgeons, and medical professionals dedicated to safe, effective, customized care.",
     ],
   },
   {
@@ -20,22 +38,22 @@ export const whyChoosePillars = [
     title: "State-of-the-Art Technology",
     paragraphs: [
       "We use FDA-approved, advanced medical technologies to deliver safe and high-quality treatments.",
-      "Our clinic is equipped with the latest laser systems, surgical equipment, and diagnostic tools for precision and effectiveness.",
+      "Our clinic is equipped with the latest laser systems, surgical equipment, and diagnostic tools for precision.",
     ],
   },
   {
     number: "03",
     title: "Comprehensive Range of Treatments",
     paragraphs: [
-      "We specialize in a wide variety of cosmetic, aesthetic, and reconstructive treatments, including:",
+      "From hair restoration and anti-aging to body contouring and reconstructive surgery — one clinic, continuum of care.",
     ],
     categories: [
       {
-        title: "Hair Transplant & Hair Restoration",
+        title: "Hair Transplant & Restoration",
         items: "FUE, FUT, PRP Therapy, Scalp Micropigmentation",
       },
       {
-        title: "Skin & Anti-Aging Treatments",
+        title: "Skin & Anti-Aging",
         items: "Laser treatments, Hydrafacial, Chemical Peels, PRP for Skin",
       },
       {
@@ -57,7 +75,7 @@ export const whyChoosePillars = [
     title: "Personalized & Holistic Approach",
     paragraphs: [
       "Every patient receives a customized treatment plan based on their unique concerns, goals, and medical history.",
-      "We emphasize holistic wellness, combining aesthetic treatments with medical expertise to ensure long-lasting and natural results.",
+      "We combine aesthetic treatments with medical expertise for long-lasting, natural-looking results.",
     ],
   },
   {
@@ -65,8 +83,7 @@ export const whyChoosePillars = [
     title: "Patient Safety & Satisfaction",
     paragraphs: [
       "Strict adherence to international safety protocols to ensure patient well-being.",
-      "High patient satisfaction rates with thousands of successful treatments performed.",
-      "A warm and professional environment where patients feel comfortable and confident in their treatment journey.",
+      "High satisfaction with thousands of successful treatments in a warm, professional environment.",
     ],
   },
 ] as const;
@@ -74,44 +91,44 @@ export const whyChoosePillars = [
 export const doctorSpecialties = [
   "Specialized in hair restoration, skin rejuvenation, weight loss, and plastic surgery.",
   "Passionate about delivering natural-looking results with cutting-edge techniques.",
-  "A trusted name in the field of cosmetic and aesthetic medicine in India.",
+  "A trusted name in cosmetic and aesthetic medicine in India.",
 ] as const;
 
 export const visionPoints = [
   {
     title: "Ethical & Transparent Consultations",
-    description: "Honest advice with realistic expectations.",
+    description: "Honest advice with realistic expectations — never pressure, always clarity.",
   },
   {
     title: "Safe & Effective Treatments",
-    description: "Using proven medical techniques and technology.",
+    description: "Proven medical techniques and technology, guided by clinical judgment.",
   },
   {
     title: "Exceptional Patient Care",
-    description: "A caring, professional, and patient-centric approach.",
+    description: "A caring, professional, patient-centric experience from consult to recovery.",
   },
 ] as const;
 
 export const valuePillars = [
   {
-    title: "Surgery Success",
+    title: "Surgical Excellence",
     description:
-      "Transforming lives through surgical excellence and non-invasive innovations at Care Well Medical Centre.",
+      "Precision techniques and non-invasive innovations that prioritize safety and natural outcomes.",
   },
   {
-    title: "Recovery Success",
+    title: "Thoughtful Recovery",
     description:
-      "Transforming Lives: Remarkable Recovery Stories in Cosmetic and Non-Invasive Procedures.",
+      "Clear aftercare, attentive follow-up, and support designed around your healing journey.",
   },
   {
     title: "Patient Dedication",
     description:
-      "Patient-Centric Excellence in Cosmetic Surgery at Care Well Medical Centre.",
+      "Every plan is personal — your goals, medical history, and comfort come first.",
   },
   {
-    title: "Care Expressed",
+    title: "Quiet Confidence",
     description:
-      "Elevate Your Beauty: Premier Cosmetic Surgery at Care Well Medical Centre.",
+      "Results that feel like you — refined, balanced, and built to last.",
   },
 ] as const;
 

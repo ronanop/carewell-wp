@@ -15,9 +15,8 @@ export function TestimonialCard({
   return (
     <article
       className={cn(
-        "flex h-full flex-col rounded-2xl border border-border/60 bg-white p-6 shadow-[0_4px_20px_rgb(10_37_64/0.05)]",
-        "sm:p-7",
-        className
+        "flex h-full flex-col border-l-2 border-accent-gold-400/80 bg-surface-cream/60 py-1 pl-5 pr-1",
+        className,
       )}
     >
       <div
@@ -30,8 +29,8 @@ export function TestimonialCard({
             className={cn(
               "size-4",
               index < testimonial.rating
-                ? "fill-[#FABB05] text-[#FABB05]"
-                : "fill-transparent text-border"
+                ? "fill-accent-gold-400 text-accent-gold-400"
+                : "fill-transparent text-border",
             )}
             strokeWidth={index < testimonial.rating ? 0 : 1.5}
             aria-hidden
@@ -43,7 +42,7 @@ export function TestimonialCard({
         “{testimonial.review}”
       </p>
 
-      <div className="mt-6 border-t border-border/60 pt-4">
+      <div className="mt-6 border-t border-border/50 pt-4">
         <p className="font-heading text-body font-semibold text-[#0A2540]">
           {testimonial.name}
         </p>

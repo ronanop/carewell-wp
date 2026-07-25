@@ -3,6 +3,7 @@
 import { AnimatedStat } from "@/components/home/AnimatedStat";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { resolveElementField } from "@/lib/experience/static-pages/elementOverrides";
 
 const DEFAULT_INDICATORS = [
@@ -20,8 +21,11 @@ export function TrustIndicators() {
   return (
     <section className="border-y border-border bg-muted/40">
       <div className="container-content py-10 md:py-16 lg:py-24">
-        <ul className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 sm:gap-y-8 lg:grid-cols-6 lg:divide-x lg:divide-border lg:gap-y-0">
-          {DEFAULT_INDICATORS.map((item, index) => {
+        <StaggerReveal
+          as="ul"
+          stepMs={75}
+          className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 sm:gap-y-8 lg:grid-cols-6 lg:divide-x lg:divide-border lg:gap-y-0"
+        >          {DEFAULT_INDICATORS.map((item, index) => {
             const valueId = `home.trust.stat.${index}.value`;
             const labelId = `home.trust.stat.${index}.label`;
             const value = resolveElementField(
@@ -65,7 +69,7 @@ export function TrustIndicators() {
               </li>
             );
           })}
-        </ul>
+        </StaggerReveal>
       </div>
     </section>
   );

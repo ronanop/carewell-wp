@@ -1,6 +1,7 @@
 import { Phone } from "lucide-react";
 import Link from "next/link";
 
+import { DoctorReveal } from "@/components/doctors/DoctorReveal";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { DoctorProfile } from "@/types/doctor";
@@ -28,26 +29,38 @@ export function AppointmentBanner({
   doctorName,
 }: AppointmentBannerProps) {
   return (
-    <section className="bg-primary" aria-labelledby="appointment-cta-heading">
-      <div className="container-content section-padding">
-        <div className="mx-auto max-w-3xl text-center">
+    <section
+      className="relative overflow-hidden bg-primary-900"
+      aria-labelledby="appointment-cta-heading"
+    >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.12]"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse at 30% 20%, var(--accent-gold-400), transparent 55%), radial-gradient(ellipse at 80% 80%, var(--primary-400), transparent 50%)",
+        }}
+        aria-hidden
+      />
+
+      <div className="container-content relative section-padding">
+        <DoctorReveal className="mx-auto max-w-2xl text-center">
           <h2
             id="appointment-cta-heading"
-            className="font-heading text-h2 text-primary-foreground"
+            className="font-heading text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tight text-white"
           >
             Ready to meet {doctorName}?
           </h2>
-          <p className="mt-4 text-body-lg leading-relaxed text-primary-foreground/80">
+          <p className="mt-4 text-body-lg leading-relaxed text-primary-100/90">
             Book a consultation at {clinic.name} in South Delhi — or call and
             WhatsApp the clinic team to find a suitable slot.
           </p>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/contact"
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "bg-surface text-primary hover:bg-surface/90 no-underline hover:no-underline"
+                "h-12 rounded-lg bg-white px-7 text-primary-900 hover:bg-white/92 no-underline hover:no-underline",
               )}
             >
               Book Consultation
@@ -55,8 +68,8 @@ export function AppointmentBanner({
             <a
               href={clinic.phoneHref}
               className={cn(
-                buttonVariants({ size: "lg", variant: "secondary" }),
-                "border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 no-underline hover:no-underline"
+                buttonVariants({ size: "lg", variant: "outline" }),
+                "h-12 rounded-lg border-white/40 bg-transparent px-7 text-white hover:bg-white/10 no-underline hover:no-underline",
               )}
             >
               <Phone className="size-4" aria-hidden />
@@ -67,15 +80,15 @@ export function AppointmentBanner({
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                buttonVariants({ size: "lg", variant: "secondary" }),
-                "border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 no-underline hover:no-underline"
+                buttonVariants({ size: "lg", variant: "outline" }),
+                "h-12 rounded-lg border-white/40 bg-transparent px-7 text-white hover:bg-white/10 no-underline hover:no-underline",
               )}
             >
               <WhatsAppIcon className="size-5" />
               WhatsApp
             </a>
           </div>
-        </div>
+        </DoctorReveal>
       </div>
     </section>
   );

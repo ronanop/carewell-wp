@@ -6,7 +6,7 @@ import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/st
 export const metadata: Metadata = {
   title: "About Us | Care Well Medical Centre",
   description:
-    "About Care Well Medical Centre — our vision, team, and commitment to advanced cosmetic and aesthetic treatments in South Delhi, led by Dr. Sandeep Bhasin.",
+    "Care Well Medical Centre — 20+ years of ethical cosmetic surgery, hair restoration, and aesthetic care in South Delhi, led by Dr. Sandeep Bhasin.",
 };
 
 export default async function AboutPage() {

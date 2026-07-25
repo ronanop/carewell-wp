@@ -40,8 +40,8 @@ export function BlogSidebar({
         // Blog sidebars keep a comfortable gap below the sticky header.
         consultationOnly ? "lg:top-[4.75rem]" : "lg:top-24",
         consultationOnly
-          ? "lg:overflow-hidden lg:rounded-[var(--radius-3xl)] lg:border lg:border-border/50 lg:bg-surface-glass lg:p-0 lg:shadow-glass lg:backdrop-blur-md"
-          : "lg:rounded-[var(--radius-3xl)] lg:border lg:border-border/50 lg:bg-surface-glass lg:p-4 lg:shadow-glass lg:backdrop-blur-md",
+          ? "lg:overflow-hidden lg:rounded-[var(--radius-3xl)] lg:border lg:border-border/50 lg:bg-surface lg:p-0"
+          : "lg:rounded-[var(--radius-3xl)] lg:border lg:border-border/50 lg:bg-surface lg:p-4",
         className,
       )}
     >
@@ -176,18 +176,20 @@ export function BlogSidebar({
 
 function ReadingProgressCard({ minutes }: { minutes: number }) {
   return (
-    <div className="hidden rounded-2xl border border-border bg-surface p-4 lg:block">
-      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        Reading
-      </p>
-      <p className="mt-2 font-heading text-2xl font-semibold text-foreground">
-        {minutes}
-        <span className="ml-1 text-sm font-medium text-muted-foreground">
-          min
-        </span>
-      </p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Estimated time · progress tracked in the top bar
+    <div className="hidden rounded-xl border border-border bg-surface px-3 py-2.5 lg:block">
+      <div className="flex items-baseline justify-between gap-2">
+        <p className="text-[0.625rem] font-semibold uppercase tracking-wider text-muted-foreground">
+          Reading
+        </p>
+        <p className="font-heading text-base font-semibold tabular-nums text-foreground">
+          {minutes}
+          <span className="ml-0.5 text-[0.6875rem] font-medium text-muted-foreground">
+            min
+          </span>
+        </p>
+      </div>
+      <p className="mt-1 text-[0.6875rem] leading-snug text-muted-foreground">
+        Progress in the top bar
       </p>
     </div>
   );

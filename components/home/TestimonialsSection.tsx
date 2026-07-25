@@ -7,6 +7,7 @@ import Link from "next/link";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { buttonVariants } from "@/components/ui/button";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
 import { cn } from "@/lib/utils";
 
@@ -244,7 +245,7 @@ export function TestimonialsSection({
 
       {/* Header stays content-width; marquee is a sibling so it spans the viewport. */}
       <div className="container-content">
-        <div>
+        <StaggerReveal stepMs={70}>
           <EditableElement
             id="home.testimonials.overline"
             kind="label"
@@ -272,7 +273,7 @@ export function TestimonialsSection({
           >
             {({ value }) => value || description}
           </EditableElement>
-        </div>
+        </StaggerReveal>
       </div>
 
       {videos.length > 0 ? (

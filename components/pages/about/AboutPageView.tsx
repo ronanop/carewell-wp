@@ -3,10 +3,10 @@
  */
 
 import { AboutBeliefBand } from "@/components/about/AboutBeliefBand";
-import { AboutBreadcrumb } from "@/components/about/AboutBreadcrumb";
 import { AboutClinic } from "@/components/about/AboutClinic";
 import { AboutDoctor } from "@/components/about/AboutDoctor";
 import { AboutHero } from "@/components/about/AboutHero";
+import { AboutStats } from "@/components/about/AboutStats";
 import { AboutTreatments } from "@/components/about/AboutTreatments";
 import { AboutValuePillars } from "@/components/about/AboutValuePillars";
 import { AboutVisionMission } from "@/components/about/AboutVisionMission";
@@ -27,14 +27,14 @@ export function AboutPageView({ mode, config = null }: StaticPageViewProps) {
     <StaticEditProvider mode={mode} config={config} pageSlug="about">
       <NavbarPlaceholder />
       <main className="flex-1">
-        {enabled("about.breadcrumb") ? (
-          <StaticSectionFrame id="about.breadcrumb" type="content" mode={mode}>
-            <AboutBreadcrumb />
-          </StaticSectionFrame>
-        ) : null}
         {enabled("about.hero") ? (
           <StaticSectionFrame id="about.hero" type="hero" mode={mode}>
             <AboutHero />
+          </StaticSectionFrame>
+        ) : null}
+        {enabled("about.stats") ? (
+          <StaticSectionFrame id="about.stats" type="content" mode={mode}>
+            <AboutStats />
           </StaticSectionFrame>
         ) : null}
         {enabled("about.treatments") ? (
@@ -51,24 +51,19 @@ export function AboutPageView({ mode, config = null }: StaticPageViewProps) {
             <AboutBeliefBand />
           </StaticSectionFrame>
         ) : null}
-        {enabled("about.why") ? (
-          <StaticSectionFrame id="about.why" type="faq" mode={mode}>
-            <AboutWhyChoose />
-          </StaticSectionFrame>
-        ) : null}
         {enabled("about.doctor") ? (
           <StaticSectionFrame id="about.doctor" type="doctor" mode={mode}>
             <AboutDoctor />
           </StaticSectionFrame>
         ) : null}
+        {enabled("about.why") ? (
+          <StaticSectionFrame id="about.why" type="faq" mode={mode}>
+            <AboutWhyChoose />
+          </StaticSectionFrame>
+        ) : null}
         {enabled("about.mission") ? (
           <StaticSectionFrame id="about.mission" type="content" mode={mode}>
             <AboutVisionMission />
-          </StaticSectionFrame>
-        ) : null}
-        {enabled("about.cta") ? (
-          <StaticSectionFrame id="about.cta" type="cta" mode={mode}>
-            <AboutVisitCta />
           </StaticSectionFrame>
         ) : null}
         {enabled("about.values") ? (
@@ -79,6 +74,11 @@ export function AboutPageView({ mode, config = null }: StaticPageViewProps) {
         {enabled("about.clinic") ? (
           <StaticSectionFrame id="about.clinic" type="content" mode={mode}>
             <AboutClinic />
+          </StaticSectionFrame>
+        ) : null}
+        {enabled("about.cta") ? (
+          <StaticSectionFrame id="about.cta" type="cta" mode={mode}>
+            <AboutVisitCta />
           </StaticSectionFrame>
         ) : null}
       </main>

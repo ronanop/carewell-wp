@@ -23,6 +23,7 @@ import {
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { buttonVariants } from "@/components/ui/button";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
@@ -208,7 +209,7 @@ export function DoctorsSection() {
       <div className="container-content section-padding">
         <div className="mx-auto max-w-[75rem]">
           {/* Header */}
-          <div className="mx-auto flex max-w-[44rem] flex-col items-center text-center">
+          <StaggerReveal className="mx-auto flex max-w-[44rem] flex-col items-center text-center" stepMs={70}>
             <div className="flex w-full max-w-[18rem] items-center gap-3 sm:max-w-[22rem] sm:gap-4">
               <span aria-hidden className="h-px flex-1 bg-[#CBD5E1]" />
               <EditableElement
@@ -262,7 +263,7 @@ export function DoctorsSection() {
             >
               {({ value }) => value || note}
             </EditableElement>
-          </div>
+          </StaggerReveal>
 
           {/* Main composition: portrait + structured stats */}
           <div

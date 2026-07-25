@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { Button } from "@/components/ui/button";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
@@ -162,7 +163,8 @@ export function LocationLeadSection() {
       aria-labelledby="location-lead-heading"
     >
       <div className="container-content section-padding min-w-0">
-        <div
+        <StaggerReveal
+          stepMs={80}
           className={cn(
             "min-w-0 max-w-full overflow-hidden rounded-2xl border border-border/60 bg-white/70 p-4 shadow-[0_8px_30px_rgb(10_37_64/0.06)]",
             "sm:p-8 lg:p-10",
@@ -409,7 +411,7 @@ export function LocationLeadSection() {
               </form>
             </div>
           </div>
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );
