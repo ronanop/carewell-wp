@@ -17,7 +17,7 @@ export const HOME_DOCTOR_ELEMENTS: ElementDescriptor[] = [
     ],
     supports: { replaceMedia: true, bind: true },
     defaultValues: {
-      src: "/images/dr-sandeep-bhasin.jpg",
+      src: "/images/dr-sandeep-bhasin-cutout.png",
       alt: "Dr. Sandeep Bhasin",
     },
     bindingSources: ["wordpress.cpt.doctor"],
@@ -63,19 +63,21 @@ export const HOME_DOCTOR_ELEMENTS: ElementDescriptor[] = [
     fields: [{ key: "text", label: "Description", type: "textarea", group: "Content" }],
     supports: { inlineEdit: true },
     defaultValues: {
-      text: "Senior cosmetic and hair transplant surgeon with 18+ years of clinical experience, and founder of Care Well Medical Centre. Every consultation is doctor-led — focused on safety, honest guidance, and natural-looking results you can trust.",
+      text: "Senior cosmetic and hair transplant surgeon with 22+ years of clinical experience, and founder of Care Well Medical Centre. Every consultation is doctor-led — focused on safety, honest guidance, and natural-looking results you can trust.",
     },
   },
   {
     id: "home.doctors.note",
-    displayName: "Supporting note",
+    displayName: "Trust statement",
     kind: "paragraph",
     sectionId: "home.doctors",
     inlineField: "text",
-    fields: [{ key: "text", label: "Note", type: "textarea", group: "Content" }],
+    fields: [
+      { key: "text", label: "Trust statement", type: "textarea", group: "Content" },
+    ],
     supports: { inlineEdit: true },
     defaultValues: {
-      text: "Performed 10,000+ cosmetic and hair procedures with a commitment to careful planning and patient-first care.",
+      text: "Performed 10,000+ cosmetic and hair procedures for patients across South Delhi and Delhi NCR.",
     },
   },
   {
@@ -110,18 +112,18 @@ export const HOME_DOCTOR_ELEMENTS: ElementDescriptor[] = [
 ];
 
 export const HOME_DOCTOR_STAT_DEFAULTS = [
-  { value: "18+", label: "Years of Clinical Experience" },
+  { value: "22+", label: "Years of Clinical Experience" },
   { value: "10,000+", label: "Procedures Performed" },
-  { value: "1", label: "Founder-Led Care" },
+  { value: "1", label: "Senior Doctor Supervision" },
 ] as const;
 
 export const HOME_DOCTOR_HIGHLIGHT_DEFAULTS = [
-  "Founder, Care Well Medical Centre",
-  "18+ years clinical experience",
-  "Hair transplant & cosmetic surgery specialist",
-  "Doctor-led consultations (no sales team)",
-  "Focus on natural, safe results",
-  "South Delhi practice",
+  "Founder & Lead Surgeon",
+  "Doctor-Performed Procedures",
+  "Expertise Across Hair & Skin",
+  "Trusted Across Delhi NCR",
+  "Recognized Medical Associations",
+  "Evidence-Based Protocols",
 ] as const;
 
 export const homeDoctorStatsRepeater: RepeaterDescriptor = {
@@ -357,17 +359,74 @@ export const HOME_AI_ELEMENTS: ElementDescriptor[] = [
   },
 ];
 
+/** 2×3 feature grid — left column (rows 1–3). */
 export const HOME_ABOUT_FEATURE_LEFT_DEFAULTS = [
-  "Advanced Skin & Anti-Aging Treatments",
-  "Hair Restoration & Transplant",
-  "Laser & Non-Surgical Procedures",
+  "Advanced Skin & Anti-Aging",
+  "Laser & Surgical Procedures",
+  "Scar & Acne Treatment",
 ] as const;
 
+/** 2×3 feature grid — right column (rows 1–3). */
 export const HOME_ABOUT_FEATURE_RIGHT_DEFAULTS = [
   "Body Contouring & Fat Reduction",
-  "Scar & Acne Treatment",
+  "Hair Restoration & Transplant",
   "Cosmetic Surgeries",
 ] as const;
+
+export const HOME_ABOUT_VALUE_DEFAULTS = [
+  {
+    title: "Patient First Philosophy",
+    description:
+      "At Care Well Medical Centre: We believe aesthetic care is not about changing who you are, but enhancing natural features safely and responsibly.",
+    href: "/about",
+    imageSrc: "/images/hero-portrait.png",
+    imageAlt: "Patient-focused aesthetic care at Care Well Medical Centre",
+  },
+  {
+    title: "Personalised Consultations",
+    description:
+      "Every treatment is planned with a personalised, doctor-led approach, combining advanced technology, medical expertise, and your goals.",
+    href: "/about",
+    imageSrc: "/images/hero-model.png",
+    imageAlt: "Personalised doctor-led consultation",
+  },
+  {
+    title: "Advanced Technology",
+    description:
+      "Every treatment is planned with a personalised, doctor-led approach, combining advanced technology and medical-grade equipment.",
+    href: "/about",
+    imageSrc: "/images/hero-portrait.png",
+    imageAlt: "Advanced aesthetic treatment technology",
+  },
+  {
+    title: "Ethical & Transparent Care",
+    description:
+      "Cosmetic care goes beyond appearance. It impacts self-confidence, wellness, and long-term satisfaction through honest guidance.",
+    href: "/about",
+    imageSrc: "/images/hero-model.png",
+    imageAlt: "Ethical doctor-led cosmetic care",
+  },
+] as const;
+
+export const homeAboutValuesRepeater: RepeaterDescriptor = {
+  id: "home.about.values",
+  displayName: "About value cards",
+  sectionId: "home.about",
+  itemFields: [
+    { key: "title", label: "Title", type: "text", group: "Content" },
+    { key: "description", label: "Description", type: "textarea", group: "Content" },
+    { key: "href", label: "Link", type: "link", group: "Content" },
+    { key: "imageSrc", label: "Image", type: "image", group: "Content" },
+    { key: "imageAlt", label: "Alt text", type: "text", group: "Accessibility" },
+  ],
+  defaultItems: HOME_ABOUT_VALUE_DEFAULTS.map((item) => ({ ...item })),
+  allowAdd: true,
+  allowDelete: true,
+  allowDuplicate: true,
+  allowReorder: true,
+  minItems: 2,
+  maxItems: 6,
+};
 
 export const HOME_ABOUT_HOME_ELEMENTS: ElementDescriptor[] = [
   {
@@ -378,7 +437,7 @@ export const HOME_ABOUT_HOME_ELEMENTS: ElementDescriptor[] = [
     inlineField: "text",
     fields: [{ key: "text", label: "Label", type: "text", group: "Content" }],
     supports: { inlineEdit: true },
-    defaultValues: { text: "About Us" },
+    defaultValues: { text: "ABOUT US" },
   },
   {
     id: "home.about.heading",
@@ -388,42 +447,18 @@ export const HOME_ABOUT_HOME_ELEMENTS: ElementDescriptor[] = [
     inlineField: "text",
     fields: [{ key: "text", label: "Heading", type: "textarea", group: "Content" }],
     supports: { inlineEdit: true },
-    defaultValues: { text: "Redefining Aesthetic & Cosmetic Care" },
+    defaultValues: { text: "Redefining Aesthetic & Cosmetic Care." },
   },
   {
     id: "home.about.body.1",
-    displayName: "About body 1",
+    displayName: "About body",
     kind: "paragraph",
     sectionId: "home.about",
     inlineField: "text",
     fields: [{ key: "text", label: "Body", type: "textarea", group: "Content" }],
     supports: { inlineEdit: true },
     defaultValues: {
-      text: "At Care Well Medical Centre, we believe aesthetic care should enhance what is already yours — never overpower it. Our approach centres on natural-looking results that feel like you, only refined with care and precision.",
-    },
-  },
-  {
-    id: "home.about.body.2",
-    displayName: "About body 2",
-    kind: "paragraph",
-    sectionId: "home.about",
-    inlineField: "text",
-    fields: [{ key: "text", label: "Body", type: "textarea", group: "Content" }],
-    supports: { inlineEdit: true },
-    defaultValues: {
-      text: "Every treatment plan begins with a doctor-led consultation. We take time to understand your goals, assess your unique needs, and guide you through options that are clinically sound and personally right for you.",
-    },
-  },
-  {
-    id: "home.about.body.3",
-    displayName: "About body 3",
-    kind: "paragraph",
-    sectionId: "home.about",
-    inlineField: "text",
-    fields: [{ key: "text", label: "Body", type: "textarea", group: "Content" }],
-    supports: { inlineEdit: true },
-    defaultValues: {
-      text: "We recommend only what is appropriate — prioritising safety, honesty, and long-term wellbeing over unnecessary procedures. Your trust is the foundation of everything we do.",
+      text: "Care Well Medical Centre: We believe in enhancing your natural features safely, responsibly, and ethically.",
     },
   },
   {
@@ -434,7 +469,7 @@ export const HOME_ABOUT_HOME_ELEMENTS: ElementDescriptor[] = [
     inlineField: "text",
     fields: [{ key: "text", label: "Heading", type: "text", group: "Content" }],
     supports: { inlineEdit: true },
-    defaultValues: { text: "Our special Features" },
+    defaultValues: { text: "Our Special Features." },
   },
   {
     id: "home.about.button",
@@ -447,26 +482,11 @@ export const HOME_ABOUT_HOME_ELEMENTS: ElementDescriptor[] = [
       { key: "href", label: "Link", type: "link", group: "Content" },
     ],
     supports: { inlineEdit: true },
-    defaultValues: { label: "More About Us", href: "/about" },
-  },
-  {
-    id: "home.about.image",
-    displayName: "About image",
-    kind: "image",
-    sectionId: "home.about",
-    fields: [
-      { key: "src", label: "Image", type: "image", group: "Content" },
-      { key: "alt", label: "Alt", type: "text", group: "Accessibility" },
-    ],
-    supports: { replaceMedia: true },
-    defaultValues: {
-      src: "/images/about-consultation.jpg",
-      alt: "Doctor consultation at Care Well Medical Centre",
-    },
+    defaultValues: { label: "Discover Our Full Story", href: "/about" },
   },
   ...HOME_ABOUT_FEATURE_LEFT_DEFAULTS.map((text, index) => ({
     id: `home.about.feature.left.${index}`,
-    displayName: `Left feature ${index + 1}`,
+    displayName: `Feature L${index + 1}`,
     kind: "list-item" as const,
     sectionId: "home.about",
     inlineField: "text",
@@ -478,7 +498,7 @@ export const HOME_ABOUT_HOME_ELEMENTS: ElementDescriptor[] = [
   })),
   ...HOME_ABOUT_FEATURE_RIGHT_DEFAULTS.map((text, index) => ({
     id: `home.about.feature.right.${index}`,
-    displayName: `Right feature ${index + 1}`,
+    displayName: `Feature R${index + 1}`,
     kind: "list-item" as const,
     sectionId: "home.about",
     inlineField: "text",
@@ -488,6 +508,49 @@ export const HOME_ABOUT_HOME_ELEMENTS: ElementDescriptor[] = [
     supports: { inlineEdit: true },
     defaultValues: { text },
   })),
+  ...HOME_ABOUT_VALUE_DEFAULTS.flatMap((item, index) => [
+    {
+      id: `home.about.values.item.${index}.title`,
+      displayName: `Value title ${index + 1}`,
+      kind: "heading" as const,
+      sectionId: "home.about",
+      inlineField: "text",
+      fields: [
+        { key: "text", label: "Title", type: "text" as const, group: "Content" as const },
+      ],
+      supports: { inlineEdit: true },
+      defaultValues: { text: item.title },
+    },
+    {
+      id: `home.about.values.item.${index}.description`,
+      displayName: `Value body ${index + 1}`,
+      kind: "paragraph" as const,
+      sectionId: "home.about",
+      inlineField: "text",
+      fields: [
+        {
+          key: "text",
+          label: "Description",
+          type: "textarea" as const,
+          group: "Content" as const,
+        },
+      ],
+      supports: { inlineEdit: true },
+      defaultValues: { text: item.description },
+    },
+    {
+      id: `home.about.values.item.${index}.imageSrc`,
+      displayName: `Value image ${index + 1}`,
+      kind: "image" as const,
+      sectionId: "home.about",
+      fields: [
+        { key: "src", label: "Image", type: "image" as const, group: "Content" as const },
+        { key: "alt", label: "Alt", type: "text" as const, group: "Accessibility" as const },
+      ],
+      supports: { replaceMedia: true },
+      defaultValues: { src: item.imageSrc, alt: item.imageAlt },
+    },
+  ]),
 ];
 
 export const HOME_SPECIALTY_DEFAULTS = [

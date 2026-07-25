@@ -23,10 +23,11 @@ const TREATMENT_OPTIONS = [
 ] as const;
 
 const fieldClassName = cn(
-  "mt-1.5 w-full rounded-lg border border-border bg-surface px-3.5 py-2.5",
+  "mt-1.5 w-full rounded-lg border border-border bg-surface px-3.5 py-3",
   "text-body text-foreground placeholder:text-muted-foreground",
   "transition-colors focus-visible:outline-none focus-visible:ring-2",
   "focus-visible:ring-ring focus-visible:ring-offset-2",
+  "min-h-11 sm:py-2.5",
 );
 
 const DEFAULT_HEADING = "Conveniently Located in South Delhi";
@@ -156,22 +157,25 @@ export function LocationLeadSection() {
   }
 
   return (
-    <section className="bg-[#F5F6F8]" aria-labelledby="location-lead-heading">
-      <div className="container-content section-padding">
+    <section
+      className="overflow-x-hidden bg-[#F5F6F8]"
+      aria-labelledby="location-lead-heading"
+    >
+      <div className="container-content section-padding min-w-0">
         <div
           className={cn(
-            "rounded-2xl border border-border/60 bg-white/70 p-6 shadow-[0_8px_30px_rgb(10_37_64/0.06)]",
+            "min-w-0 max-w-full overflow-hidden rounded-2xl border border-border/60 bg-white/70 p-4 shadow-[0_8px_30px_rgb(10_37_64/0.06)]",
             "sm:p-8 lg:p-10",
           )}
         >
-          <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
-            <div>
+          <div className="grid min-w-0 items-start gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-10">
+            <div className="min-w-0 max-w-full">
               <EditableElement
                 id="home.location.heading"
                 kind="heading"
                 defaultValue={DEFAULT_HEADING}
                 as="h2"
-                className="font-heading text-h2 text-[#0A2540]"
+                className="font-heading text-[1.5rem] font-bold leading-tight text-[#0A2540] sm:text-h2"
               >
                 {({ value }) => (
                   <span id="location-lead-heading">{value || heading}</span>
@@ -182,7 +186,7 @@ export function LocationLeadSection() {
                 kind="paragraph"
                 defaultValue={DEFAULT_ADDRESS}
                 as="p"
-                className="mt-3 text-body text-muted-foreground"
+                className="mt-2.5 text-body text-muted-foreground sm:mt-3"
               >
                 {({ value }) => value || address}
               </EditableElement>
@@ -192,7 +196,11 @@ export function LocationLeadSection() {
                 kind="map"
                 field="query"
                 defaultValue={DEFAULT_MAP_QUERY}
-                className="mt-6 min-h-[280px] overflow-hidden rounded-2xl border border-border/60 bg-[#E8EEF2] sm:min-h-[320px] aspect-[16/10]"
+                className={cn(
+                  "relative mt-5 aspect-[16/10] w-full min-w-0 max-w-full max-h-[240px]",
+                  "overflow-hidden rounded-xl border border-border/60 bg-[#E8EEF2]",
+                  "sm:mt-6 sm:max-h-none sm:min-h-[320px] sm:rounded-2xl",
+                )}
               >
                 {({ fields }) => {
                   const query = String(fields.query ?? mapQuery);
@@ -202,7 +210,7 @@ export function LocationLeadSection() {
                     <iframe
                       title="Care Well Medical Centre — Chittaranjan Park, New Delhi"
                       src={src || mapSrc}
-                      className="h-full min-h-[280px] w-full border-0 sm:min-h-[320px]"
+                      className="absolute inset-0 h-full w-full max-w-full border-0"
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
                       allowFullScreen
@@ -214,11 +222,11 @@ export function LocationLeadSection() {
 
             <div
               className={cn(
-                "rounded-2xl border border-border/60 bg-white p-6",
-                "shadow-[0_8px_30px_rgb(10_37_64/0.08)] sm:p-8",
+                "min-w-0 max-w-full rounded-xl border border-border/60 bg-white p-4",
+                "shadow-[0_8px_30px_rgb(10_37_64/0.08)] sm:rounded-2xl sm:p-8",
               )}
             >
-              <form onSubmit={handleSubmit} noValidate className="space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5">
                 <div>
                   <EditableElement
                     id="home.location.form.nameLabel"

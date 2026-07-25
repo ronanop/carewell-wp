@@ -5,6 +5,8 @@ export type MegaServiceLink = {
 
 export type MegaServiceGroup = {
   title?: string;
+  /** Hub or first-child URL — required when `title` is set so subheadings are links */
+  href?: string;
   links: MegaServiceLink[];
 };
 
@@ -40,6 +42,8 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
     groups: [
       {
         title: "Hair Loss Treatment",
+        // WordPress service URI (catch-all [...uri])
+        href: "/hair-loss-treatment-in-delhi",
         links: [
           link("PRP Hair Treatment", "/services/hair-treatments"),
           link("Growth Factor Concentrate", "/services/hair-treatments"),
@@ -47,6 +51,8 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
       },
       {
         title: "Hair Transplant",
+        // Footer + specialty slug used elsewhere
+        href: "/services/hair-transplant",
         links: [
           link("Beard Transplant", "/services/hair-treatments"),
           link("Eyebrow Transplant", "/services/hair-treatments"),
@@ -66,6 +72,7 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
     groups: [
       {
         title: "Skin Treatments",
+        href: "/services/skin-treatments",
         links: [
           link("Acne Scar", "/services/skin-aesthetic"),
           link("Skin Whitening", "/services/skin-aesthetic"),
@@ -75,6 +82,7 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
       },
       {
         title: "Cosmetic Treatments",
+        href: "/services/cosmetic-treatments",
         links: [
           link("Botox Treatment", "/services/skin-aesthetic"),
           link("Dermal Fillers", "/services/skin-aesthetic"),
@@ -84,6 +92,7 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
       },
       {
         title: "Body Contouring",
+        href: "/services/body-contouring",
         links: [link("Cryolipolysis", "/services/skin-aesthetic")],
       },
       {
@@ -110,14 +119,13 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
       },
       {
         title: "Intimate Surgery",
+        href: "/services/intimate-surgery",
         links: [
           link("Hymenoplasty", "/services/surgical-procedures"),
           link("Labiaplasty", "/services/surgical-procedures"),
           link("Vaginoplasty", "/services/surgical-procedures"),
+          link("Male to Female Surgery", "/services/surgical-procedures"),
         ],
-      },
-      {
-        links: [link("Male to Female Surgery", "/services/surgical-procedures")],
       },
     ],
   },
@@ -130,14 +138,14 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
     groups: [
       {
         title: "Holistic Wellness",
+        // No dedicated hub — parent category listing
+        href: "/services/wellness",
         links: [
           link("Ozone Therapy", "/services/wellness"),
           link("HBOT", "/services/wellness"),
           link("Peptide Therapy", "/services/wellness"),
+          link("IV Therapy", "/services/wellness"),
         ],
-      },
-      {
-        links: [link("IV Therapy", "/services/wellness")],
       },
     ],
   },

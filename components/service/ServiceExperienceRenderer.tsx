@@ -7,7 +7,6 @@ import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { SemanticArticleRenderer } from "@/components/blog/article/SemanticArticleRenderer";
 import { TreatmentHero } from "@/components/service/TreatmentHero";
-import { ServiceTrustStrip } from "@/components/service/ServiceTrustStrip";
 import { BlogSidebar } from "@/components/blog/BlogSidebar";
 import { MedicalDisclaimer } from "@/components/blog/editorial";
 import { SpecialtyFooterCta } from "@/components/blog/SpecialtyFooterCta";
@@ -111,8 +110,6 @@ export function ServiceExperienceRenderer({
         {doc.config.hero.enabled !== false ? (
           <TreatmentHero doc={doc} />
         ) : null}
-
-        <ServiceTrustStrip treatmentName={doc.leadContext.category} />
 
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.36fr)]">

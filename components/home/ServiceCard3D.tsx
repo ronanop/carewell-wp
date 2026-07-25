@@ -112,14 +112,14 @@ export function ServiceCard3D({
         />
       </div>
 
-      <div className="flex flex-1 flex-col items-center px-6 pb-7 pt-6 text-center">
-        <h3 className="font-heading text-h4 font-bold text-[#0A2540]">
+      <div className="flex flex-1 flex-col items-center px-4 pb-5 pt-4 text-center sm:px-6 sm:pb-7 sm:pt-6">
+        <h3 className="font-heading text-[1.0625rem] font-bold leading-snug text-[#0A2540] sm:text-h4">
           {title}
         </h3>
-        <p className="mt-3 flex-1 text-small text-muted-foreground">
+        <p className="mt-2 flex-1 text-[0.8125rem] leading-relaxed text-muted-foreground sm:mt-3 sm:text-small">
           {description}
         </p>
-        <span className="mt-5 inline-flex items-center gap-1.5 text-small font-medium text-primary">
+        <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-small font-medium text-primary sm:mt-5">
           Learn more
           <ArrowRight
             className="size-4 transition-transform duration-300 ease-out group-hover:translate-x-1"

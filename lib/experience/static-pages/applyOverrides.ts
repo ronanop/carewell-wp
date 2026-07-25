@@ -15,6 +15,7 @@ const SECTION_ID_ALIASES: Record<string, string[]> = {
   "home.about": ["home-about"],
   "home.specialties": ["home-specialties"],
   "home.why": ["home-faq", "home-why"],
+  "home.testimonials": ["home-testimonials"],
   "home.blog": ["home-blog"],
   "home.location": ["home-location"],
   "home.cta": ["home-cta"],

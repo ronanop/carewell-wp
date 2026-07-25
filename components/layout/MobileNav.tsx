@@ -89,7 +89,7 @@ export function MobileNav() {
       {createPortal(
         <div
           className={cn(
-            "fixed inset-x-0 bottom-0 z-[100] transition-opacity duration-200 xl:hidden",
+            "fixed inset-x-0 bottom-0 z-[110] transition-opacity duration-200 xl:hidden",
             open
               ? "pointer-events-auto visible opacity-100"
               : "pointer-events-none invisible opacity-0",
@@ -109,7 +109,7 @@ export function MobileNav() {
             id={panelId}
             aria-label="Mobile navigation"
             className={cn(
-              "absolute inset-y-0 right-0 z-[110] flex w-full max-w-sm flex-col overflow-y-auto border-l border-border bg-background shadow-lg transition-transform duration-200",
+              "absolute inset-y-0 right-0 z-[120] flex w-full max-w-sm flex-col overflow-y-auto border-l border-border bg-background shadow-lg transition-transform duration-200",
               open ? "translate-x-0" : "translate-x-full",
             )}
           >
@@ -164,21 +164,35 @@ export function MobileNav() {
                         >
                           {category.title}
                         </Link>
-                        <ul className="mt-1 space-y-0.5">
-                          {category.groups.flatMap((group) =>
-                            group.links.map((link) => (
-                              <li key={link.href + link.label}>
+                        <ul className="mt-1 space-y-2">
+                          {category.groups.map((group, groupIndex) => (
+                            <li key={`${category.id}-${group.title ?? groupIndex}`}>
+                              {group.title && group.href ? (
                                 <Link
-                                  href={link.href}
-                                  className="block rounded-md px-2 py-1.5 text-[0.8125rem] text-[#334155] no-underline hover:bg-secondary hover:text-primary hover:no-underline"
+                                  href={group.href}
+                                  className="block rounded-md px-2 py-1 text-[0.75rem] font-semibold text-[#475569] no-underline hover:bg-secondary hover:text-primary hover:underline"
                                   tabIndex={open ? undefined : -1}
                                   onClick={close}
                                 >
-                                  {link.label}
+                                  {group.title}
                                 </Link>
-                              </li>
-                            )),
-                          )}
+                              ) : null}
+                              <ul className="space-y-0.5">
+                                {group.links.map((item) => (
+                                  <li key={item.href + item.label}>
+                                    <Link
+                                      href={item.href}
+                                      className="block rounded-md px-2 py-1.5 text-[0.8125rem] text-[#334155] no-underline hover:bg-secondary hover:text-primary hover:no-underline"
+                                      tabIndex={open ? undefined : -1}
+                                      onClick={close}
+                                    >
+                                      {item.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </li>
+                          ))}
                         </ul>
                       </li>
                     ))}

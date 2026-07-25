@@ -37,6 +37,8 @@ export type ContactActionsProps = {
    * primary-secondary-tertiary: Book (primary) → WhatsApp (secondary tone) → Call (ghost/outline)
    */
   hierarchy?: "primary-secondary-tertiary" | "primary-only" | "equal";
+  /** Use on dark hero backgrounds — white outline secondary/tertiary CTAs. */
+  tone?: "default" | "on-dark";
   /**
    * Mobile/tablet: fixed bottom bar (hide inline). Desktop `lg+`: inline only.
    */
@@ -57,11 +59,13 @@ export function ContactActions({
   className,
   size = "default",
   hierarchy = "primary-secondary-tertiary",
+  tone = "default",
   stickyOnMobile = false,
 }: ContactActionsProps) {
+  const onDark = tone === "on-dark";
   const whatsappVariant =
     hierarchy === "equal" ? "whatsapp" : hierarchy === "primary-only" ? "ghost" : "outline";
-  const callVariant = hierarchy === "equal" ? "call" : "ghost";
+  const callVariant = hierarchy === "equal" ? "call" : onDark ? "outline" : "ghost";
 
   const actions = (opts?: { stretch?: boolean; compact?: boolean }) => {
     const stretch = opts?.stretch;
@@ -79,12 +83,23 @@ export function ContactActions({
           href={bookHref}
           onClick={onBookClick}
           className={cn(
-            buttonVariants({ variant: "default", size: btnSize }),
-            "rounded-xl text-white [&_svg]:text-white",
+            buttonVariants({
+              variant: onDark ? "secondary" : "default",
+              size: btnSize,
+            }),
+            "rounded-xl",
+            onDark
+              ? "border-transparent bg-white text-[#0A2540] hover:bg-white/90 [&_svg]:text-[#0A2540]"
+              : "text-white [&_svg]:text-white",
             shareRow,
           )}
         >
-          <span className={cn("text-white", stretch && "truncate")}>
+          <span
+            className={cn(
+              onDark ? "text-[#0A2540]" : "text-white",
+              stretch && "truncate",
+            )}
+          >
             {bookText}
           </span>
         </Link>
@@ -103,7 +118,9 @@ export function ContactActions({
                 "rounded-xl",
                 hierarchy !== "equal" &&
                   whatsappVariant === "outline" &&
-                  "border-[#25D366]/50 text-[#128C7E] hover:bg-[#25D366]/8 hover:border-[#25D366]/70",
+                  (onDark
+                    ? "border-white/60 bg-transparent text-white hover:bg-white/10 hover:border-white/80"
+                    : "border-[#25D366]/50 text-[#128C7E] hover:bg-[#25D366]/8 hover:border-[#25D366]/70"),
                 shareRow,
               )}
             >
@@ -115,7 +132,10 @@ export function ContactActions({
               onClick={onCallClick}
               className={cn(
                 buttonVariants({ variant: callVariant, size: btnSize }),
-                "rounded-xl text-muted-foreground",
+                "rounded-xl",
+                onDark
+                  ? "border-white/40 bg-transparent text-white/90 hover:bg-white/10 hover:text-white"
+                  : "text-muted-foreground",
                 shareRow,
               )}
             >

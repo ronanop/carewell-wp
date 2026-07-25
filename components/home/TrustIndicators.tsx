@@ -19,8 +19,8 @@ export function TrustIndicators() {
 
   return (
     <section className="border-y border-border bg-muted/40">
-      <div className="container-content py-8 md:py-10">
-        <ul className="grid grid-cols-2 gap-y-8 sm:grid-cols-3 lg:grid-cols-6 lg:divide-x lg:divide-border lg:gap-y-0">
+      <div className="container-content py-10 md:py-16 lg:py-24">
+        <ul className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 sm:gap-y-8 lg:grid-cols-6 lg:divide-x lg:divide-border lg:gap-y-0">
           {DEFAULT_INDICATORS.map((item, index) => {
             const valueId = `home.trust.stat.${index}.value`;
             const labelId = `home.trust.stat.${index}.label`;
@@ -40,14 +40,14 @@ export function TrustIndicators() {
             return (
               <li
                 key={item.label}
-                className="flex flex-col items-center px-4 text-center lg:px-5"
+                className="flex flex-col items-center px-2 text-center sm:px-4 lg:px-5"
               >
                 <EditableElement
                   id={valueId}
                   kind="statistic"
                   defaultValue={item.value}
                   as="p"
-                  className="text-[1.25rem] font-semibold leading-tight tracking-tight text-foreground md:text-[1.375rem]"
+                  className="text-[1.125rem] font-semibold leading-tight tracking-tight text-foreground sm:text-[1.25rem] md:text-[1.375rem]"
                 >
                   {({ value: v }) => (
                     <AnimatedStat value={String(v || value)} />
@@ -58,7 +58,7 @@ export function TrustIndicators() {
                   kind="label"
                   defaultValue={item.label}
                   as="p"
-                  className="mt-1.5 text-[0.8125rem] leading-snug text-muted-foreground"
+                  className="mt-1 text-[0.75rem] leading-snug text-muted-foreground sm:mt-1.5 sm:text-[0.8125rem]"
                 >
                   {({ value: v }) => String(v || label)}
                 </EditableElement>

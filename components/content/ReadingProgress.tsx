@@ -80,7 +80,7 @@ export function ReadingProgress({
   return (
     <div
       className={cn(
-        "pointer-events-none fixed inset-x-0 top-0 z-[60] h-0.5",
+        "pointer-events-none fixed inset-x-0 top-0 z-[105] h-0.5",
         className,
       )}
       role="progressbar"

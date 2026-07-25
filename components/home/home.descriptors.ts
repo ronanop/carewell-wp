@@ -7,6 +7,7 @@ import {
   HOME_BLOG_ELEMENTS,
   HOME_JOURNEY_ELEMENTS,
   HOME_SERVICES_ELEMENTS,
+  HOME_TESTIMONIALS_ELEMENTS,
   HOME_WHY_ELEMENTS,
 } from "@/components/home/homeContent.elements";
 import {
@@ -118,6 +119,16 @@ export const homeWhyDescriptor: SectionDescriptor = {
   supports: { drag: true, animation: true, responsive: true },
 };
 
+export const homeTestimonialsDescriptor: SectionDescriptor = {
+  id: "home.testimonials",
+  displayName: "YouTube testimonials",
+  type: "testimonials",
+  legacyIds: ["home-testimonials"],
+  editableProps: [],
+  elements: HOME_TESTIMONIALS_ELEMENTS,
+  supports: { drag: true, animation: true, responsive: true },
+};
+
 export const homeBlogDescriptor: SectionDescriptor = {
   id: "home.blog",
   displayName: "Blog",
@@ -158,6 +169,7 @@ export const HOME_SECTION_DESCRIPTORS: SectionDescriptor[] = [
   homeAboutDescriptor,
   homeSpecialtiesDescriptor,
   homeWhyDescriptor,
+  homeTestimonialsDescriptor,
   homeBlogDescriptor,
   homeLocationDescriptor,
   homeCtaDescriptor,

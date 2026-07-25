@@ -130,9 +130,12 @@ function FeatureCard({ category }: { category: MegaServiceCategory }) {
         />
       </div>
       <div className="flex flex-1 flex-col bg-[#E8F4F8] px-4 py-4">
-        <p className="text-[0.9375rem] font-semibold text-[#0A2540]">
+        <Link
+          href={category.href}
+          className="text-[0.9375rem] font-semibold text-[#0A2540] no-underline transition-colors hover:text-primary hover:underline"
+        >
           {category.title}
-        </p>
+        </Link>
         <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-[#4B5563]">
           {category.description}
         </p>
@@ -169,7 +172,15 @@ function ServiceColumn({
       <div className="mt-3 space-y-4">
         {category.groups.map((group, groupIndex) => (
           <div key={`${category.id}-${group.title ?? groupIndex}`}>
-            {group.title ? (
+            {group.title && group.href ? (
+              <Link
+                href={group.href}
+                className="mb-1.5 block text-[0.75rem] font-semibold text-[#475569] no-underline transition-colors hover:text-primary hover:underline"
+                onFocus={onActivate}
+              >
+                {group.title}
+              </Link>
+            ) : group.title ? (
               <p className="mb-1.5 text-[0.75rem] font-semibold text-[#475569]">
                 {group.title}
               </p>

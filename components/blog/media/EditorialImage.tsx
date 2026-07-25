@@ -127,7 +127,7 @@ export function EditorialImage({
           role="dialog"
           aria-modal
           aria-label="Image lightbox"
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-modal flex items-center justify-center bg-black/80 p-4"
           onClick={() => setOpen(false)}
           onKeyDown={(e) => {
             if (e.key === "Escape") setOpen(false);

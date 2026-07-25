@@ -325,13 +325,16 @@
    ============================================================================= */
 
 :root {
+  /* Public page content stays ≤ content. Site chrome (navbar) is sticky.
+     Dropdowns nest under chrome or sit just above it. Modals/toasts/tooltips
+     and admin overlays (z-[200]+) stay above chrome. */
   --z-background: 0;
   --z-content: 1;
-  --z-sticky: 10;
-  --z-dropdown: 20;
-  --z-modal: 30;
-  --z-toast: 40;
-  --z-tooltip: 50;
+  --z-sticky: 100;
+  --z-dropdown: 110;
+  --z-modal: 200;
+  --z-toast: 210;
+  --z-tooltip: 220;
 }
 
 /* =============================================================================
@@ -1024,23 +1027,71 @@
 
 }
 
-/* Homepage post-hero + footer: 32% visual shrink (0.85 ?? 0.8 = 0.68) via zoom.
+/* Homepage post-hero + footer: desktop visual shrink only (0.76 × 1.1 = 0.836).
+   Mobile/tablet stay at 1× so sections feel native — not uniformly “zoomed”.
    Transform fallback for engines without zoom; width compensated to avoid gaps. */
 .homepage-compact {
-  zoom: 0.76;
+  zoom: 1;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
 }
 
+@media (min-width: 1024px) {
+  .homepage-compact {
+    zoom: 0.836;
+  }
+}
+
 @supports not (zoom: 1) {
   .homepage-compact {
     zoom: unset;
-    transform: scale(0.76);
-    transform-origin: top center;
-    width: 131.5789%; /* 100 / 0.76 */
-    max-width: none;
-    margin-inline: -15.7895%; /* center the oversized box */
+  }
+
+  @media (min-width: 1024px) {
+    .homepage-compact {
+      transform: scale(0.836);
+      transform-origin: top center;
+      width: 119.6172%; /* 100 / 0.836 */
+      max-width: none;
+      margin-inline: -9.8086%; /* center the oversized box */
+    }
+  }
+}
+
+/* Homepage footer only: +10% vs surrounding .homepage-compact — desktop only. */
+.homepage-compact > footer {
+  zoom: 1;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .homepage-compact > footer {
+    zoom: 1.1;
+  }
+}
+
+@supports not (zoom: 1) {
+  .homepage-compact > footer {
+    zoom: unset;
+  }
+
+  @media (min-width: 1024px) {
+    .homepage-compact > footer {
+      transform: scale(1.1);
+      transform-origin: top center;
+      width: 90.9091%; /* 100 / 1.1 */
+      max-width: none;
+      margin-inline: 4.54545%; /* center the scaled box */
+    }
+  }
+}
+
+/* Comfortable mobile section rhythm once zoom is off (desktop/tablet tokens unchanged). */
+@media (max-width: 767px) {
+  .homepage-compact .section-padding {
+    padding-block: 3rem; /* 48px — between cramped and the 64px token */
   }
 }
 
@@ -1090,6 +1141,54 @@
     width: 113.6364%; /* 100 / 0.88 */
     max-width: none;
     margin-inline: -6.8182%; /* center the oversized box */
+  }
+}
+
+/* Desktop promo strip marquee (PromoStrip) */
+@keyframes promo-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.promo-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 1.25rem,
+    #000 calc(100% - 1.25rem),
+    transparent
+  );
+}
+
+.promo-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: promo-marquee 45s linear infinite;
+}
+
+.promo-marquee:hover .promo-marquee-track,
+.promo-marquee:focus-within .promo-marquee-track {
+  animation-play-state: paused;
+}
+
+.promo-marquee-segment {
+  padding-inline-end: 3rem;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: rgb(255 255 255 / 0.95);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-marquee-track {
+    animation: none;
   }
 }
 

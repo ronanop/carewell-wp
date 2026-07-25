@@ -4,13 +4,20 @@
 
 import { AboutSection } from "@/components/home/AboutSection";
 import { AiSkinAnalysis } from "@/components/home/AiSkinAnalysis";
-import { BlogSection } from "@/components/home/BlogSection";
+import {
+  BlogSection,
+  type HomeBlogPost,
+} from "@/components/home/BlogSection";
 import { ConsultationSpecialties } from "@/components/home/ConsultationSpecialties";
 import { CTABanner } from "@/components/home/CTABanner";
 import { DoctorsSection } from "@/components/home/DoctorsSection";
 import { HeroSection } from "@/components/home/HeroSection";
 import { LocationLeadSection } from "@/components/home/LocationLeadSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
+import {
+  TestimonialsSection,
+  type HomeYouTubeVideo,
+} from "@/components/home/TestimonialsSection";
 import { TreatmentJourney } from "@/components/home/TreatmentJourney";
 import { TrustIndicators } from "@/components/home/TrustIndicators";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
@@ -21,7 +28,19 @@ import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
 import { isSectionEnabled } from "@/lib/experience/static-pages/applyOverrides";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 
-export function HomePageView({ mode, config = null }: StaticPageViewProps) {
+export type HomePageViewProps = StaticPageViewProps & {
+  /** Latest WordPress posts for BlogSection (public route only). */
+  latestBlogPosts?: HomeBlogPost[];
+  /** Latest YouTube videos for TestimonialsSection (public route only). */
+  latestYouTubeVideos?: HomeYouTubeVideo[];
+};
+
+export function HomePageView({
+  mode,
+  config = null,
+  latestBlogPosts,
+  latestYouTubeVideos,
+}: HomePageViewProps) {
   const enabled = (sectionId: string, fallback = true) =>
     isSectionEnabled(config, sectionId, fallback);
 
@@ -79,9 +98,18 @@ export function HomePageView({ mode, config = null }: StaticPageViewProps) {
               <WhyChooseUs />
             </StaticSectionFrame>
           ) : null}
+          {enabled("home.testimonials") ? (
+            <StaticSectionFrame
+              id="home.testimonials"
+              type="testimonials"
+              mode={mode}
+            >
+              <TestimonialsSection videos={latestYouTubeVideos} />
+            </StaticSectionFrame>
+          ) : null}
           {enabled("home.blog") ? (
             <StaticSectionFrame id="home.blog" type="related-blogs" mode={mode}>
-              <BlogSection />
+              <BlogSection posts={latestBlogPosts} />
             </StaticSectionFrame>
           ) : null}
           {enabled("home.location") ? (

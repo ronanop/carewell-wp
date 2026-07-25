@@ -452,7 +452,7 @@ export function ConsultationMobileSheet({
             <motion.button
               type="button"
               aria-label="Close consultation form"
-              className="fixed inset-0 z-50 bg-[#0A2540]/45"
+              className="fixed inset-0 z-modal bg-[#0A2540]/45"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -462,7 +462,7 @@ export function ConsultationMobileSheet({
               role="dialog"
               aria-modal="true"
               aria-labelledby="consultation-sidebar-heading"
-              className="fixed inset-x-0 bottom-0 z-50 max-h-[92vh] overflow-y-auto"
+              className="fixed inset-x-0 bottom-0 z-modal max-h-[92vh] overflow-y-auto"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}

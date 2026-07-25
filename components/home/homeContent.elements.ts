@@ -270,24 +270,62 @@ export const HOME_BLOG_ELEMENTS: ElementDescriptor[] = [
   ]),
 ];
 
+/** Chrome only — video cards come from YouTube RSS, not Studio. */
+export const HOME_TESTIMONIALS_ELEMENTS: ElementDescriptor[] = [
+  {
+    id: "home.testimonials.overline",
+    displayName: "Testimonials overline",
+    kind: "label",
+    sectionId: "home.testimonials",
+    inlineField: "text",
+    fields: [{ key: "text", label: "Overline", type: "text", group: "Content" }],
+    supports: { inlineEdit: true },
+    defaultValues: { text: "Patient stories" },
+  },
+  {
+    id: "home.testimonials.heading",
+    displayName: "Testimonials heading",
+    kind: "heading",
+    sectionId: "home.testimonials",
+    inlineField: "text",
+    fields: [{ key: "text", label: "Heading", type: "text", group: "Content" }],
+    supports: { inlineEdit: true },
+    defaultValues: { text: "Watch Patient Testimonials" },
+  },
+  {
+    id: "home.testimonials.description",
+    displayName: "Testimonials description",
+    kind: "paragraph",
+    sectionId: "home.testimonials",
+    inlineField: "text",
+    fields: [
+      { key: "text", label: "Description", type: "textarea", group: "Content" },
+    ],
+    supports: { inlineEdit: true },
+    defaultValues: {
+      text: "Hear from patients about their care journey at Care Well Medical Centre — real experiences, shared in their own words.",
+    },
+  },
+];
+
 export const HOME_JOURNEY_DEFAULTS = [
   {
-    title: "Step 1: Doctor Consultation",
+    title: "Doctor Consultation",
     description:
       "Personal evaluation to understand your concern and goals. No sales team. Direct doctor interaction.",
   },
   {
-    title: "Step 2: Medical Assessment",
+    title: "Medical Assessment",
     description:
       "Detailed scalp, skin, or body analysis using medical protocols and experience.",
   },
   {
-    title: "Step 3: Personalised Treatment Plan",
+    title: "Personalised Treatment Plan",
     description:
       "Only treatments you medically need. Clear explanation of procedure, recovery, and cost.",
   },
   {
-    title: "Step 4: Safe Procedure & Follow-up",
+    title: "Safe Procedure & Follow-up",
     description:
       "Advanced technology, strict hygiene, and proper post-treatment care.",
   },
@@ -358,18 +396,25 @@ export const HOME_WHY_DEFAULTS = [
   {
     title: "Patient-Focused Approach",
     description:
-      "Seamless care with customized treatment plans and dedicated support at every step.",
+      "We ensure a seamless experience with customized treatment plans and dedicated support.",
   },
   {
     title: "Latest Technology",
     description:
-      "Advanced FUE systems, medical-grade lasers, and modern surgical infrastructure in South Delhi.",
+      "Advanced FDA-approved systems, medical-grade lasers, and modern surgical infrastructure.",
   },
   {
     title: "Efficient & Professional",
     description:
-      "Smooth appointment scheduling, timely follow-ups, and a stress-free experience.",
+      "Smooth appointments, minimal wait times, timely follow-ups, and a stress-free experience.",
   },
+] as const;
+
+export const HOME_WHY_TRUST_DEFAULTS = [
+  { title: "Safe & Hygienic Environment" },
+  { title: "Experienced & Caring Team" },
+  { title: "Timely & Transparent Process" },
+  { title: "Trusted by Thousands of Patients" },
 ] as const;
 
 export const homeWhyRepeater: RepeaterDescriptor = {
@@ -382,6 +427,20 @@ export const homeWhyRepeater: RepeaterDescriptor = {
   ],
   defaultItems: HOME_WHY_DEFAULTS.map((item) => ({ ...item })),
   bindingSources: ["wordpress.cpt.faq"],
+  allowAdd: true,
+  allowDelete: true,
+  allowDuplicate: true,
+  allowReorder: true,
+};
+
+export const homeWhyTrustRepeater: RepeaterDescriptor = {
+  id: "home.why.trust",
+  displayName: "Why trust badges",
+  sectionId: "home.why",
+  itemFields: [
+    { key: "title", label: "Title", type: "text", group: "Content" },
+  ],
+  defaultItems: HOME_WHY_TRUST_DEFAULTS.map((item) => ({ ...item })),
   allowAdd: true,
   allowDelete: true,
   allowDuplicate: true,
@@ -408,6 +467,18 @@ export const HOME_WHY_ELEMENTS: ElementDescriptor[] = [
     fields: [{ key: "text", label: "Heading", type: "textarea", group: "Content" }],
     supports: { inlineEdit: true },
     defaultValues: { text: "Why Choose Care Well Medical Centre?" },
+  },
+  {
+    id: "home.why.description",
+    displayName: "Why description",
+    kind: "paragraph",
+    sectionId: "home.why",
+    inlineField: "text",
+    fields: [{ key: "text", label: "Description", type: "textarea", group: "Content" }],
+    supports: { inlineEdit: true },
+    defaultValues: {
+      text: "Experience expert care, advanced technology, and a patient-first approach — all under one roof.",
+    },
   },
   {
     id: "home.why.footerHeading",
@@ -444,12 +515,45 @@ export const HOME_WHY_ELEMENTS: ElementDescriptor[] = [
     ],
     supports: { replaceMedia: true },
     defaultValues: {
-      src: "/images/dr-sandeep-bhasin.jpg",
+      src: "/images/dr-sandeep-bhasin-portrait.png",
       alt: "Dr. Sandeep Bhasin",
     },
+  },
+  {
+    id: "home.why.doctorName",
+    displayName: "Why doctor name",
+    kind: "heading",
+    sectionId: "home.why",
+    inlineField: "text",
+    fields: [{ key: "text", label: "Name", type: "text", group: "Content" }],
+    supports: { inlineEdit: true },
+    defaultValues: { text: "Dr. Sandeep Bhasin" },
+  },
+  {
+    id: "home.why.doctorTitle",
+    displayName: "Why doctor title",
+    kind: "paragraph",
+    sectionId: "home.why",
+    inlineField: "text",
+    fields: [{ key: "text", label: "Title", type: "text", group: "Content" }],
+    supports: { inlineEdit: true },
+    defaultValues: { text: "Senior Cosmetic & Aesthetic Surgeon" },
+  },
+  {
+    id: "home.why.doctorLocation",
+    displayName: "Why doctor location",
+    kind: "paragraph",
+    sectionId: "home.why",
+    inlineField: "text",
+    fields: [{ key: "text", label: "Location", type: "text", group: "Content" }],
+    supports: { inlineEdit: true },
+    defaultValues: { text: "Care Well Medical Centre, Delhi" },
   },
   ...itemFields("home.why", "home.why", HOME_WHY_DEFAULTS.length, [
     { key: "title", label: "Title" },
     { key: "description", label: "Description", type: "textarea" },
+  ]),
+  ...itemFields("home.why", "home.why.trust", HOME_WHY_TRUST_DEFAULTS.length, [
+    { key: "title", label: "Trust title" },
   ]),
 ];

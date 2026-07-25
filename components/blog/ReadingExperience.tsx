@@ -92,7 +92,7 @@ export function ReadingExperienceBar({
     <div className={cn("pointer-events-none", className)} aria-hidden>
       <ReadingProgress />
       {activeLabel ? (
-        <div className="pointer-events-none fixed inset-x-0 top-1 z-[60] mx-auto flex max-w-6xl justify-end px-4 pt-2 md:block">
+        <div className="pointer-events-none fixed inset-x-0 top-1 z-[105] mx-auto flex max-w-6xl justify-end px-4 pt-2 md:block">
           <div className="rounded-full border border-border/60 bg-surface/90 px-3 py-1 text-[0.6875rem] text-muted-foreground shadow-sm backdrop-blur">
             <span className="font-medium text-foreground/80">{activeLabel}</span>
             <span className="mx-1.5 opacity-40">·</span>

@@ -9,11 +9,13 @@ import {
   HOME_BLOG_ELEMENTS,
   HOME_JOURNEY_ELEMENTS,
   HOME_SERVICES_ELEMENTS,
+  HOME_TESTIMONIALS_ELEMENTS,
   HOME_WHY_ELEMENTS,
   homeBlogRepeater,
   homeJourneyRepeater,
   homeServicesRepeater,
   homeWhyRepeater,
+  homeWhyTrustRepeater,
 } from "@/components/home/homeContent.elements";
 import {
   HOME_AI_ELEMENTS,
@@ -21,6 +23,7 @@ import {
   HOME_DOCTOR_ELEMENTS,
   HOME_LOCATION_ELEMENTS,
   HOME_SPECIALTY_ELEMENTS,
+  homeAboutValuesRepeater,
   homeDoctorHighlightsRepeater,
   homeDoctorStatsRepeater,
   homeSpecialtiesRepeater,
@@ -83,6 +86,7 @@ const SEED_ELEMENTS: ElementDescriptor[] = [
   ...HOME_CTA_ELEMENTS,
   ...HOME_SERVICES_ELEMENTS,
   ...HOME_BLOG_ELEMENTS,
+  ...HOME_TESTIMONIALS_ELEMENTS,
   ...HOME_JOURNEY_ELEMENTS,
   ...HOME_WHY_ELEMENTS,
   ...HOME_DOCTOR_ELEMENTS,
@@ -99,9 +103,11 @@ const SEED_REPEATERS: RepeaterDescriptor[] = [
   homeBlogRepeater,
   homeJourneyRepeater,
   homeWhyRepeater,
+  homeWhyTrustRepeater,
   homeDoctorStatsRepeater,
   homeDoctorHighlightsRepeater,
   homeSpecialtiesRepeater,
+  homeAboutValuesRepeater,
 ];
 
 registerElementDescriptors(SEED_ELEMENTS);

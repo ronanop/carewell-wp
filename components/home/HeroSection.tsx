@@ -381,10 +381,10 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
           </EditableElement>
         </div>
 
-        {/* Trust strip — glued to image bottom via negative margin */}
-        <div className="relative z-10 -mt-6 px-0 sm:-mt-8 lg:mt-0 lg:pb-10">
+        {/* Trust strip — glued to image bottom via negative margin; mobile/tablet only */}
+        <div className="relative z-10 -mt-6 px-0 sm:-mt-8 lg:hidden">
           <ul
-            className="mx-auto grid max-w-[24.375rem] grid-cols-3 divide-x divide-[#0A2540]/08 overflow-hidden rounded-2xl border border-white/80 bg-white shadow-[0_16px_40px_-20px_rgb(10_37_64/0.35)] sm:max-w-xl lg:max-w-3xl"
+            className="mx-auto grid max-w-[24.375rem] grid-cols-3 divide-x divide-[#0A2540]/08 overflow-hidden rounded-2xl border border-white/80 bg-white shadow-[0_16px_40px_-20px_rgb(10_37_64/0.35)] sm:max-w-xl"
             aria-label="Clinic trust signals"
           >
             {TRUST_STRIP.map((item) => {

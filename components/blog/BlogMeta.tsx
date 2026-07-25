@@ -9,11 +9,25 @@ import type { BlogDocument } from "@/types/blog-document";
 
 export function BlogBreadcrumb({
   items,
+  className,
+  tone = "default",
 }: {
   items: BlogDocument["breadcrumbs"];
+  className?: string;
+  /** `on-dark` keeps links white on dark heroes (e.g. TreatmentHero). */
+  tone?: "default" | "on-dark";
 }) {
+  const onDark = tone === "on-dark";
+
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
+    <nav
+      aria-label="Breadcrumb"
+      className={cn(
+        "text-sm",
+        onDark ? "text-white/70" : "text-muted-foreground",
+        className,
+      )}
+    >
       <ol className="flex flex-wrap items-center gap-1.5">
         {items.map((item, i) => {
           const last = i === items.length - 1;
@@ -21,9 +35,14 @@ export function BlogBreadcrumb({
             <li key={item.href} className="flex items-center gap-1.5">
               {i > 0 ? <span aria-hidden>/</span> : null}
               {last ? (
-                <span className="line-clamp-1 text-foreground/70">{item.label}</span>
+                <span className="line-clamp-1 opacity-90">{item.label}</span>
               ) : (
-                <Link href={item.href} className="hover:text-primary">
+                <Link
+                  href={item.href}
+                  className={
+                    onDark ? "text-white/70 hover:text-white" : "hover:text-primary"
+                  }
+                >
                   {item.label}
                 </Link>
               )}

@@ -62,7 +62,7 @@ export function ConsultationLeadCapture({
               <motion.button
                 type="button"
                 aria-label="Close consultation form"
-                className="fixed inset-0 z-50 bg-[#0A2540]/40"
+                className="fixed inset-0 z-modal bg-[#0A2540]/40"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -72,7 +72,7 @@ export function ConsultationLeadCapture({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="consultation-form-heading"
-                className="fixed inset-x-0 bottom-0 z-50 max-h-[90vh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl"
+                className="fixed inset-x-0 bottom-0 z-modal max-h-[90vh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl"
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}

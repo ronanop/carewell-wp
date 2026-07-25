@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import { HOME_SPECIALTY_DEFAULTS } from "@/components/home/homeDoctorsLocation.elements";
@@ -14,6 +15,41 @@ const DEFAULT_HEADING = "Our Aesthetic Consultation Specialties";
 const DEFAULT_DESCRIPTION =
   "At Care Well Medical Centre, every treatment begins with a personalised, doctor-led consultation. We focus on understanding your concern first, then recommending the safest and most effective option.";
 
+/** Icons keyed by specialty code. */
+const SPECIALTY_ICON_BY_CODE: Record<string, string> = {
+  HAI: "/images/consultation-specialties/hair-transplant.png",
+  LAS: "/images/consultation-specialties/laser-hair-removal.png",
+  ACN: "/images/consultation-specialties/acne-treatment.png",
+  ANT: "/images/consultation-specialties/aging-treatment.png",
+  BOT: "/images/consultation-specialties/botox.png",
+  RHI: "/images/consultation-specialties/rhinoplasty.png",
+  BEA: "/images/consultation-specialties/beard-transplant.png",
+  HYD: "/images/consultation-specialties/hydrafacial.png",
+  LIP: "/images/consultation-specialties/liposuction.png",
+  BRE: "/images/consultation-specialties/breast-augmentation.png",
+  HYM: "/images/consultation-specialties/hymenoplasty.png",
+  CRY: "/images/consultation-specialties/cryolipolysis.png",
+};
+
+/** Fuzzy name fallback when code is missing or customized. */
+const SPECIALTY_ICON_BY_NAME: Record<string, string> = {
+  "hair transplant": SPECIALTY_ICON_BY_CODE.HAI,
+  "laser hair removal": SPECIALTY_ICON_BY_CODE.LAS,
+  "acne & scar treatment": SPECIALTY_ICON_BY_CODE.ACN,
+  "acne treatment": SPECIALTY_ICON_BY_CODE.ACN,
+  "anti-aging treatments": SPECIALTY_ICON_BY_CODE.ANT,
+  "aging treatment": SPECIALTY_ICON_BY_CODE.ANT,
+  botox: SPECIALTY_ICON_BY_CODE.BOT,
+  rhinoplasty: SPECIALTY_ICON_BY_CODE.RHI,
+  "beard transplant": SPECIALTY_ICON_BY_CODE.BEA,
+  hydrafacial: SPECIALTY_ICON_BY_CODE.HYD,
+  liposuction: SPECIALTY_ICON_BY_CODE.LIP,
+  "breast augmentation": SPECIALTY_ICON_BY_CODE.BRE,
+  hymenoplasty: SPECIALTY_ICON_BY_CODE.HYM,
+  cryolipolysis: SPECIALTY_ICON_BY_CODE.CRY,
+  "cryolipolysis (fat freezing)": SPECIALTY_ICON_BY_CODE.CRY,
+};
+
 function slugify(name: string) {
   return name
     .toLowerCase()
@@ -21,6 +57,13 @@ function slugify(name: string) {
     .replace(/[()]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+function resolveSpecialtyIcon(code: string, name: string): string | null {
+  const byCode = SPECIALTY_ICON_BY_CODE[code.trim().toUpperCase()];
+  if (byCode) return byCode;
+  const byName = SPECIALTY_ICON_BY_NAME[name.trim().toLowerCase()];
+  return byName ?? null;
 }
 
 export function ConsultationSpecialties() {
@@ -67,7 +110,7 @@ export function ConsultationSpecialties() {
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="mt-3 font-heading text-h2 font-bold text-[#0A2540]"
+            className="mt-3 font-heading text-[1.5rem] font-bold leading-tight text-[#0A2540] sm:text-h2"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -76,13 +119,13 @@ export function ConsultationSpecialties() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-4 max-w-[42rem] text-body leading-relaxed text-muted-foreground"
+            className="mx-auto mt-3 max-w-[42rem] text-body leading-relaxed text-muted-foreground sm:mt-4"
           >
             {({ value }) => value || description}
           </EditableElement>
         </div>
 
-        <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <ul className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-10 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
           {specialties.map((specialty) => {
             const code = String(specialty.code ?? "");
             const name = String(specialty.name ?? "");
@@ -97,20 +140,39 @@ export function ConsultationSpecialties() {
                 >
                   {({ fields }) => {
                     const displayName = String(fields.name ?? name);
+                    const displayCode = String(fields.code ?? code);
+                    const iconSrc = resolveSpecialtyIcon(
+                      displayCode,
+                      displayName,
+                    );
+
                     return (
                       <Link
                         href={`/services/${slugify(displayName)}`}
                         className={cn(
-                          "flex h-full flex-col items-center justify-center rounded-xl bg-secondary px-3 py-6 text-center no-underline",
+                          "flex h-full min-h-[6.5rem] flex-col items-center justify-center rounded-xl bg-secondary px-2.5 py-4 text-center no-underline sm:min-h-0 sm:px-3 sm:py-6",
                           "border border-transparent transition-all duration-300",
                           "hover:-translate-y-0.5 hover:border-border hover:shadow-[0_8px_24px_rgb(10_37_64/0.06)]",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                         )}
                       >
-                        <span className="text-label font-medium uppercase tracking-[0.12em] text-[#7DC4DC]">
-                          {String(fields.code ?? code)}
-                        </span>
-                        <span className="mt-2 font-heading text-small font-bold leading-snug text-[#0A2540] sm:text-body">
+                        {iconSrc ? (
+                          <span className="relative flex h-9 w-9 items-center justify-center sm:h-12 sm:w-12">
+                            <Image
+                              src={iconSrc}
+                              alt=""
+                              width={48}
+                              height={48}
+                              className="h-full w-full object-contain"
+                              aria-hidden
+                            />
+                          </span>
+                        ) : (
+                          <span className="text-label font-medium uppercase tracking-[0.12em] text-[#7DC4DC]">
+                            {displayCode}
+                          </span>
+                        )}
+                        <span className="mt-1.5 font-heading text-[0.8125rem] font-bold leading-snug text-[#0A2540] sm:mt-2 sm:text-body">
                           {displayName}
                         </span>
                       </Link>
