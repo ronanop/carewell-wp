@@ -26,32 +26,32 @@ export function NavbarPlaceholder() {
             >
               <Link
                 href="/"
-                className="text-[0.9375rem] font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
+                className="text-base font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
               >
                 Home
               </Link>
               <Link
                 href="/about"
-                className="text-[0.9375rem] font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
+                className="text-base font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
               >
                 About
               </Link>
               <ServicesMegaMenuTrigger />
               <Link
                 href="/results"
-                className="text-[0.9375rem] font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
+                className="text-base font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
               >
                 Results
               </Link>
               <Link
                 href="/blogs"
-                className="text-[0.9375rem] font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
+                className="text-base font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
               >
                 Blog
               </Link>
               <Link
                 href="/contact"
-                className="text-[0.9375rem] font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
+                className="text-base font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
               >
                 Contact
               </Link>

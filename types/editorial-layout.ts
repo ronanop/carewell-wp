@@ -230,6 +230,16 @@ export type LayoutComposerInput = {
     sectionVariants?: Record<string, SectionVariant>;
     /** Phase 8.1 presentation polish (Studio). */
     presentationPolish?: ExperiencePresentationPolish | null;
+    /**
+     * Phase 9.0 — Medical Experience Composer seeds.
+     * When present, width / CTA / imagePlacement / breathing override defaults.
+     */
+    medicalHints?: {
+      ctaBySectionId?: Record<string, boolean>;
+      widthBySectionId?: Record<string, SectionWidth>;
+      imagePlacementBySectionId?: Record<string, ImagePlacement>;
+      breatheBeforeIds?: ReadonlySet<string> | string[];
+    };
   };
 };
 

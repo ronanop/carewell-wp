@@ -1,10 +1,4 @@
-import { ContentContainer } from "@/components/content/ContentContainer";
-import { ContentTree } from "@/components/content/ast/ContentTree";
 import { RichContent } from "@/components/content/RichContent";
-import {
-  applyContentOverrides,
-  parseHtmlToAst,
-} from "@/lib/experience/content";
 import type { ContentNode } from "@/types/content-ast";
 import type { ContentOverrides } from "@/types/content-ast";
 
@@ -26,54 +20,19 @@ export type ContentRendererProps = {
   /**
    * EDITOR only — mark nodes for overlay hit-testing.
    * Markers must not alter layout (display:contents).
+   * No-op after Experience Studio cutover (AST path removed).
    */
   markNode?: (ctx: ContentNodeMarkContext) => React.ReactNode;
 };
 
 /**
- * Single content body renderer.
- * PUBLIC → RichContent only
- * EDITOR / PREVIEW → AST only (RichContent never mounts)
+ * Content body renderer — RichContent only after WP/Experience cutover.
  */
 export function ContentRenderer({
   mode,
   html,
   className,
-  contentOverrides = null,
-  markNode,
 }: ContentRendererProps) {
-  const useAst = mode === RenderMode.EDITOR || mode === RenderMode.PREVIEW;
-
-  if (useAst) {
-    const document = applyContentOverrides(
-      parseHtmlToAst(html),
-      contentOverrides,
-    );
-
-    return (
-      <>
-        <ContentMountGuard kind="ast" />
-        <ContentContainer>
-          <div
-            className="rich-content"
-            data-content-renderer="ast"
-            data-render-mode={mode}
-          >
-            <ContentTree
-              nodes={document.nodes}
-              className={className}
-              wrapNode={
-                mode === RenderMode.EDITOR && markNode
-                  ? ({ node, children }) => markNode({ node, children })
-                  : undefined
-              }
-            />
-          </div>
-        </ContentContainer>
-      </>
-    );
-  }
-
   return (
     <>
       <ContentMountGuard kind="rich" />

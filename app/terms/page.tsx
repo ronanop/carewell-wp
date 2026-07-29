@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 
 import { TermsPageView } from "@/components/pages/legal/TermsPageView";
-import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schema";
-import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
+import { buildUriBreadcrumbs } from "@/lib/routing/uri";
 
 const title = "Terms of Use | Care Well Medical Centre";
 const description =
@@ -31,7 +30,6 @@ export default async function TermsPage() {
       path: item.href === "/" ? "/" : item.href.replace(/\/$/, ""),
     })),
   );
-  const studioConfig = await getCachedPublishedStaticPageConfig("terms");
 
   return (
     <>
@@ -41,7 +39,7 @@ export default async function TermsPage() {
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <TermsPageView mode="public" config={studioConfig} />
+      <TermsPageView mode="public" config={null} />
     </>
   );
 }

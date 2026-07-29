@@ -132,7 +132,7 @@ function FeatureCard({ category }: { category: MegaServiceCategory }) {
       <div className="flex flex-1 flex-col bg-[#E8F4F8] px-4 py-4">
         <Link
           href={category.href}
-          className="text-[0.9375rem] font-semibold text-[#0A2540] no-underline transition-colors hover:text-primary hover:underline"
+          className="text-base font-semibold text-[#0A2540] no-underline transition-colors hover:text-primary hover:underline"
         >
           {category.title}
         </Link>
@@ -164,7 +164,7 @@ function ServiceColumn({
     >
       <Link
         href={category.href}
-        className="block border-b border-border/70 pb-2 text-[0.9375rem] font-semibold text-[#0A2540] no-underline hover:text-primary hover:no-underline"
+        className="block border-b border-border/70 pb-2 text-base font-semibold text-[#0A2540] no-underline hover:text-primary hover:no-underline"
         onFocus={onActivate}
       >
         {category.title}
@@ -221,7 +221,7 @@ export function ServicesMegaMenuTrigger() {
       <button
         type="button"
         className={cn(
-          "inline-flex items-center gap-1 text-[0.9375rem] font-medium text-[#1A2B48] transition-colors hover:text-primary",
+          "inline-flex items-center gap-1 text-base font-medium text-[#1A2B48] transition-colors hover:text-primary",
           open && "text-primary"
         )}
         aria-expanded={open}

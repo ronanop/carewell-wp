@@ -41,7 +41,7 @@ export function PromoStrip() {
       <div className="container-content flex h-full items-center justify-between gap-4">
         <div className="min-w-0 flex-1 overflow-hidden">
           {reducedMotion ? (
-            <p className="truncate text-[13px] font-medium leading-none tracking-wide text-white/95">
+            <p className="truncate text-sm font-medium leading-none tracking-wide text-white/95">
               {PROMO_MESSAGES[0]}
             </p>
           ) : (
@@ -59,7 +59,7 @@ export function PromoStrip() {
         <div className="flex shrink-0 items-center gap-3">
           <Link
             href="/contact"
-            className="text-[13px] font-semibold text-white/95 no-underline transition-colors hover:text-white hover:underline"
+            className="text-sm font-semibold text-white/95 no-underline transition-colors hover:text-white hover:underline"
           >
             Book now
           </Link>

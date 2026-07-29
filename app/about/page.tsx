@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { AboutPageView } from "@/components/pages/about/AboutPageView";
-import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 
 export const metadata: Metadata = {
   title: "About Us | Care Well Medical Centre",
@@ -10,6 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const studioConfig = await getCachedPublishedStaticPageConfig("about");
-  return <AboutPageView mode="public" config={studioConfig} />;
+  return <AboutPageView mode="public" config={null} />;
 }

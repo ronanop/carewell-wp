@@ -24,7 +24,7 @@ import {
   generateOrganizationSchema,
   generatePhysicianSchema,
 } from "@/lib/seo/schema";
-import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
+import { buildUriBreadcrumbs } from "@/lib/routing/uri";
 
 const doctor = drSandeepBhasin;
 

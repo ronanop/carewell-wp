@@ -1,84 +1,56 @@
 ---
-description: Core architecture rules for Care Well Medical Centre headless WordPress + Next.js project
+description: Core architecture rules for Care Well Medical Centre (Sanity CMS + Next.js)
 alwaysApply: true
 ---
 
 # Architecture Rules
 
 ## Stack
-- Next.js 15 App Router + TypeScript + Tailwind CSS + WordPress (WPGraphQL)
-- WordPress owns content. React owns presentation.
-- PostgreSQL + Prisma only inside named bounded application domains (ADR-011 / ADR-013).
+- Next.js 15 App Router + TypeScript + Tailwind CSS + **Sanity CMS**
+- Sanity owns content. React owns presentation.
+- PostgreSQL + Prisma only for Lead Engine (`lib/leads/**`) — not for CMS bodies.
 
-## Public website (unchanged)
+## Public website
 Data flow:
 ```
-WordPress → WPGraphQL → lib/wordpress/ → Server Components → UI
+Sanity → lib/sanity/** → Server Components → UI
 ```
 
+Catch-all `app/[...uri]`: Sanity `service` (and `page`) by URI/slug → React templates.
+Static marketing pages (home, about, contact, legal) are handcrafted React — no Studio config.
+
 Prohibited on the public website:
-- CMS replacement, content migration, Express, MongoDB, Supabase, Firebase
-- Custom content APIs, patient portals, or storing WordPress page/post bodies in a database
-- Importing Prisma or Auth session APIs into public routes or `lib/wordpress/**`
+- WordPress GraphQL / `lib/wordpress/**`
+- Experience Studio `/admin` / `lib/experience/**` (removed)
+- Storing CMS page/post bodies in Prisma
 
 ## Bounded application domains (Prisma allowed)
 
-| Domain | Owns | Code | ADR |
-|--------|------|------|-----|
-| Experience Studio | Presentation config only (WP + static pages) | `lib/experience/**`, Studio `/admin` | ADR-011 / ADR-012 / ADR-014 / ADR-015 |
-| Lead Engine | Patient enquiries, CRM, timeline | `lib/leads/**`, Lead `/admin` routes | ADR-013 |
-
-Shared: `prisma/**`, `auth.ts`, `app/api/auth/**` (Auth.js + RBAC).
+| Domain | Owns | Code | Notes |
+|--------|------|------|-------|
+| Lead Engine | Patient enquiries, timeline | `lib/leads/**` | Public forms via Server Actions only |
+| Auth (optional) | Credentials for future admin | `auth.ts`, `app/api/auth/**` | Studio admin removed |
 
 ### Production hosting
-- **Vercel** — entire Next.js app (public site + `/admin` + Server Actions).
-- **Render** — PostgreSQL only (`render.yaml`); set External URL as `DATABASE_URL` on Vercel.
-- **Hostinger** — WordPress CMS. See `docs/18_DEPLOYMENT.md`.
+- **Vercel** — Next.js app (public site + Server Actions).
+- **Render** — PostgreSQL for leads (`DATABASE_URL`).
+- **Sanity** — CMS. See Studio / `schemaTypes/`.
 
-### Isolation (no cycles)
-- `lib/wordpress/**` ↔ `lib/experience/**` ↔ `lib/leads/**` must not form cyclic imports.
-- Lead Engine must not import WordPress or Experience Studio modules.
-- Experience Studio must not import Lead Engine modules.
-- Public UI talks to Lead Engine only via Lead Server Actions / facades (never Prisma).
-
-### Experience Studio
-Manages templates, heroes, CTAs, theme, section visibility for **WordPress and static/marketing pages** (ADR-014 / ADR-015). Never edit or duplicate WordPress article content. Plugin SDK under `lib/experience/platform/`. Static pages register via **StaticPageModule** (descriptor + React view) and open the **same** Visual Builder (`persistenceKind: "static"`), which mounts the **real** page component — never a synthetic `PresentationPage` shell. **ElementDescriptors** + `EditableElement` make canvas content editable; edits store in `PresentationConfig.elementOverrides` / `repeaterOverrides` / `elementBindings` / `elementResponsive` (ADR-016 / ADR-017).
-
-### Asset Management System (ADR-018)
-Experience Studio DAM at `/admin/assets` (`lib/assets/**`). WordPress Media Library is the sole binary store. Studio talks only to **AssetProvider** (default WordPress). Prisma stores folders/favorites/usage/versions metadata — never file bytes. Universal **AssetPicker** replaces MediaPicker.
-### Lead Engine
-Event-driven and timeline-first: repositories → services → Server Actions; append-only lead timeline; domain events for future CRM / WhatsApp / SMS / AI adapters.
-
-### Global Page Chrome (Phase 4.6A)
-Renderer-level UI — not PresentationConfig sections:
-- Page Classification Engine (`pageType`) drives chrome decisions
-- Global Widget Engine resolves consultation sidebar and future widgets
-- Sticky consultation sidebar auto-injects on `SERVICE` pages (configurable, not deletable)
-
-### Unified Editorial Pipeline (ADR-019 / ADR-020 / Phase 8.1)
-Public catch-all: `resolveExperienceDocument` → `UnifiedExperienceRenderer`.
-- **Blogs:** BlogProvider → ExperienceDocument → BlogPresentationPage (semantic pipeline)
-- **Services:** ServiceProvider → ServiceDocument → ServiceExperienceRenderer (same AST/semantic/layout engines; TreatmentHero + registered medical components)
-- **Composition polish:** `polishComposition` assigns presentationMode, importance, neighbor spacing, contextual CTA copy — no renderer fork
-- **Fallback:** low semantic confidence or non-service pages → PresentationPage adapter only
-- Never fork renderers; differentiate via providers + semantic registries (`lib/experience/service/**`)
+### Isolation
+- Public UI talks to Lead Engine only via Lead Server Actions (never Prisma in components).
+- Do not reintroduce WPGraphQL or Experience Studio without an explicit ADR.
 
 ## Rendering
 - Server Components by default; `"use client"` only for interactivity
-- Fetch WordPress data in Server Components only
+- Fetch Sanity data in Server Components only
 - ISR for dynamic content; SSG for static pages
-- HTML is not the primary rendering primitive for blogs/services — semantic sections are
-
-## Before Coding
-Read relevant docs in `docs/` and skills in `skills/`. See ADR-011 / ADR-013 before touching `/admin` or leads.
 
 ## File Placement
-- Queries: `lib/wordpress/queries/`
-- Experience Studio: `lib/experience/`
+- Sanity: `lib/sanity/`, `schemaTypes/`
 - Lead Engine: `lib/leads/`
+- Routing helpers: `lib/routing/`
+- Static page override helpers (public EditableElement): `lib/static-pages/`
 - Types: `types/`
 - UI primitives: `components/ui/`
 - Feature components: `components/features/{domain}/`
-- Admin UI: `components/admin/`
 - Pages: `app/{route}/page.tsx`
-- Admin: `app/admin/`

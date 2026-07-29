@@ -375,6 +375,20 @@ Each entry follows this structure:
   5. Studio: `ExperienceConfig.presentationPolish` + `PresentationPolishControls` for soft surfaces, reading measure, card style, button hierarchy.
 - **Constraint:** Restraint over drama — soft surfaces, disciplined hierarchy, original image aspect; no oversized hero media.
 
+#### Phase 9.0 — Medical Experience Composition Engine
+
+- **Status:** Accepted (extends ADR-020)
+- **Date:** 2026-07-25
+- **Context:** Phase 8.1 polished presentation mode / rhythm / CTA copy, but service pages still largely rendered WordPress sections in document order with generic editorial cards. Premium medical publishers compose classified concepts into specialised components with intentional density changes.
+- **Decision:**
+  1. Add **Medical Experience Composer** at `lib/experience/service/composer/` — runs after semantic analysis, before `composeEditorialLayout`. Responsible for soft narrative journey reorder, related-heading merge, evidence grouping, layout/density/width selection, breathing markers, CTA seeds, and component-family diversity. Does **not** mutate WordPress HTML or fork `UnifiedExperienceRenderer`.
+  2. Expand **Section Classification 2.0** with `SYMPTOMS`, `CAUSES`, `MYTH`, `WHY_CHOOSE_US`, `EXPECTATIONS`, `RELATED`, `CHECKLIST` (aliases remain: CANDIDATE→`ELIGIBILITY`, MEDICAL_FACT→`FACT`, DOCTOR→`DOCTOR_ADVICE`, CTA→`CONSULTATION`).
+  3. Purpose-built medical components under `components/service/medical/` self-register via `ensureServiceEditorialComponents` into the **same** editorial registry used by blogs.
+  4. Editorial width system (`lib/experience/layout/width.ts`) chooses narrow / measure / wide / full per semantic type; composer seeds override when present.
+  5. Contextual CTA copy expands per journey stage (recovery → Discuss recovery, cost → Get cost estimate, doctor → Meet your surgeon, etc.).
+- **Constraint:** One semantic pipeline, one renderer, one Experience Studio, one component registry — blogs and services must not diverge.
+- **Follow-up:** Studio semantic-section inspector (layout/density/image position overrides); CostEstimator / LocationMap; lazy-loaded gallery & before/after polish; sidebar widgets by journey stage.
+
 ---
 
 ## Best Practices
@@ -404,5 +418,6 @@ Each entry follows this structure:
 - ADR-023: Extract `packages/lead-engine` monorepo package (optional)
 - Phase 8.1: Richer service medical components (CostEstimator, LocationMap, InsuranceCards) via registry
 - Phase 8.2: Visual Builder semantic-section editing parity (blog + service)
+- Phase 9.0: Medical Experience Composition Engine (composer + Classification 2.0 + purpose-built medical sections) — see ADR-020
 - Phase 7.2: Visual Builder `persistenceKind: "blog"` — Studio parity for posts
 - Phase 7.3: Global symbols persistence in Prisma + bulk update workflow

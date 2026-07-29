@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Match WordPress permalinks (trailing slash) for SEO continuity.
+  trailingSlash: true,
   images: {
     remotePatterns: [
       {
@@ -26,6 +28,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "img.youtube.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
       },
     ],
   },

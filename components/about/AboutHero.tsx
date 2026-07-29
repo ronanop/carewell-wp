@@ -10,7 +10,7 @@ import { buttonVariants } from "@/components/ui/button";
 import {
   resolveElementField,
   resolveElementText,
-} from "@/lib/experience/static-pages/elementOverrides";
+} from "@/lib/static-pages/elementOverrides";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_BRAND = "Care Well Medical Centre";

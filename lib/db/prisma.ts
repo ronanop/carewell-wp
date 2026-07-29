@@ -1,6 +1,7 @@
 /**
  * Shared Prisma client for bounded application domains (ADR-011 / ADR-013).
- * Public website and `lib/wordpress/**` must never import this module.
+ * Public website routes must never import this module directly —
+ * use Lead Engine facades / Server Actions instead.
  */
 
 import "server-only";

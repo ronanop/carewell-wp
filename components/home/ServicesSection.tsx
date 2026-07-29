@@ -5,8 +5,8 @@ import { ServiceCard3D } from "@/components/home/ServiceCard3D";
 import { ServicesCarousel } from "@/components/home/ServicesCarousel";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
-import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
-import { resolveRepeaterItems } from "@/lib/experience/static-pages/repeaterOverrides";
+import { resolveElementText } from "@/lib/static-pages/elementOverrides";
+import { resolveRepeaterItems } from "@/lib/static-pages/repeaterOverrides";
 
 const DEFAULT_LABEL = "Our services";
 const DEFAULT_HEADING =

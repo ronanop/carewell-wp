@@ -17,7 +17,7 @@ const NAV_LINKS = [
 ] as const;
 
 /** Matches `.navbar-compact` zoom so the portal clears the sticky header. */
-const HEADER_CLEARANCE = "calc(4.75rem * 0.88)";
+const HEADER_CLEARANCE = "calc(4.75rem * 0.96)";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -118,7 +118,7 @@ export function MobileNav() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="block rounded-lg px-3 py-3 text-[0.9375rem] font-medium text-[#1A2B48] no-underline transition-colors hover:bg-secondary hover:text-primary hover:no-underline"
+                    className="block rounded-lg px-3 py-3 text-base font-medium text-[#1A2B48] no-underline transition-colors hover:bg-secondary hover:text-primary hover:no-underline"
                     tabIndex={open ? undefined : -1}
                     onClick={close}
                   >
@@ -130,7 +130,7 @@ export function MobileNav() {
               <li>
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between rounded-lg px-3 py-3 text-left text-[0.9375rem] font-medium text-[#1A2B48] transition-colors hover:bg-secondary hover:text-primary"
+                  className="flex w-full items-center justify-between rounded-lg px-3 py-3 text-left text-base font-medium text-[#1A2B48] transition-colors hover:bg-secondary hover:text-primary"
                   aria-expanded={servicesOpen}
                   tabIndex={open ? 0 : -1}
                   onClick={() => setServicesOpen((value) => !value)}
@@ -214,7 +214,7 @@ export function MobileNav() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="block rounded-lg px-3 py-3 text-[0.9375rem] font-medium text-[#1A2B48] no-underline transition-colors hover:bg-secondary hover:text-primary hover:no-underline"
+                    className="block rounded-lg px-3 py-3 text-base font-medium text-[#1A2B48] no-underline transition-colors hover:bg-secondary hover:text-primary hover:no-underline"
                     tabIndex={open ? undefined : -1}
                     onClick={close}
                   >

@@ -1,12 +1,7 @@
 /**
- * WordPress content rendering engine — public exports.
+ * Content rendering helpers — public exports.
  *
- * Entry point for service/blog Gutenberg HTML: {@link RichContent}.
- * Editorial presentation: import {@link ContentEnhancer} from
- * `@/components/content/ContentEnhancer`.
- *
- * Client-only motion helpers (`AnimatedSection`, `ReadingProgress`) —
- * import from their own modules to avoid barrel client boundaries.
+ * Entry point for HTML bodies: {@link RichContent}.
  */
 
 export { RichContent, type RichContentProps } from "@/components/content/RichContent";

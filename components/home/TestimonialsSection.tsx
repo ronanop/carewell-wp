@@ -8,7 +8,7 @@ import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { buttonVariants } from "@/components/ui/button";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
-import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
+import { resolveElementText } from "@/lib/static-pages/elementOverrides";
 import { cn } from "@/lib/utils";
 
 const CHANNEL_VIDEOS_URL =

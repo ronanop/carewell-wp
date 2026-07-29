@@ -1177,9 +1177,9 @@
   }
 }
 
-/* Navbar: 12% visual shrink via zoom. Sticky still works with zoom. */
+/* Navbar: light visual shrink — keep sticky chrome compact without undersizing type. */
 .navbar-compact {
-  zoom: 0.88;
+  zoom: 0.96;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
@@ -1188,11 +1188,11 @@
 @supports not (zoom: 1) {
   .navbar-compact {
     zoom: unset;
-    transform: scale(0.88);
+    transform: scale(0.96);
     transform-origin: top center;
-    width: 113.6364%; /* 100 / 0.88 */
+    width: 104.1667%; /* 100 / 0.96 */
     max-width: none;
-    margin-inline: -6.8182%; /* center the oversized box */
+    margin-inline: -2.0833%; /* center the oversized box */
   }
 }
 
@@ -1203,6 +1203,16 @@
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* How-it-works step progress bar */
+@keyframes howItWorksBar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
 
@@ -1230,7 +1240,7 @@
 
 .promo-marquee-segment {
   padding-inline-end: 3rem;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.01em;
@@ -1503,6 +1513,49 @@
 .editorial-section--amber {
   /* tone via children */
 }
+
+/* Pixel-matched hair process infographic — remove double card chrome */
+.composed-section:has([data-hair-transplant-process="true"]) {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.composed-section:has([data-hair-transplant-process="true"])::before {
+  display: none !important;
+}
+
+/* Results transformation grid — soft cream already on parent; avoid double padding clash */
+.composed-section:has([data-hair-transplant-results="true"]) {
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+
+/* When Doctors Recommend — strip composed chrome so the white board can breathe */
+.composed-section:has([data-when-doctors-recommend="true"]) {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.composed-section:has([data-when-doctors-recommend="true"])::before {
+  display: none !important;
+}
+
+/* Meet the surgeon — calmer surface, less card-in-card */
+.composed-section:has([data-meet-the-surgeon="true"]) {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.composed-section:has([data-meet-the-surgeon="true"])::before {
+  display: none !important;
+}
+
 .preset-luxury .blog-hero {
   /* subtle luxury atmosphere via existing gradients */
 }

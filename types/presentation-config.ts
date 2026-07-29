@@ -6,7 +6,7 @@
 import type { MediaRef } from "@/types/wordpress-media";
 import type { ContentOverrides } from "@/types/content-ast";
 import type { LayoutTree } from "@carewell/layout-engine";
-import type { PageType } from "@/lib/experience/engine/pageClassification";
+import type { PageType } from "@/types/page-type";
 import type {
   PageChromeConfig,
   ResolvedPageChrome,

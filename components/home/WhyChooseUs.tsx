@@ -23,8 +23,8 @@ import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
-} from "@/lib/experience/static-pages/elementOverrides";
-import { resolveRepeaterItems } from "@/lib/experience/static-pages/repeaterOverrides";
+} from "@/lib/static-pages/elementOverrides";
+import { resolveRepeaterItems } from "@/lib/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_DOCTOR_IMAGE_SRC = "/images/dr-sandeep-bhasin-portrait.png";

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { PrivacyPageView } from "@/components/pages/legal/PrivacyPageView";
-import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schema";
 
@@ -35,8 +34,6 @@ export default async function PrivacyPolicyPage() {
     { name: "Home", path: "/" },
     { name: "Privacy Policy", path: "/privacy-policy" },
   ]);
-  const studioConfig =
-    await getCachedPublishedStaticPageConfig("privacy-policy");
 
   return (
     <>
@@ -46,7 +43,7 @@ export default async function PrivacyPolicyPage() {
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <PrivacyPageView mode="public" config={studioConfig} />
+      <PrivacyPageView mode="public" config={null} />
     </>
   );
 }

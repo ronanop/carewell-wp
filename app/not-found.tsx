@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { NotFoundPageView } from "@/components/pages/system/NotFoundPageView";
-import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 
 export const metadata: Metadata = {
   title: "Page Not Found | Care Well Medical Centre",
@@ -14,12 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default async function NotFound() {
-  let studioConfig = null;
-  try {
-    studioConfig = await getCachedPublishedStaticPageConfig("not-found");
-  } catch {
-    // Studio overlay is optional — always render the handcrafted 404 view.
-    studioConfig = null;
-  }
-  return <NotFoundPageView mode="public" config={studioConfig} />;
+  return <NotFoundPageView mode="public" config={null} />;
 }

@@ -1,0 +1,111 @@
+import { cn } from "@/lib/utils";
+import type { SectionBaseProps } from "./types";
+
+export type MistakesToAvoidSectionProps = SectionBaseProps & {
+  /** CMS: mistakesToAvoid.eyebrow */
+  eyebrow?: string;
+  /** CMS: mistakesToAvoid.heading */
+  title?: string;
+  /** CMS: mistakesToAvoid.intro */
+  intro?: string;
+  /** CMS: mistakesToAvoid.items */
+  items?: string[];
+};
+
+/**
+ * Mistakes-to-avoid coaching list for service pages.
+ * React owns layout/chrome; CMS owns eyebrow, title, intro, and items.
+ * Empty items AND no intro → null.
+ */
+export function MistakesToAvoidSection({
+  id = "mistakes",
+  eyebrow,
+  title,
+  intro,
+  items,
+  className,
+}: MistakesToAvoidSectionProps) {
+  const list = (items ?? []).map((s) => s.trim()).filter(Boolean);
+  const lead = intro?.trim() || "";
+  if (!list.length && !lead) return null;
+
+  return (
+    <section
+      id={id}
+      aria-labelledby={title ? `${id}-heading` : undefined}
+      className={cn(
+        "relative border-y border-slate-200/80 bg-[#F6F8FC]",
+        className,
+      )}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(640px_140px_at_18%_0%,rgba(217,119,6,0.045),transparent_50%),radial-gradient(700px_160px_at_82%_0%,rgba(21,87,160,0.07),transparent_55%)]"
+        aria-hidden
+      />
+
+      <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
+        {(eyebrow || title) && (
+          <header className="mb-6 max-w-2xl sm:mb-8">
+            {eyebrow ? (
+              <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-[#1557A0] uppercase">
+                {eyebrow}
+              </p>
+            ) : null}
+            {title ? (
+              <h2
+                id={`${id}-heading`}
+                className={cn(
+                  "font-heading text-2xl font-semibold tracking-tight text-[#0A2E52] text-balance sm:text-3xl",
+                  eyebrow ? "mt-2" : undefined,
+                )}
+              >
+                {title}
+              </h2>
+            ) : null}
+          </header>
+        )}
+
+        {lead ? (
+          <p
+            className={cn(
+              "max-w-3xl text-[1.0625rem] leading-relaxed text-slate-600",
+              list.length ? "mb-8 sm:mb-10" : undefined,
+            )}
+          >
+            {lead}
+          </p>
+        ) : null}
+
+        {list.length ? (
+          <ol className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            {list.map((item, i) => (
+              <li
+                key={`${i}-${item.slice(0, 32)}`}
+                className={cn(
+                  "flex gap-3.5 rounded-2xl border border-slate-200/90 border-l-[3px] border-l-amber-400/65 bg-white p-4 sm:p-5",
+                  "shadow-[0_8px_28px_-18px_rgba(10,46,82,0.28)]",
+                  "transition-colors duration-200 hover:border-[#1557A0]/25 hover:border-l-amber-500/75",
+                  "motion-reduce:transition-none",
+                )}
+              >
+                <span
+                  className={cn(
+                    "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full",
+                    "bg-amber-50 font-heading text-xs font-semibold tabular-nums text-amber-800",
+                    "ring-1 ring-amber-200/70",
+                  )}
+                  aria-hidden
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="min-w-0 pt-1 text-sm leading-relaxed text-slate-700 sm:text-[0.9375rem]">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ol>
+        ) : null}
+      </div>
+    </section>
+  );
+}

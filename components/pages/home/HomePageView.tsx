@@ -27,12 +27,12 @@ import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticEditProvider } from "@/components/pages/StaticEditProvider";
 import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
-import { isSectionEnabled } from "@/lib/experience/static-pages/applyOverrides";
+import { isSectionEnabled } from "@/lib/static-pages/applyOverrides";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 import type { ReactNode } from "react";
 
 export type HomePageViewProps = StaticPageViewProps & {
-  /** Latest WordPress posts for BlogSection (public route only). */
+  /** Latest posts for BlogSection (optional — empty until Sanity blogs wire up). */
   latestBlogPosts?: HomeBlogPost[];
   /** Latest YouTube videos for TestimonialsSection (public route only). */
   latestYouTubeVideos?: HomeYouTubeVideo[];
@@ -149,7 +149,7 @@ export function HomePageView({
               </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
-          {enabled("home.blog") ? (
+          {enabled("home.blog") && (latestBlogPosts?.length ?? 0) > 0 ? (
             <StaticSectionFrame id="home.blog" type="related-blogs" mode={mode}>
               <HomeSectionEnter>
                 <BlogSection posts={latestBlogPosts} />

@@ -19,8 +19,8 @@ import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { buttonVariants } from "@/components/ui/button";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
-import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
-import { resolveRepeaterItems } from "@/lib/experience/static-pages/repeaterOverrides";
+import { resolveElementText } from "@/lib/static-pages/elementOverrides";
+import { resolveRepeaterItems } from "@/lib/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
 
 const STEP_ICONS: LucideIcon[] = [Search, UserRound, Calendar, ScanFace];

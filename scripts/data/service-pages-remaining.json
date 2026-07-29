@@ -1,0 +1,504 @@
+{
+  "generatedAt": "2026-07-29T11:35:20.108Z",
+  "totalBackupPages": 132,
+  "serviceLike": 123,
+  "alreadyBuilt": 123,
+  "remaining": [],
+  "batchSize": 15,
+  "batchCount": 0,
+  "built": [
+    {
+      "slug": "gynecomastia",
+      "uri": "/plastic-surgery-in-delhi/gynecomastia/"
+    },
+    {
+      "slug": "cheek-and-jawline-slimming",
+      "uri": "/cosmetic-treatments-in-delhi/botox/cheek-and-jawline-slimming/"
+    },
+    {
+      "slug": "brow-lift",
+      "uri": "/cosmetic-treatments-in-delhi/brow-lift/"
+    },
+    {
+      "slug": "dermal-fillers",
+      "uri": "/cosmetic-treatments-in-delhi/dermal-fillers/"
+    },
+    {
+      "slug": "hifu",
+      "uri": "/cosmetic-treatments-in-delhi/hifu/"
+    },
+    {
+      "slug": "laser-hair-removal",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/"
+    },
+    {
+      "slug": "bikini-brazilian",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/bikini-brazilian/"
+    },
+    {
+      "slug": "chest-back",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/chest-back/"
+    },
+    {
+      "slug": "eyebrow-unibrow",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/eyebrow-unibrow/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction-facial",
+      "uri": "/plastic-surgery-in-delhi/liposuction/facial/"
+    },
+    {
+      "slug": "neck-beard",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/neck-beard/"
+    },
+    {
+      "slug": "vampire-facelift",
+      "uri": "/cosmetic-treatments-in-delhi/vampire-facelift/"
+    },
+    {
+      "slug": "diffuse-patterned-alopecia",
+      "uri": "/hair-loss-treatment-in-delhi/diffuse-patterned-alopecia/"
+    },
+    {
+      "slug": "female-pattern-baldness",
+      "uri": "/hair-loss-treatment-in-delhi/female-pattern-baldness/"
+    },
+    {
+      "slug": "hair-follicles",
+      "uri": "/hair-loss-treatment-in-delhi/hair-follicles/"
+    },
+    {
+      "slug": "beard",
+      "uri": "/hair-transplant-in-delhi/beard/"
+    },
+    {
+      "slug": "eyebrow",
+      "uri": "/hair-transplant-in-delhi/eyebrow/"
+    },
+    {
+      "slug": "fut",
+      "uri": "/hair-transplant-in-delhi/fut/"
+    },
+    {
+      "slug": "repair",
+      "uri": "/hair-transplant-in-delhi/repair/"
+    },
+    {
+      "slug": "ozone-therapy",
+      "uri": "/holistic-wellness-treatments-in-delhi/ozone-therapy/"
+    },
+    {
+      "slug": "cosmetic-treatments-in-delhi-laser-hair-removal-facial",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/facial/"
+    },
+    {
+      "slug": "cosmetic-treatments-in-delhi-laser-hair-removal-female",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/female/"
+    },
+    {
+      "slug": "intimate-surgery-in-delhi-vaginoplasty",
+      "uri": "/intimate-surgery-in-delhi/vaginoplasty/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-bbl",
+      "uri": "/plastic-surgery-in-delhi/bbl/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-dimple-creation-surgery",
+      "uri": "/plastic-surgery-in-delhi/dimple-creation-surgery/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-fat-grafting",
+      "uri": "/plastic-surgery-in-delhi/fat-grafting/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-neck-lift",
+      "uri": "/plastic-surgery-in-delhi/neck-lift/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-rhinoplasty-open",
+      "uri": "/plastic-surgery-in-delhi/rhinoplasty/open/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-tummy-tuck",
+      "uri": "/plastic-surgery-in-delhi/tummy-tuck/"
+    },
+    {
+      "slug": "proctology-treatments-in-delhi-piles-treatment",
+      "uri": "/proctology-treatments-in-delhi/piles-treatment/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-carbon-laser-facial",
+      "uri": "/skin-treatments-in-delhi/carbon-laser-facial/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-dark-circles",
+      "uri": "/skin-treatments-in-delhi/dark-circles/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-fractional-co2-laser-treatment",
+      "uri": "/skin-treatments-in-delhi/fractional-co2-laser-treatment/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-laser-tattoo-removal",
+      "uri": "/skin-treatments-in-delhi/laser-tattoo-removal/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-permanent-makeup",
+      "uri": "/skin-treatments-in-delhi/permanent-makeup/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-punch-grafting",
+      "uri": "/skin-treatments-in-delhi/punch-grafting/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-skin-grafting",
+      "uri": "/skin-treatments-in-delhi/skin-grafting/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-vitiligo",
+      "uri": "/skin-treatments-in-delhi/vitiligo/"
+    },
+    {
+      "slug": "urology-in-delhi-kidney-stones-treatment",
+      "uri": "/urology-in-delhi/kidney-stones-treatment/"
+    },
+    {
+      "slug": "intimate-surgery-in-delhi",
+      "uri": "/intimate-surgery-in-delhi/"
+    },
+    {
+      "slug": "hair-transplant-in-delhi-faridabad",
+      "uri": "/hair-transplant-in-delhi/faridabad/"
+    },
+    {
+      "slug": "hair-transplant-in-delhi-cost",
+      "uri": "/hair-transplant-in-delhi/cost/"
+    },
+    {
+      "slug": "hair-transplant-in-delhi-graft-calculator",
+      "uri": "/hair-transplant-in-delhi/graft-calculator/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-gynecomastia-grades",
+      "uri": "/plastic-surgery-in-delhi/gynecomastia/grades/"
+    },
+    {
+      "slug": "cryolipolysis",
+      "uri": "/body-contouring-in-delhi/cryolipolysis/"
+    },
+    {
+      "slug": "weight-loss-treatment",
+      "uri": "/body-contouring-in-delhi/weight-loss-treatment/"
+    },
+    {
+      "slug": "botox",
+      "uri": "/cosmetic-treatments-in-delhi/botox/"
+    },
+    {
+      "slug": "male",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/male/"
+    },
+    {
+      "slug": "hair-weaving",
+      "uri": "/hair-loss-treatment-in-delhi/hair-weaving/"
+    },
+    {
+      "slug": "norwood-baldness-scale",
+      "uri": "/hair-loss-treatment-in-delhi/norwood-baldness-scale/"
+    },
+    {
+      "slug": "scalp-micropigmentation",
+      "uri": "/hair-loss-treatment-in-delhi/scalp-micropigmentation/"
+    },
+    {
+      "slug": "body-hair",
+      "uri": "/hair-transplant-in-delhi/body-hair/"
+    },
+    {
+      "slug": "fue",
+      "uri": "/hair-transplant-in-delhi/fue/"
+    },
+    {
+      "slug": "peptide-therapy",
+      "uri": "/holistic-wellness-treatments-in-delhi/peptide-therapy/"
+    },
+    {
+      "slug": "hymenoplasty",
+      "uri": "/intimate-surgery-in-delhi/hymenoplasty/"
+    },
+    {
+      "slug": "intimate-surgery-in-delhi-labiaplasty",
+      "uri": "/intimate-surgery-in-delhi/labiaplasty/"
+    },
+    {
+      "slug": "iv-therapy-in-delhi-glutathione",
+      "uri": "/iv-therapy-in-delhi/glutathione/"
+    },
+    {
+      "slug": "iv-therapy-in-delhi-myers-cocktail",
+      "uri": "/iv-therapy-in-delhi/myers-cocktail/"
+    },
+    {
+      "slug": "iv-therapy-in-delhi-vitamin-c-infusion",
+      "uri": "/iv-therapy-in-delhi/vitamin-c-infusion/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-breast-augmentation",
+      "uri": "/plastic-surgery-in-delhi/breast-augmentation/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-breast-lift",
+      "uri": "/plastic-surgery-in-delhi/breast-lift/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-breast-reduction",
+      "uri": "/plastic-surgery-in-delhi/breast-reduction/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-buccal-fat-removal",
+      "uri": "/plastic-surgery-in-delhi/buccal-fat-removal/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-chin-augmentation",
+      "uri": "/plastic-surgery-in-delhi/chin-augmentation/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-lipoma",
+      "uri": "/plastic-surgery-in-delhi/lipoma/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction-anterior-thigh",
+      "uri": "/plastic-surgery-in-delhi/liposuction/anterior-thigh/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction-buttocks",
+      "uri": "/plastic-surgery-in-delhi/liposuction/buttocks/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-mommy-makeover",
+      "uri": "/plastic-surgery-in-delhi/mommy-makeover/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-chemical-peel",
+      "uri": "/skin-treatments-in-delhi/chemical-peel/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-hydrafacial",
+      "uri": "/skin-treatments-in-delhi/hydrafacial/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-skin-whitening",
+      "uri": "/skin-treatments-in-delhi/skin-whitening/"
+    },
+    {
+      "slug": "urology-in-delhi-circumcision",
+      "uri": "/urology-in-delhi/circumcision/"
+    },
+    {
+      "slug": "urology-in-delhi-circumcision-zsr",
+      "uri": "/urology-in-delhi/circumcision/zsr/"
+    },
+    {
+      "slug": "body-contouring-in-delhi",
+      "uri": "/body-contouring-in-delhi/"
+    },
+    {
+      "slug": "cosmetic-treatments-in-delhi",
+      "uri": "/cosmetic-treatments-in-delhi/"
+    },
+    {
+      "slug": "proctology-treatments-in-delhi",
+      "uri": "/proctology-treatments-in-delhi/"
+    },
+    {
+      "slug": "urology-in-delhi",
+      "uri": "/urology-in-delhi/"
+    },
+    {
+      "slug": "hair-transplant-in-delhi-before-and-after",
+      "uri": "/hair-transplant-in-delhi/before-and-after/"
+    },
+    {
+      "slug": "hair-transplant-in-delhi",
+      "uri": "/hair-transplant-in-delhi/"
+    },
+    {
+      "slug": "anti-aging",
+      "uri": "/cosmetic-treatments-in-delhi/anti-aging/"
+    },
+    {
+      "slug": "forehead-lines",
+      "uri": "/cosmetic-treatments-in-delhi/botox/forehead-lines/"
+    },
+    {
+      "slug": "mesobotox",
+      "uri": "/cosmetic-treatments-in-delhi/botox/mesobotox/"
+    },
+    {
+      "slug": "nefertiti-lift",
+      "uri": "/cosmetic-treatments-in-delhi/botox/nefertiti-lift/"
+    },
+    {
+      "slug": "double-chin-removal",
+      "uri": "/cosmetic-treatments-in-delhi/double-chin-removal/"
+    },
+    {
+      "slug": "face-slimming",
+      "uri": "/cosmetic-treatments-in-delhi/face-slimming/"
+    },
+    {
+      "slug": "hair-transplant-in-delhi-female",
+      "uri": "/hair-transplant-in-delhi/female/"
+    },
+    {
+      "slug": "legs",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/legs/"
+    },
+    {
+      "slug": "underarm",
+      "uri": "/cosmetic-treatments-in-delhi/laser-hair-removal/underarm/"
+    },
+    {
+      "slug": "lip-augmentation",
+      "uri": "/cosmetic-treatments-in-delhi/lip-augmentation/"
+    },
+    {
+      "slug": "thread-lift",
+      "uri": "/cosmetic-treatments-in-delhi/thread-lift/"
+    },
+    {
+      "slug": "growth-factor-concentrate",
+      "uri": "/hair-loss-treatment-in-delhi/growth-factor-concentrate/"
+    },
+    {
+      "slug": "hair-miniaturization",
+      "uri": "/hair-loss-treatment-in-delhi/hair-miniaturization/"
+    },
+    {
+      "slug": "prp",
+      "uri": "/hair-loss-treatment-in-delhi/prp/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-eyelid",
+      "uri": "/plastic-surgery-in-delhi/eyelid/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-facelift",
+      "uri": "/plastic-surgery-in-delhi/facelift/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction",
+      "uri": "/plastic-surgery-in-delhi/liposuction/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction-abdominal",
+      "uri": "/plastic-surgery-in-delhi/liposuction/abdominal/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction-arms",
+      "uri": "/plastic-surgery-in-delhi/liposuction/arms/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction-back",
+      "uri": "/plastic-surgery-in-delhi/liposuction/back/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction-calves-thighs",
+      "uri": "/plastic-surgery-in-delhi/liposuction/calves-thighs/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-liposuction-outer-thigh",
+      "uri": "/plastic-surgery-in-delhi/liposuction/outer-thigh/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-male-to-female-surgery",
+      "uri": "/plastic-surgery-in-delhi/male-to-female-surgery/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-rhinoplasty",
+      "uri": "/plastic-surgery-in-delhi/rhinoplasty/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-rhinoplasty-closed",
+      "uri": "/plastic-surgery-in-delhi/rhinoplasty/closed/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi-septoplasty",
+      "uri": "/plastic-surgery-in-delhi/septoplasty/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-acne-scar",
+      "uri": "/skin-treatments-in-delhi/acne-scar/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-birthmark-removal-treatment",
+      "uri": "/skin-treatments-in-delhi/birthmark-removal-treatment/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-laser-moles-and-warts-treatment",
+      "uri": "/skin-treatments-in-delhi/laser-moles-and-warts-treatment/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-microdermabrasion",
+      "uri": "/skin-treatments-in-delhi/microdermabrasion/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-microneedling",
+      "uri": "/skin-treatments-in-delhi/microneedling/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi-vitiligo-melanocytes-transplant",
+      "uri": "/skin-treatments-in-delhi/vitiligo/melanocytes-transplant/"
+    },
+    {
+      "slug": "fatty-liver-treatment-in-delhi",
+      "uri": "/fatty-liver-treatment-in-delhi/"
+    },
+    {
+      "slug": "hair-loss-treatment-in-delhi",
+      "uri": "/hair-loss-treatment-in-delhi/"
+    },
+    {
+      "slug": "holistic-wellness-treatments-in-delhi",
+      "uri": "/holistic-wellness-treatments-in-delhi/"
+    },
+    {
+      "slug": "hyperbaric-oxygen-therapy-in-delhi",
+      "uri": "/hyperbaric-oxygen-therapy-in-delhi/"
+    },
+    {
+      "slug": "iv-therapy-in-delhi",
+      "uri": "/iv-therapy-in-delhi/"
+    },
+    {
+      "slug": "non-surgical-weight-loss-treatment-in-delhi",
+      "uri": "/non-surgical-weight-loss-treatment-in-delhi/"
+    },
+    {
+      "slug": "plastic-surgery-in-delhi",
+      "uri": "/plastic-surgery-in-delhi/"
+    },
+    {
+      "slug": "skin-treatments-in-delhi",
+      "uri": "/skin-treatments-in-delhi/"
+    },
+    {
+      "slug": "hair-transplant-in-delhi-gurgaon",
+      "uri": "/hair-transplant-in-delhi/gurgaon/"
+    },
+    {
+      "slug": "hair-transplant-in-delhi-side-effects",
+      "uri": "/hair-transplant-in-delhi/side-effects/"
+    },
+    {
+      "slug": "intimate-surgery-in-delhi-hymenoplasty-videos",
+      "uri": "/intimate-surgery-in-delhi/hymenoplasty/videos/"
+    },
+    {
+      "slug": "intimate-surgery-in-delhi-vaginoplasty-videos",
+      "uri": "/intimate-surgery-in-delhi/vaginoplasty/videos/"
+    }
+  ],
+  "batches": []
+}

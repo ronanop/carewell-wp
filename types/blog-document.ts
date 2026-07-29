@@ -14,7 +14,7 @@ import type {
   BlogPostSummary,
   BlogTag,
 } from "@/types/blog";
-import type { PageType } from "@/lib/experience/engine/pageClassification";
+import type { PageType } from "@/types/page-type";
 import type { ResolvedPageChrome } from "@/types/page-chrome";
 import type {
   PresentationConfig,

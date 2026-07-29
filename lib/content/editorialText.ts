@@ -29,6 +29,16 @@ export function formatEditorialListItem(text: string): string {
 }
 
 /**
+ * Presentation-only omit list for Benefits / Why Choose cards.
+ * Does not mutate WordPress source — remove the item in WP when convenient.
+ */
+export function shouldOmitEditorialListItem(text: string): boolean {
+  const label = formatEditorialListItem(text).toLowerCase();
+  // "Video Testimonials: Hear from real patients who have restored their confidence."
+  return label.startsWith("video testimonials");
+}
+
+/**
  * Strip emoji from HTML while preserving tags (FAQ answers, etc.).
  */
 export function stripEmojiFromHtml(html: string): string {

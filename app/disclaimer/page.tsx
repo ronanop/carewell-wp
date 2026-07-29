@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { DisclaimerPageView } from "@/components/pages/legal/DisclaimerPageView";
-import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schema";
 
@@ -35,7 +34,6 @@ export default async function DisclaimerPage() {
     { name: "Home", path: "/" },
     { name: "Disclaimer", path: "/disclaimer" },
   ]);
-  const studioConfig = await getCachedPublishedStaticPageConfig("disclaimer");
 
   return (
     <>
@@ -45,7 +43,7 @@ export default async function DisclaimerPage() {
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <DisclaimerPageView mode="public" config={studioConfig} />
+      <DisclaimerPageView mode="public" config={null} />
     </>
   );
 }

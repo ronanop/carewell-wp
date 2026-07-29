@@ -7,7 +7,7 @@ import { DisclaimerContent } from "@/components/disclaimer/DisclaimerContent";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
-import { isSectionEnabled } from "@/lib/experience/static-pages/applyOverrides";
+import { isSectionEnabled } from "@/lib/static-pages/applyOverrides";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 
 export function DisclaimerPageView({

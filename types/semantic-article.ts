@@ -6,11 +6,17 @@
 import type { ArticleDocument, ArticleFaqItem } from "@/types/article-ast";
 import type { ContentNode } from "@/types/content-ast";
 
-/** Deterministic section classifications for medical editorial content. */
+/**
+ * Deterministic section classifications for medical editorial content.
+ * Phase 9.0 expands Classification 2.0 — aliases:
+ * CANDIDATE → ELIGIBILITY, MEDICAL_FACT → FACT, DOCTOR → DOCTOR_ADVICE, CTA → CONSULTATION.
+ */
 export type SemanticSectionType =
   | "INTRODUCTION"
   | "SUMMARY"
   | "KEY_TAKEAWAYS"
+  | "SYMPTOMS"
+  | "CAUSES"
   | "BENEFITS"
   | "RISKS"
   | "SIDE_EFFECTS"
@@ -25,12 +31,14 @@ export type SemanticSectionType =
   | "STATISTICS"
   | "FAQ"
   | "DOCTOR_ADVICE"
+  | "WHY_CHOOSE_US"
   | "CONCLUSION"
   | "REFERENCES"
   | "VIDEO"
   | "TESTIMONIAL"
   | "IMAGE_GALLERY"
   | "RESULTS"
+  | "EXPECTATIONS"
   | "WARNING"
   | "MEDICAL_DISCLAIMER"
   | "WHEN_TO_CONTACT"
@@ -38,6 +46,7 @@ export type SemanticSectionType =
   | "AFTERCARE"
   | "BEFORE_AFTER"
   | "FACT"
+  | "MYTH"
   | "QUOTE"
   | "TECHNOLOGY"
   | "GALLERY"
@@ -47,6 +56,8 @@ export type SemanticSectionType =
   | "CONSULTATION"
   | "TESTIMONIALS"
   | "REVIEWS"
+  | "RELATED"
+  | "CHECKLIST"
   | "GENERIC";
 
 export type SemanticConfidence = "high" | "medium" | "low";

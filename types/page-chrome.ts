@@ -3,7 +3,7 @@
  * These are renderer-level UI — not PresentationConfig content sections.
  */
 
-import type { PageType } from "@/lib/experience/engine/pageClassification";
+import type { PageType } from "@/types/page-type";
 
 export type GlobalWidgetId =
   | "consultation-sidebar"

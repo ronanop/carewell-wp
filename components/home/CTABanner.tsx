@@ -19,7 +19,7 @@ import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import {
   resolveElementField,
   resolveElementText,
-} from "@/lib/experience/static-pages/elementOverrides";
+} from "@/lib/static-pages/elementOverrides";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_HEADING = "Ready to Begin Your Transformation?";

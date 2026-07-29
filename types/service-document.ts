@@ -7,7 +7,7 @@
 import type { ArticleDocument, ArticleFaqItem, ArticleTocItem } from "@/types/article-ast";
 import type { BlogPostSummary } from "@/types/blog";
 import type { LayoutComposition } from "@/types/editorial-layout";
-import type { PageType } from "@/lib/experience/engine/pageClassification";
+import type { PageType } from "@/types/page-type";
 import type { ResolvedPageChrome } from "@/types/page-chrome";
 import type {
   PresentationConfig,
@@ -24,7 +24,7 @@ import type {
   ExperienceQualityWarning,
   ExperienceIntelligenceResult,
 } from "@/types/experience-document";
-import type { ExperienceReviewReport } from "@/lib/experience/quality/reviewMode";
+import type { ExperienceReviewReport } from "@/types/experience-review";
 
 export type ServiceHeroModel = {
   title: string;

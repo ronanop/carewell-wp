@@ -46,3 +46,8 @@ next-env.d.ts
 .cursor/debug-*.log
 .tmp-debug-page.html
 
+
+# Sanity local runtime
+.sanity/
+**/__pycache__/
+

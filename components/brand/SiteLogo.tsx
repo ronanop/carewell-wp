@@ -27,10 +27,10 @@ export function SiteLogo({ className }: SiteLogoProps) {
         priority
       />
       <span className="flex flex-col">
-        <span className="text-[17px] font-semibold tracking-[-0.01em] text-[#0A2540]">
+        <span className="text-[19px] font-semibold tracking-[-0.01em] text-[#0A2540]">
           Carewell Medical Centre
         </span>
-        <span className="mt-1 text-[11px] font-normal leading-tight text-neutral-500">
+        <span className="mt-1 text-xs font-normal leading-tight text-neutral-500">
           Laparoscopic &amp; Cosmetic Surgery Centre
         </span>
       </span>

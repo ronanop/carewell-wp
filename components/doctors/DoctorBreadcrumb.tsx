@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
+import { buildUriBreadcrumbs } from "@/lib/routing/uri";
 import { cn } from "@/lib/utils";
 import type { DoctorProfile } from "@/types/doctor";
 

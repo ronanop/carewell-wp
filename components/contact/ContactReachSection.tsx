@@ -5,7 +5,7 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { ConsultationLeadCapture } from "@/components/leads/ConsultationLeadCapture";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
-import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
+import { resolveElementText } from "@/lib/static-pages/elementOverrides";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_HEADING = "Reach Us";

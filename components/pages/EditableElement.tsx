@@ -10,11 +10,11 @@ import {
 } from "react";
 
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
-import { useEditorStore } from "@/lib/experience/builder/editorStore";
+import { useEditorStore } from "@/lib/static-pages/editorStore";
 import {
   resolveElementField,
   resolveElementText,
-} from "@/lib/experience/static-pages/elementOverrides";
+} from "@/lib/static-pages/elementOverrides";
 import { cn } from "@/lib/utils";
 import type { ElementKind } from "@/types/element-descriptor";
 import type { PresentationConfig } from "@/types/presentation-config";

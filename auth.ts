@@ -5,7 +5,7 @@ import { compare } from "bcryptjs";
 import { z } from "zod";
 
 import { authConfig } from "@/auth.config";
-import { createUserRepository } from "@/lib/experience/repositories/userRepository";
+import { getPrisma } from "@/lib/db/prisma";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -13,8 +13,8 @@ const credentialsSchema = z.object({
 });
 
 /**
- * Auth.js for Experience Studio (ADR-011) — Node runtime.
- * Middleware uses `auth.config.ts` only (no Prisma / bcrypt on Edge).
+ * Auth.js (credentials) — retained for lead admin Server Actions if re-enabled.
+ * Public site does not require auth after Experience Studio removal.
  */
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -36,8 +36,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         try {
-          const users = createUserRepository();
-          const user = await users.findByEmail(parsed.data.email);
+          const prisma = getPrisma();
+          const user = await prisma.user.findUnique({
+            where: { email: parsed.data.email.toLowerCase() },
+            include: { role: true },
+          });
           if (!user || !user.active) {
             return null;
           }

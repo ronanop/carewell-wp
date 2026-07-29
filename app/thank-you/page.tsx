@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { ThankYouPageView } from "@/components/pages/system/ThankYouPageView";
-import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 
 export const metadata: Metadata = {
   title: "Thank You | Care Well Medical Centre",
@@ -14,6 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default async function ThankYouPage() {
-  const studioConfig = await getCachedPublishedStaticPageConfig("thank-you");
-  return <ThankYouPageView mode="public" config={studioConfig} />;
+  return <ThankYouPageView mode="public" config={null} />;
 }

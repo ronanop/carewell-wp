@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import type { UriBreadcrumbItem } from "@/lib/wordpress/routeUtils";
+import type { UriBreadcrumbItem } from "@/lib/routing/uri";
 
 export interface WordPressPageBreadcrumbProps {
   items: readonly UriBreadcrumbItem[];

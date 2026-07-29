@@ -7,8 +7,8 @@ import Link from "next/link";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
-import { isSectionEnabled } from "@/lib/experience/static-pages/applyOverrides";
-import { buildUriBreadcrumbs } from "@/lib/wordpress/routeUtils";
+import { isSectionEnabled } from "@/lib/static-pages/applyOverrides";
+import { buildUriBreadcrumbs } from "@/lib/routing/uri";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 
 export function TermsPageView({ mode, config = null }: StaticPageViewProps) {

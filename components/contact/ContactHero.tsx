@@ -2,7 +2,7 @@
 
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
-import { resolveElementText } from "@/lib/experience/static-pages/elementOverrides";
+import { resolveElementText } from "@/lib/static-pages/elementOverrides";
 
 const DEFAULT_LABEL = "Get in Touch";
 const DEFAULT_HEADING = "Contact Us";

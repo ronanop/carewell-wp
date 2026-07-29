@@ -21,7 +21,7 @@ import type {
   BlogSidebarConfig,
 } from "@/types/blog-document";
 import type { LayoutComposition } from "@/types/editorial-layout";
-import type { PageType } from "@/lib/experience/engine/pageClassification";
+import type { PageType } from "@/types/page-type";
 import type { ResolvedPageChrome } from "@/types/page-chrome";
 import type {
   PresentationConfig,
@@ -139,7 +139,7 @@ export type ExperienceDocument = {
   /** Layout Intelligence scores (optional; Studio / analytics). */
   intelligence?: ExperienceIntelligenceResult | null;
   /** Phase 7.1 — Experience Review Mode report for Studio. */
-  review?: import("@/lib/experience/quality/reviewMode").ExperienceReviewReport | null;
+  review?: import("@/types/experience-review").ExperienceReviewReport | null;
   /**
    * Phase 8.0 — when true, indicates absolute editorial failure (no AST).
    * UnifiedExperienceRenderer still prefers ServiceExperienceRenderer /

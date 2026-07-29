@@ -8,7 +8,7 @@ import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
 import { buttonVariants } from "@/components/ui/button";
-import { isSectionEnabled } from "@/lib/experience/static-pages/applyOverrides";
+import { isSectionEnabled } from "@/lib/static-pages/applyOverrides";
 import { cn } from "@/lib/utils";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 

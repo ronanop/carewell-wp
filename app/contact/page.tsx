@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { ContactPageView } from "@/components/pages/contact/ContactPageView";
-import { getCachedPublishedStaticPageConfig } from "@/lib/experience/services/staticPageService";
 
 export const metadata: Metadata = {
   title: "Contact Care Well Medical Centre",
@@ -10,6 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const studioConfig = await getCachedPublishedStaticPageConfig("contact");
-  return <ContactPageView mode="public" config={studioConfig} />;
+  return <ContactPageView mode="public" config={null} />;
 }

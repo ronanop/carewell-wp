@@ -4,7 +4,7 @@ import { AnimatedStat } from "@/components/home/AnimatedStat";
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
-import { resolveElementField } from "@/lib/experience/static-pages/elementOverrides";
+import { resolveElementField } from "@/lib/static-pages/elementOverrides";
 
 const DEFAULT_INDICATORS = [
   { value: "20+", label: "Years Experience" },

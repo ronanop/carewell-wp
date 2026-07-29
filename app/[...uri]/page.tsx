@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 
-import { BlogsArchiveRoute } from "@/components/blog/BlogsArchiveRoute";
-import { UnifiedExperienceRenderer } from "@/components/experience/UnifiedExperienceRenderer";
-import { listBlogCategories } from "@/lib/blog/services/blogService";
+import { SanityPageTemplate, buildSanityPageMetadata } from "@/components/pages/SanityPageTemplate";
 import {
-  resolveExperienceDocument,
-  resolveExperienceSchemas,
-} from "@/lib/experience/unified/resolve";
+  buildSanityServiceMetadata,
+  SanityServiceTemplate,
+} from "@/components/service/SanityServiceTemplate";
+import { getSanityPageByUri } from "@/lib/sanity/page";
+import { getSanityServiceByUri } from "@/lib/sanity/service";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo/constants";
-import { isHandcraftedPath, normalizeUri } from "@/lib/wordpress/routeUtils";
-import { RenderMode } from "@carewell/page-renderer";
+import { isHandcraftedPath, normalizeUri } from "@/lib/routing/uri";
 
-interface WordPressCatchAllPageProps {
+interface CatchAllPageProps {
   params: Promise<{
     uri: string[];
   }>;
@@ -26,7 +25,7 @@ function isBlogArchiveUri(uri: string): boolean {
 
 export async function generateMetadata({
   params,
-}: WordPressCatchAllPageProps): Promise<Metadata> {
+}: CatchAllPageProps): Promise<Metadata> {
   const { uri } = await params;
   const normalizedUri = normalizeUri(uri);
 
@@ -34,8 +33,8 @@ export async function generateMetadata({
     return {
       title: `Blogs | ${SITE_NAME}`,
       description:
-        "Browse all Care Well Medical Centre articles on hair restoration, aesthetics, peptide therapy, and wellness.",
-      alternates: { canonical: `${SITE_URL}/blogs` },
+        "Care Well Medical Centre articles — coming soon via Sanity CMS.",
+      robots: { index: false, follow: true },
     };
   }
 
@@ -43,105 +42,72 @@ export async function generateMetadata({
     return { title: `Page Not Found | ${SITE_NAME}` };
   }
 
-  const doc = await resolveExperienceDocument(normalizedUri);
-  if (!doc) {
+  const sanityService = await getSanityServiceByUri(normalizedUri);
+  if (sanityService) {
+    const meta = buildSanityServiceMetadata(sanityService);
+    const raw = sanityService.uri || normalizedUri;
+    const path = (raw.startsWith("/") ? raw : `/${raw}`).replace(/\/?$/, "/");
     return {
-      title: `Page Not Found | ${SITE_NAME}`,
-      robots: { index: false, follow: true },
+      ...meta,
+      alternates: { canonical: `${SITE_URL}${path}` },
     };
   }
 
-  const title = doc.seo.title || `${doc.title} | ${SITE_NAME}`;
-  const description =
-    doc.seo.description ||
-    `${doc.title} at Care Well Medical Centre — advanced care in South Delhi.`;
-  const canonical =
-    doc.seo.canonicalUrl ||
-    (doc.kind === "blog"
-      ? doc.hero.shareUrl
-      : `${SITE_URL}${doc.uri.startsWith("/") ? doc.uri.replace(/\/$/, "") : `/${doc.uri}`}`);
-  const ogImage =
-    doc.seo.openGraphImage ||
-    doc.hero.featuredImage?.sourceUrl ||
-    DEFAULT_OG_IMAGE;
+  const sanityPage = await getSanityPageByUri(normalizedUri);
+  if (sanityPage) {
+    const meta = buildSanityPageMetadata(sanityPage);
+    const raw = sanityPage.uri || normalizedUri;
+    const path = (raw.startsWith("/") ? raw : `/${raw}`).replace(/\/?$/, "/");
+    const ogImage = sanityPage.mainImage?.asset?.url || DEFAULT_OG_IMAGE;
+    return {
+      ...meta,
+      alternates: { canonical: `${SITE_URL}${path}` },
+      openGraph: {
+        title: String(meta.title),
+        description: meta.description ?? undefined,
+        url: `${SITE_URL}${path}`,
+        siteName: SITE_NAME,
+        type: "website",
+        images: [{ url: ogImage }],
+      },
+    };
+  }
 
   return {
-    title,
-    description,
-    alternates: { canonical },
-    openGraph: {
-      title: doc.seo.openGraphTitle || title,
-      description: doc.seo.openGraphDescription || description,
-      url: canonical,
-      siteName: SITE_NAME,
-      type: doc.kind === "blog" ? "article" : "website",
-      publishedTime:
-        doc.kind === "blog" ? (doc.hero.publishedAt ?? undefined) : undefined,
-      modifiedTime:
-        doc.kind === "blog" ? (doc.hero.modifiedAt ?? undefined) : undefined,
-      authors: doc.author ? [doc.author.name] : undefined,
-      images: [{ url: ogImage }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: doc.seo.openGraphTitle || title,
-      description: doc.seo.openGraphDescription || description,
-      images: [ogImage],
-    },
+    title: `Page Not Found | ${SITE_NAME}`,
+    robots: { index: false, follow: true },
   };
 }
 
 /**
- * Catch-all — Unified Editorial Experience Engine (Phase 7.0).
- * Resolves WordPress Page or Post into ExperienceDocument; one renderer.
- * Preserves all existing URLs.
+ * Catch-all — Sanity services and pages by URI/slug.
+ * Handcrafted App Router paths and missing CMS docs → 404.
  */
-export default async function WordPressCatchAllPage({
-  params,
-}: WordPressCatchAllPageProps) {
+export default async function CatchAllPage({ params }: CatchAllPageProps) {
   const { uri } = await params;
   const normalizedUri = normalizeUri(uri);
 
-  // Defense: if catch-all receives /blogs (e.g. production route conflict),
-  // render the archive instead of the handcrafted-path 404.
   if (normalizedUri === "/blog/") {
     permanentRedirect("/blogs");
   }
   if (normalizedUri === "/blogs/") {
-    return <BlogsArchiveRoute />;
+    // WP blog archive removed — Sanity posts not wired yet.
+    notFound();
   }
 
   if (isHandcraftedPath(normalizedUri)) {
     notFound();
   }
 
-  const doc = await resolveExperienceDocument(normalizedUri);
-  if (!doc) {
-    notFound();
+  const sanityService = await getSanityServiceByUri(normalizedUri);
+  if (sanityService) {
+    return <SanityServiceTemplate service={sanityService} />;
   }
 
-  const categories =
-    doc.kind === "blog" ? await listBlogCategories() : [];
-  const schemas = doc.config.seo.schemaEnabled
-    ? await resolveExperienceSchemas(normalizedUri)
-    : [];
+  const sanityPage = await getSanityPageByUri(normalizedUri);
+  if (sanityPage) {
+    return <SanityPageTemplate page={sanityPage} />;
+  }
 
-  return (
-    <>
-      {schemas.map((schema, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
-          }}
-        />
-      ))}
-      <UnifiedExperienceRenderer
-        document={doc}
-        categories={categories}
-        mode={RenderMode.PUBLIC}
-      />
-    </>
-  );
+  notFound();
 }
