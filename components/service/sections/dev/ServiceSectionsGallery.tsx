@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import {
   BeforeAfterSection,
   BenefitsSection,
@@ -382,28 +383,28 @@ export function ServiceSectionsGallery({ viewport }: Props) {
             </h1>
           </div>
           <nav className="flex flex-wrap gap-2 text-xs">
-            <a
+            <Link
               href="/dev/service-sections/desktop"
               className={`rounded px-3 py-1.5 font-semibold ${
                 !isMobile ? "bg-amber-400 text-slate-900" : "bg-white/10 hover:bg-white/20"
               }`}
             >
               Desktop
-            </a>
-            <a
+            </Link>
+            <Link
               href="/dev/service-sections/mobile"
               className={`rounded px-3 py-1.5 font-semibold ${
                 isMobile ? "bg-amber-400 text-slate-900" : "bg-white/10 hover:bg-white/20"
               }`}
             >
               Mobile
-            </a>
-            <a
+            </Link>
+            <Link
               href="/gynecomastia/"
               className="rounded bg-white/10 px-3 py-1.5 hover:bg-white/20"
             >
               Live preview
-            </a>
+            </Link>
           </nav>
         </div>
         <div className="overflow-x-auto border-t border-white/10 bg-slate-950/80">
