@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import {
   getSanityServicesList,
   servicePublicPath,
@@ -44,8 +43,6 @@ function groupByHub(
 }
 
 export default async function DevServicePagesReviewPage() {
-  if (process.env.NODE_ENV === "production") notFound();
-
   const services = await getSanityServicesList();
   const groups = groupByHub(services);
 

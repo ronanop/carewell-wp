@@ -1,11 +1,8 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default function DevServiceSectionsIndexPage() {
-  if (process.env.NODE_ENV === "production") notFound();
-
   return (
     <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center gap-6 px-6 py-16 text-slate-900">
       <div>
