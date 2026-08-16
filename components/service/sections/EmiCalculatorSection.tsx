@@ -99,14 +99,10 @@ export function EmiCalculatorSection({
       id={id}
       aria-labelledby={headingId}
       className={cn(
-        "relative scroll-mt-28 border-y border-slate-200/80 bg-[#F6F8FC]",
+        "relative scroll-mt-28",
         className,
       )}
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(700px_160px_at_50%_0%,rgba(21,87,160,0.07),transparent_55%)]"
-        aria-hidden
-      />
 
       <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         <header className="mx-auto mb-8 max-w-2xl text-center sm:mb-10">

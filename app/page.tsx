@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 
 import { type HomeYouTubeVideo } from "@/components/home/TestimonialsSection";
 import { HomePageView } from "@/components/pages/home/HomePageView";
+import {
+  getSanityLatestPosts,
+  toHomeBlogPosts,
+} from "@/lib/sanity/post";
 import { listChannelVideos } from "@/lib/youtube/channelVideos";
 
 /** Homepage ISR — refresh YouTube cards periodically. */
@@ -14,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 const HOME_YOUTUBE_LIMIT = 6;
+const HOME_BLOG_LIMIT = 3;
 
 function toHomeYouTubeVideos(
   videos: Awaited<ReturnType<typeof listChannelVideos>>,
@@ -28,20 +33,21 @@ function toHomeYouTubeVideos(
 
 /**
  * Homepage — thin route. Single implementation lives in HomePageView (ADR-015).
- * Blog cards: empty until Sanity posts are wired.
- * Testimonials: YouTube channel Atom RSS (limit 6).
+ * Blog cards: latest Sanity posts. Testimonials: YouTube channel Atom RSS.
  */
 export default async function HomePage() {
-  const youtubeVideos = await listChannelVideos(HOME_YOUTUBE_LIMIT).catch(
-    () => [],
-  );
+  const [youtubeVideos, latestPosts] = await Promise.all([
+    listChannelVideos(HOME_YOUTUBE_LIMIT).catch(() => []),
+    getSanityLatestPosts(HOME_BLOG_LIMIT).catch(() => []),
+  ]);
   const latestYouTubeVideos = toHomeYouTubeVideos(youtubeVideos);
+  const latestBlogPosts = toHomeBlogPosts(latestPosts);
 
   return (
     <HomePageView
       mode="public"
       config={null}
-      latestBlogPosts={[]}
+      latestBlogPosts={latestBlogPosts}
       latestYouTubeVideos={latestYouTubeVideos}
     />
   );

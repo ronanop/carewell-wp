@@ -272,7 +272,7 @@ export function TestimonialsSection({
             : undefined
       }
       className={cn(
-        "relative overflow-x-hidden border-y border-slate-200/80 bg-[#F6F8FC]",
+        "relative overflow-x-hidden",
         className,
       )}
     >
@@ -357,11 +357,6 @@ export function TestimonialsSection({
           }
         }
       `}</style>
-
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(700px_160px_at_20%_0%,rgba(21,87,160,0.07),transparent_55%)]"
-        aria-hidden
-      />
 
       {showTopBlock ? (
         <div

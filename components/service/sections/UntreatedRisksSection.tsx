@@ -34,14 +34,10 @@ export function UntreatedRisksSection({
       id={id}
       aria-labelledby={title ? `${id}-heading` : undefined}
       className={cn(
-        "relative border-y border-slate-200/80 bg-[#F6F8FC]",
+        "relative",
         className,
       )}
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(640px_150px_at_8%_0%,rgba(21,87,160,0.07),transparent_52%),radial-gradient(580px_140px_at_92%_100%,rgba(10,46,82,0.04),transparent_50%)]"
-        aria-hidden
-      />
 
       <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         {(eyebrow || title) && (

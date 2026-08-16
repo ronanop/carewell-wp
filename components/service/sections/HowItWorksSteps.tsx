@@ -132,21 +132,25 @@ export function HowItWorksSteps({ steps, stepLabel = "Step" }: Props) {
                 </span>
               ) : null}
 
-              {/* Active progress bar */}
+              {/* Progress line — animates on every card */}
               <span
-                className="mt-4 h-0.5 w-full overflow-hidden rounded-full bg-slate-100"
+                className="mt-auto pt-4 h-0.5 w-full overflow-hidden rounded-full bg-slate-100"
                 aria-hidden
               >
                 <span
-                  key={isActive ? `bar-${active}-${paused}` : `idle-${i}`}
+                  key={`bar-${i}-${inView && !paused ? active : "paused"}`}
                   className={cn(
-                    "block h-full w-full origin-left rounded-full bg-[#1557A0]",
-                    isActive && inView && !paused
+                    "block h-full w-full origin-left rounded-full",
+                    isActive ? "bg-[#1557A0]" : "bg-[#1557A0]/55",
+                    inView && !paused
                       ? "animate-[howItWorksBar_2.8s_linear_forwards]"
-                      : isActive
-                        ? "scale-x-100"
-                        : "scale-x-0",
+                      : "scale-x-100",
                   )}
+                  style={
+                    inView && !paused
+                      ? { animationDelay: `${i * 80}ms` }
+                      : undefined
+                  }
                 />
               </span>
             </button>

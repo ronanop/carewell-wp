@@ -79,17 +79,8 @@ export function QuickFactsCard({
     <section
       id={id}
       aria-labelledby={`${id}-heading`}
-      className={cn(
-        "relative border-b border-slate-200/80 bg-[#F6F8FC]",
-        className,
-      )}
+      className={cn("relative", className)}
     >
-      {/* Soft brand wash — keeps strip tied to hero without heavy navy block */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(900px_120px_at_10%_0%,rgba(21,87,160,0.08),transparent_60%)]"
-        aria-hidden
-      />
-
       <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-9 lg:px-8">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
           <div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { urlFor } from "@/lib/sanity/client";
+import { cn } from "@/lib/utils";
 
 type BodyImageValue = {
   alt?: string;
@@ -12,7 +13,15 @@ type BodyImageValue = {
   };
 };
 
-function BodyImage({ value }: { value: BodyImageValue }) {
+type PortableTextVariant = "default" | "blog";
+
+function BodyImage({
+  value,
+  variant,
+}: {
+  value: BodyImageValue;
+  variant: PortableTextVariant;
+}) {
   if (!value?.asset) return null;
   const width = value.asset.metadata?.dimensions?.width || 1200;
   const height = value.asset.metadata?.dimensions?.height || 800;
@@ -21,19 +30,31 @@ function BodyImage({ value }: { value: BodyImageValue }) {
     : null;
   if (!src) return null;
 
+  const isBlog = variant === "blog";
+
   return (
-    <figure className="my-8">
+    <figure className={isBlog ? undefined : "my-8"}>
       <Image
         src={src}
         alt={value.alt || ""}
         width={Math.min(width, 1200)}
         height={Math.round((Math.min(width, 1200) * height) / width)}
-        className="h-auto w-full rounded-lg"
+        className={
+          isBlog
+            ? "h-auto w-full"
+            : "h-auto w-full rounded-lg"
+        }
         placeholder={value.asset.metadata?.lqip ? "blur" : "empty"}
         blurDataURL={value.asset.metadata?.lqip}
       />
       {value.caption ? (
-        <figcaption className="mt-2 text-center text-sm text-slate-500">
+        <figcaption
+          className={
+            isBlog
+              ? undefined
+              : "mt-2 text-center text-sm text-slate-500"
+          }
+        >
           {value.caption}
         </figcaption>
       ) : null}
@@ -41,94 +62,220 @@ function BodyImage({ value }: { value: BodyImageValue }) {
   );
 }
 
-const components: PortableTextComponents = {
-  block: {
-    h1: ({ children }) => (
-      <h1 className="mt-10 mb-4 text-3xl font-semibold tracking-tight text-slate-900">
-        {children}
-      </h1>
-    ),
-    h2: ({ children }) => (
-      <h2 className="mt-8 mb-3 text-2xl font-semibold tracking-tight text-slate-900">
-        {children}
-      </h2>
-    ),
-    h3: ({ children }) => (
-      <h3 className="mt-6 mb-2 text-xl font-semibold text-slate-900">{children}</h3>
-    ),
-    h4: ({ children }) => (
-      <h4 className="mt-5 mb-2 text-lg font-semibold text-slate-900">{children}</h4>
-    ),
-    normal: ({ children }) => (
-      <p className="mb-4 text-base leading-relaxed text-slate-700">{children}</p>
-    ),
-    blockquote: ({ children }) => (
-      <blockquote className="my-6 border-l-4 border-slate-300 pl-4 text-slate-600 italic">
-        {children}
-      </blockquote>
-    ),
-  },
-  list: {
-    bullet: ({ children }) => (
-      <ul className="mb-4 list-disc space-y-1 pl-6 text-slate-700">{children}</ul>
-    ),
-    number: ({ children }) => (
-      <ol className="mb-4 list-decimal space-y-1 pl-6 text-slate-700">{children}</ol>
-    ),
-  },
-  marks: {
-    link: ({ children, value }) => {
-      const href = value?.href || "#";
-      const external = /^https?:\/\//i.test(href);
-      return (
-        <a
-          href={href}
-          className="text-teal-700 underline underline-offset-2"
-          rel={external ? "noopener noreferrer" : undefined}
-          target={value?.openInNewTab || external ? "_blank" : undefined}
+function buildComponents(
+  variant: PortableTextVariant,
+  headingIds?: Record<string, string>,
+): PortableTextComponents {
+  const headingId = (value: { _key?: string } | undefined) =>
+    value?._key ? headingIds?.[value._key] : undefined;
+  const isBlog = variant === "blog";
+
+  if (isBlog) {
+    return {
+      block: {
+        h1: ({ children, value }) => (
+          <h2 id={headingId(value)}>{children}</h2>
+        ),
+        h2: ({ children, value }) => (
+          <h2 id={headingId(value)}>{children}</h2>
+        ),
+        h3: ({ children, value }) => (
+          <h3 id={headingId(value)}>{children}</h3>
+        ),
+        h4: ({ children, value }) => (
+          <h4 id={headingId(value)}>{children}</h4>
+        ),
+        normal: ({ children }) => <p>{children}</p>,
+        blockquote: ({ children }) => <blockquote>{children}</blockquote>,
+      },
+      list: {
+        bullet: ({ children }) => <ul>{children}</ul>,
+        number: ({ children }) => <ol>{children}</ol>,
+      },
+      listItem: {
+        bullet: ({ children }) => <li>{children}</li>,
+        number: ({ children }) => <li>{children}</li>,
+      },
+      marks: {
+        link: ({ children, value }) => {
+          const href = value?.href || "#";
+          const external = /^https?:\/\//i.test(href);
+          return (
+            <a
+              href={href}
+              rel={external ? "noopener noreferrer" : undefined}
+              target={value?.openInNewTab || external ? "_blank" : undefined}
+            >
+              {children}
+            </a>
+          );
+        },
+        strong: ({ children }) => <strong className="font-semibold text-[#0A2540]">{children}</strong>,
+        em: ({ children }) => <em>{children}</em>,
+      },
+      types: {
+        bodyImage: ({ value }) => <BodyImage value={value} variant="blog" />,
+        youtube: ({ value }) => {
+          const id = value?.youtubeId;
+          if (!id) return null;
+          return (
+            <div className="blog-prose__media aspect-video">
+              <iframe
+                className="h-full w-full"
+                src={`https://www.youtube.com/embed/${id}`}
+                title="YouTube video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          );
+        },
+        embed: ({ value }) =>
+          value?.html ? (
+            <div
+              className="blog-prose__embed"
+              dangerouslySetInnerHTML={{ __html: value.html }}
+            />
+          ) : null,
+        htmlTable: ({ value }) =>
+          value?.html ? (
+            <div
+              className="blog-prose__table"
+              dangerouslySetInnerHTML={{ __html: value.html }}
+            />
+          ) : null,
+      },
+    };
+  }
+
+  return {
+    block: {
+      h1: ({ children, value }) => (
+        <h1
+          id={headingId(value)}
+          className="mt-10 mb-4 scroll-mt-28 text-3xl font-semibold tracking-tight text-slate-900"
         >
           {children}
-        </a>
-      );
+        </h1>
+      ),
+      h2: ({ children, value }) => (
+        <h2
+          id={headingId(value)}
+          className="mt-8 mb-3 scroll-mt-28 text-2xl font-semibold tracking-tight text-slate-900"
+        >
+          {children}
+        </h2>
+      ),
+      h3: ({ children, value }) => (
+        <h3
+          id={headingId(value)}
+          className="mt-6 mb-2 scroll-mt-28 text-xl font-semibold text-slate-900"
+        >
+          {children}
+        </h3>
+      ),
+      h4: ({ children, value }) => (
+        <h4
+          id={headingId(value)}
+          className="mt-5 mb-2 scroll-mt-28 text-lg font-semibold text-slate-900"
+        >
+          {children}
+        </h4>
+      ),
+      normal: ({ children }) => (
+        <p className="mb-4 text-base leading-relaxed text-slate-700">{children}</p>
+      ),
+      blockquote: ({ children }) => (
+        <blockquote className="my-6 border-l-4 border-slate-300 pl-4 text-slate-600 italic">
+          {children}
+        </blockquote>
+      ),
     },
-  },
-  types: {
-    bodyImage: ({ value }) => <BodyImage value={value} />,
-    youtube: ({ value }) => {
-      const id = value?.youtubeId;
-      if (!id) return null;
-      return (
-        <div className="my-8 aspect-video overflow-hidden rounded-lg bg-black">
-          <iframe
-            className="h-full w-full"
-            src={`https://www.youtube.com/embed/${id}`}
-            title="YouTube video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
+    list: {
+      bullet: ({ children }) => (
+        <ul className="mb-4 list-disc space-y-1 pl-6 text-slate-700">{children}</ul>
+      ),
+      number: ({ children }) => (
+        <ol className="mb-4 list-decimal space-y-1 pl-6 text-slate-700">{children}</ol>
+      ),
+    },
+    marks: {
+      link: ({ children, value }) => {
+        const href = value?.href || "#";
+        const external = /^https?:\/\//i.test(href);
+        return (
+          <a
+            href={href}
+            className="text-teal-700 underline underline-offset-2"
+            rel={external ? "noopener noreferrer" : undefined}
+            target={value?.openInNewTab || external ? "_blank" : undefined}
+          >
+            {children}
+          </a>
+        );
+      },
+    },
+    types: {
+      bodyImage: ({ value }) => <BodyImage value={value} variant="default" />,
+      youtube: ({ value }) => {
+        const id = value?.youtubeId;
+        if (!id) return null;
+        return (
+          <div className="my-8 aspect-video overflow-hidden rounded-lg bg-black">
+            <iframe
+              className="h-full w-full"
+              src={`https://www.youtube.com/embed/${id}`}
+              title="YouTube video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        );
+      },
+      embed: ({ value }) =>
+        value?.html ? (
+          <div
+            className="my-6 overflow-x-auto"
+            dangerouslySetInnerHTML={{ __html: value.html }}
           />
-        </div>
-      );
+        ) : null,
+      htmlTable: ({ value }) =>
+        value?.html ? (
+          <div
+            className="my-6 overflow-x-auto rounded-lg border border-slate-200 p-2"
+            dangerouslySetInnerHTML={{ __html: value.html }}
+          />
+        ) : null,
     },
-    embed: ({ value }) =>
-      value?.html ? (
-        <div
-          className="my-6 overflow-x-auto"
-          dangerouslySetInnerHTML={{ __html: value.html }}
-        />
-      ) : null,
-    htmlTable: ({ value }) =>
-      value?.html ? (
-        <div
-          className="my-6 overflow-x-auto rounded-lg border border-slate-200 p-2"
-          dangerouslySetInnerHTML={{ __html: value.html }}
-        />
-      ) : null,
-  },
-};
+  };
+}
 
-export function SanityPortableText({ value }: { value: unknown }) {
+export function SanityPortableText({
+  value,
+  headingIds,
+  variant = "default",
+  className,
+}: {
+  value: unknown;
+  /** Optional map of block `_key` → anchor id (for table of contents). */
+  headingIds?: Record<string, string>;
+  variant?: PortableTextVariant;
+  className?: string;
+}) {
   if (!Array.isArray(value) || value.length === 0) {
-    return <p className="text-slate-500">No body content.</p>;
+    return <p className="text-muted-foreground">No body content.</p>;
   }
-  return <PortableText value={value} components={components} />;
+
+  const content = (
+    <PortableText
+      value={value}
+      components={buildComponents(variant, headingIds)}
+    />
+  );
+
+  if (variant === "blog") {
+    return <div className={cn("blog-prose", className)}>{content}</div>;
+  }
+
+  return content;
 }

@@ -44,14 +44,10 @@ export function BeforeAfterSection({
       id={id}
       aria-labelledby={title ? `${id}-heading` : undefined}
       className={cn(
-        "relative border-b border-slate-200/80 bg-white",
+        "relative",
         className,
       )}
     >
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(720px_140px_at_100%_0%,rgba(21,87,160,0.07),transparent_60%)]"
-        aria-hidden
-      />
 
       <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         {(eyebrow || title) && (

@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 
+import {
+  buildSanityPostMetadata,
+  SanityPostTemplate,
+} from "@/components/blog/SanityPostTemplate";
 import { SanityPageTemplate, buildSanityPageMetadata } from "@/components/pages/SanityPageTemplate";
 import {
   buildSanityServiceMetadata,
   SanityServiceTemplate,
 } from "@/components/service/SanityServiceTemplate";
 import { getSanityPageByUri } from "@/lib/sanity/page";
+import {
+  getSanityMorePosts,
+  getSanityPostByUri,
+  mergeNextPosts,
+  postPublicPath,
+} from "@/lib/sanity/post";
 import { getSanityServiceByUri } from "@/lib/sanity/service";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import { isHandcraftedPath, normalizeUri } from "@/lib/routing/uri";
@@ -31,10 +41,9 @@ export async function generateMetadata({
 
   if (isBlogArchiveUri(normalizedUri)) {
     return {
-      title: `Blogs | ${SITE_NAME}`,
+      title: `Blog | ${SITE_NAME}`,
       description:
-        "Care Well Medical Centre articles — coming soon via Sanity CMS.",
-      robots: { index: false, follow: true },
+        "Educational articles from Care Well Medical Centre on hair, skin, and cosmetic treatments.",
     };
   }
 
@@ -50,6 +59,27 @@ export async function generateMetadata({
     return {
       ...meta,
       alternates: { canonical: `${SITE_URL}${path}` },
+    };
+  }
+
+  const sanityPost = await getSanityPostByUri(normalizedUri);
+  if (sanityPost) {
+    const meta = buildSanityPostMetadata(sanityPost);
+    const path = postPublicPath(sanityPost);
+    const ogImage = sanityPost.mainImage?.asset?.url || DEFAULT_OG_IMAGE;
+    return {
+      ...meta,
+      alternates: {
+        canonical: sanityPost.seo?.canonical || `${SITE_URL}${path}`,
+      },
+      openGraph: {
+        title: String(meta.title),
+        description: meta.description ?? undefined,
+        url: `${SITE_URL}${path}`,
+        siteName: SITE_NAME,
+        type: "article",
+        images: [{ url: ogImage }],
+      },
     };
   }
 
@@ -80,19 +110,15 @@ export async function generateMetadata({
 }
 
 /**
- * Catch-all — Sanity services and pages by URI/slug.
+ * Catch-all — Sanity services, blog posts, and pages by URI/slug.
  * Handcrafted App Router paths and missing CMS docs → 404.
  */
 export default async function CatchAllPage({ params }: CatchAllPageProps) {
   const { uri } = await params;
   const normalizedUri = normalizeUri(uri);
 
-  if (normalizedUri === "/blog/") {
-    permanentRedirect("/blogs");
-  }
-  if (normalizedUri === "/blogs/") {
-    // WP blog archive removed — Sanity posts not wired yet.
-    notFound();
+  if (normalizedUri === "/blog/" || normalizedUri === "/blogs/") {
+    permanentRedirect("/blogs/");
   }
 
   if (isHandcraftedPath(normalizedUri)) {
@@ -102,6 +128,18 @@ export default async function CatchAllPage({ params }: CatchAllPageProps) {
   const sanityService = await getSanityServiceByUri(normalizedUri);
   if (sanityService) {
     return <SanityServiceTemplate service={sanityService} />;
+  }
+
+  const sanityPost = await getSanityPostByUri(normalizedUri);
+  if (sanityPost) {
+    const more = await getSanityMorePosts(sanityPost._id, 6);
+    const nextPosts = mergeNextPosts(
+      sanityPost.relatedPosts,
+      more,
+      sanityPost._id,
+      3,
+    );
+    return <SanityPostTemplate post={sanityPost} nextPosts={nextPosts} />;
   }
 
   const sanityPage = await getSanityPageByUri(normalizedUri);

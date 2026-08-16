@@ -63,14 +63,10 @@ export function InsightCallout({
         id={id}
         aria-labelledby={title ? `${id}-heading` : undefined}
         className={cn(
-          "relative border-y border-slate-200/80 bg-[#F6F8FC]",
+          "relative",
           className,
         )}
       >
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(640px_140px_at_100%_0%,rgba(21,87,160,0.07),transparent_55%)]"
-          aria-hidden
-        />
         <div className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start lg:gap-12">
             <div className="min-w-0">

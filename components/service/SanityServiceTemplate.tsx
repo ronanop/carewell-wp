@@ -323,7 +323,7 @@ export function SanityServiceTemplate({
           note={service.hero?.quickFactsNote}
         />
 
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 lg:grid-cols-[1fr_320px]">
+        <div className="mx-auto grid w-full max-w-[90rem] gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-8 xl:gap-16 xl:px-10">
           <div className="min-w-0 space-y-2">
             <OverviewSection
               eyebrow={service.overview?.eyebrow}

@@ -54,14 +54,10 @@ export function DoctorProfileSection({
       id={id}
       aria-labelledby={resolvedTitle || name ? `${id}-heading` : undefined}
       className={cn(
-        "relative border-y border-slate-200/80 bg-[#F6F8FC]",
+        "relative",
         className,
       )}
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(640px_180px_at_12%_0%,rgba(21,87,160,0.08),transparent_55%)]"
-        aria-hidden
-      />
 
       <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         {(resolvedEyebrow || resolvedTitle) && (

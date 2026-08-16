@@ -404,3 +404,95 @@ export const SANITY_REDIRECTS = `*[_type == "redirect" && isEnabled == true]{
   to,
   permanent
 }`;
+
+const SANITY_POST_IMAGE = `{
+  alt,
+  asset->{
+    _id,
+    url,
+    metadata { lqip, dimensions }
+  }
+}`;
+
+const SANITY_POST_CARD = `{
+  _id,
+  title,
+  "slug": slug.current,
+  uri,
+  excerpt,
+  publishedAt,
+  modifiedAt,
+  categories,
+  tags,
+  featured,
+  readTimeMinutes,
+  authorName,
+  authorRole,
+  mainImage${SANITY_POST_IMAGE}
+}`;
+
+const SANITY_POST_FULL = `{
+  _id,
+  title,
+  "slug": slug.current,
+  uri,
+  excerpt,
+  publishedAt,
+  modifiedAt,
+  categories,
+  tags,
+  featured,
+  readTimeMinutes,
+  authorName,
+  authorRole,
+  authorImage${SANITY_POST_IMAGE},
+  mainImage${SANITY_POST_IMAGE},
+  midArticleCta{
+    enabled,
+    headline,
+    buttonLabel
+  },
+  relatedPosts[]->{
+    _id,
+    title,
+    "slug": slug.current,
+    uri,
+    excerpt,
+    publishedAt,
+    categories,
+    readTimeMinutes,
+    mainImage${SANITY_POST_IMAGE}
+  },
+  seo{
+    title,
+    description,
+    noIndex,
+    canonical,
+    ogTitle,
+    ogDescription
+  },
+  body[]{
+    ...,
+    _type == "bodyImage" => {
+      ...,
+      asset->{
+        _id,
+        url,
+        metadata { lqip, dimensions }
+      }
+    }
+  },
+  rawHtml
+}`;
+
+export const SANITY_POST_BY_SLUG = `*[_type == "post" && slug.current == $slug][0]${SANITY_POST_FULL}`;
+
+/** Match original WP URI (with/without trailing slash) or slug. */
+export const SANITY_POST_BY_URI = `*[_type == "post" && (uri == $uri || uri == $uriNoSlash || slug.current == $slug)][0]${SANITY_POST_FULL}`;
+
+export const SANITY_POSTS_LIST = `*[_type == "post" && defined(slug.current)] | order(publishedAt desc)${SANITY_POST_CARD}`;
+
+export const SANITY_POSTS_LATEST = `*[_type == "post" && defined(slug.current)] | order(coalesce(publishedAt, _createdAt) desc)[0...$limit]${SANITY_POST_CARD}`;
+
+/** Latest posts excluding the current document — for “next blogs” end matter. */
+export const SANITY_POSTS_MORE = `*[_type == "post" && defined(slug.current) && _id != $excludeId] | order(coalesce(publishedAt, _createdAt) desc)[0...$limit]${SANITY_POST_CARD}`;

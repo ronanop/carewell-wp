@@ -48,17 +48,8 @@ export function WhyChooseUsSection({
     <section
       id={id}
       aria-labelledby={title ? `${id}-heading` : undefined}
-      className={cn("relative overflow-hidden bg-[#F6F8FC]", className)}
+      className={cn("relative overflow-hidden", className)}
     >
-      {/* Soft brand washes — authority without heavy chrome */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(900px_280px_at_0%_0%,rgba(21,87,160,0.11),transparent_58%),radial-gradient(700px_240px_at_100%_100%,rgba(10,46,82,0.07),transparent_55%)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-[#1557A0] via-[#1557A0]/40 to-transparent sm:w-1.5"
-        aria-hidden
-      />
 
       <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         {(eyebrow || title || lead) && (

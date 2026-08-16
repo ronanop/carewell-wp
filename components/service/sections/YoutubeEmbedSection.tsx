@@ -88,18 +88,10 @@ export function YoutubeEmbedSection({
       id={id}
       aria-labelledby={headingId}
       className={cn(
-        "relative border-y border-slate-200/80 bg-[#FAFBFE]",
+        "relative",
         className,
       )}
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(680px_180px_at_50%_0%,rgba(21,87,160,0.08),transparent_58%)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F6F8FC]/80 to-transparent"
-        aria-hidden
-      />
 
       <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         {(eyebrow || title) && (
