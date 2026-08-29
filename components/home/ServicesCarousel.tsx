@@ -266,7 +266,10 @@ export function ServicesCarousel({
   return (
     <div>
       <div className="container-content flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-        <StaggerReveal className="max-w-3xl" stepMs={70}>
+        <StaggerReveal
+          className="max-w-3xl text-left lg:max-w-[52rem]"
+          stepMs={70}
+        >
           {label}
           {title}
           {description}
@@ -284,9 +287,9 @@ export function ServicesCarousel({
             onClick={goPrev}
             className={cn(
               "inline-flex size-11 items-center justify-center rounded-full",
-              "border border-[#0A2540]/15 bg-surface text-[#0A2540] shadow-sm",
+              "border border-[#0A2540] bg-[#0A2540] text-white shadow-sm",
               "transition-[opacity,background-color,box-shadow] duration-200",
-              "hover:bg-primary/5 hover:shadow-md",
+              "hover:bg-[#163A5C] hover:shadow-md",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               "disabled:pointer-events-none disabled:opacity-35"
             )}
@@ -300,9 +303,9 @@ export function ServicesCarousel({
             onClick={goNext}
             className={cn(
               "inline-flex size-11 items-center justify-center rounded-full",
-              "border border-primary/20 bg-primary text-primary-foreground shadow-sm",
+              "border border-[#0A2540] bg-[#0A2540] text-white shadow-sm",
               "transition-[opacity,background-color,box-shadow] duration-200",
-              "hover:bg-primary/90 hover:shadow-md",
+              "hover:bg-[#163A5C] hover:shadow-md",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               "disabled:pointer-events-none disabled:opacity-35"
             )}
@@ -312,7 +315,7 @@ export function ServicesCarousel({
         </div>
       </div>
 
-      <div className="mt-8 px-4 pb-3 pt-2 sm:mt-10 md:px-5">
+      <div className="mt-8 px-4 pb-3 pt-4 sm:mt-10 md:px-5">
         <div
           ref={viewportRef}
           className={cn(

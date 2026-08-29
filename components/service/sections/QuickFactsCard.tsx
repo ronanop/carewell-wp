@@ -81,8 +81,9 @@ export function QuickFactsCard({
       aria-labelledby={`${id}-heading`}
       className={cn("relative", className)}
     >
-      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-9 lg:px-8">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
+      <div className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <div className="rounded-3xl border border-[#1557A0]/10 bg-gradient-to-br from-white via-white to-[#F1F6FC] p-5 shadow-[0_14px_38px_-24px_rgba(10,46,82,0.38)] sm:p-6">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-[#1557A0] uppercase">
               Snapshot
@@ -147,6 +148,7 @@ export function QuickFactsCard({
             );
           })}
         </dl>
+          </div>
       </div>
     </section>
   );

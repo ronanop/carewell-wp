@@ -51,7 +51,7 @@ export function TrustIndicators() {
                   kind="statistic"
                   defaultValue={item.value}
                   as="p"
-                  className="text-[1.125rem] font-semibold leading-tight tracking-tight text-foreground sm:text-[1.25rem] md:text-[1.375rem]"
+                  className="text-[1.423125rem] font-semibold leading-tight tracking-tight text-foreground sm:text-[1.58125rem] md:text-[1.739375rem]"
                 >
                   {({ value: v }) => (
                     <AnimatedStat value={String(v || value)} />
@@ -62,7 +62,7 @@ export function TrustIndicators() {
                   kind="label"
                   defaultValue={item.label}
                   as="p"
-                  className="mt-1 text-[0.75rem] leading-snug text-muted-foreground sm:mt-1.5 sm:text-[0.8125rem]"
+                  className="mt-1 text-[0.94875rem] leading-snug text-muted-foreground sm:mt-1.5 sm:text-[1.0278125rem]"
                 >
                   {({ value: v }) => String(v || label)}
                 </EditableElement>

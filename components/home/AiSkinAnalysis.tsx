@@ -52,14 +52,57 @@ export function AiSkinAnalysis() {
   );
 
   return (
-    <section className="bg-background" aria-labelledby="ai-skin-analysis-heading">
-      <div className="container-content section-padding">
+    <section
+      className="bg-background lg:-mt-16"
+      aria-labelledby="ai-skin-analysis-heading"
+    >
+      <style>{`
+        @keyframes ai-skin-rgb-border {
+          0%,
+          100% {
+            background-position: 0% 50%, 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%, 100% 50%;
+          }
+        }
+
+        .ai-skin-analysis-card {
+          border: 1.5px solid transparent;
+          background-image:
+            linear-gradient(var(--surface), var(--surface)),
+            linear-gradient(
+              115deg,
+              #ff3cac,
+              #784ba0,
+              #2b86c5,
+              #00f5a0,
+              #ffcc70,
+              #ff3cac
+            );
+          background-origin: border-box;
+          background-clip: padding-box, border-box;
+          background-size: 100% 100%, 300% 300%;
+          animation: ai-skin-rgb-border 9s ease-in-out infinite;
+          box-shadow:
+            0 8px 30px rgb(10 37 64 / 0.08),
+            0 0 20px rgb(59 130 246 / 0.16),
+            0 0 28px rgb(236 72 153 / 0.1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .ai-skin-analysis-card {
+            animation: none;
+          }
+        }
+      `}</style>
+      <div className="container-content section-padding lg:pt-[50px]">
         <StaggerReveal
           stepMs={80}
           className={cn(
             // Mobile: compact vertical promo card
             "relative flex min-w-0 flex-col items-stretch gap-5 overflow-hidden rounded-2xl bg-surface px-5 py-6",
-            "border border-border/60 shadow-[0_8px_30px_rgb(10_37_64/0.08)]",
+            "ai-skin-analysis-card border-transparent",
             // Desktop (lg+): preserve side-by-side layout
             "lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:p-12",
           )}
@@ -71,7 +114,7 @@ export function AiSkinAnalysis() {
               kind="label"
               defaultValue={DEFAULT_LABEL}
               as="p"
-              className="text-label uppercase tracking-[0.14em] text-[#3B82F6]"
+              className="text-[0.9rem] font-medium uppercase tracking-[0.14em] text-[#3B82F6]"
             >
               {({ value }) => value || label}
             </EditableElement>
@@ -80,7 +123,7 @@ export function AiSkinAnalysis() {
               kind="heading"
               defaultValue={DEFAULT_HEADING}
               as="h2"
-              className="mt-2 font-heading text-[1.375rem] font-bold leading-snug text-[#0A2540] sm:mt-3 sm:text-[1.5rem] sm:leading-tight lg:text-h2"
+              className="mt-2 font-heading text-[1.65rem] font-bold leading-snug text-[#0A2540] sm:mt-3 sm:text-[1.8rem] sm:leading-tight lg:text-[2.7rem]"
             >
               {({ value }) => (
                 <span id="ai-skin-analysis-heading">{value || heading}</span>
@@ -91,7 +134,7 @@ export function AiSkinAnalysis() {
               kind="paragraph"
               defaultValue={DEFAULT_DESCRIPTION}
               as="p"
-              className="mx-auto mt-2.5 max-w-[22rem] text-[0.9375rem] leading-relaxed text-muted-foreground sm:mt-3 sm:max-w-lg sm:text-body lg:mx-0 lg:mt-4"
+              className="mx-auto mt-2.5 max-w-[22rem] text-[1.2rem] font-medium leading-relaxed text-slate-600 sm:mt-3 sm:max-w-lg sm:text-[1.3rem] lg:mx-0 lg:mt-4"
             >
               {({ value }) => value || description}
             </EditableElement>
@@ -109,7 +152,7 @@ export function AiSkinAnalysis() {
                     href={String(fields.href ?? buttonHref)}
                     className={cn(
                       buttonVariants({ size: "lg" }),
-                      "h-12 w-full rounded-lg bg-[#0A2540] text-base text-white no-underline hover:bg-[#0A2540]/90 hover:no-underline lg:h-11 lg:w-auto lg:text-sm",
+                      "h-12 w-full rounded-lg bg-[#0A2540] text-[1.2rem] text-white no-underline hover:bg-[#0A2540]/90 hover:no-underline lg:h-11 lg:w-auto lg:text-[1.05rem]",
                     )}
                   >
                     {String(fields.label ?? buttonLabel)}

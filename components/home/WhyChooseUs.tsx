@@ -29,7 +29,6 @@ import { cn } from "@/lib/utils";
 
 const DEFAULT_DOCTOR_IMAGE_SRC = "/images/dr-sandeep-bhasin-portrait.png";
 const DEFAULT_DOCTOR_IMAGE_ALT = "Dr. Sandeep Bhasin";
-const DEFAULT_LABEL = "We Stand Out";
 const DEFAULT_HEADING = "Why Choose Care Well Medical Centre?";
 const DEFAULT_DESCRIPTION =
   "Experience expert care, advanced technology, and a patient-first approach — all under one roof.";
@@ -173,7 +172,7 @@ function DoctorPortrait({
           defaultValue={DEFAULT_DOCTOR_NAME}
           as="p"
           className={cn(
-            "font-heading text-[1.0625rem] font-bold sm:text-body",
+            "font-heading text-[1.275rem] font-bold sm:text-[1.2rem]",
             NAVY,
           )}
         >
@@ -184,7 +183,7 @@ function DoctorPortrait({
           kind="paragraph"
           defaultValue={DEFAULT_DOCTOR_TITLE}
           as="p"
-          className="mt-1 text-small text-slate-500"
+          className="mt-1 text-[1.1rem] font-medium text-slate-700"
         >
           {({ value }) => value || title}
         </EditableElement>
@@ -193,7 +192,7 @@ function DoctorPortrait({
           kind="paragraph"
           defaultValue={DEFAULT_DOCTOR_LOCATION}
           as="p"
-          className="mt-0.5 text-small text-slate-500"
+          className="mt-0.5 text-[1.1rem] font-medium text-slate-700"
         >
           {({ value }) => value || location}
         </EditableElement>
@@ -205,7 +204,6 @@ function DoctorPortrait({
 export function WhyChooseUs() {
   const { config } = useStaticEditContext();
 
-  const label = resolveElementText(config, "home.why.label", DEFAULT_LABEL);
   const heading = resolveElementText(
     config,
     "home.why.heading",
@@ -270,24 +268,15 @@ export function WhyChooseUs() {
 
   return (
     <section className="bg-white">
-      <div className="container-content section-padding">
+      <div className="container-content section-padding lg:pt-8">
         <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
-          <EditableElement
-            id="home.why.label"
-            kind="label"
-            defaultValue={DEFAULT_LABEL}
-            as="p"
-            className="text-label uppercase tracking-[0.14em] text-[#5BA3E8]"
-          >
-            {({ value }) => value || label}
-          </EditableElement>
           <EditableElement
             id="home.why.heading"
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
             className={cn(
-              "mt-3 font-heading text-[1.5rem] font-bold leading-tight tracking-tight sm:text-h2",
+              "mt-3 font-heading text-[1.8rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]",
               NAVY,
             )}
           >
@@ -299,7 +288,7 @@ export function WhyChooseUs() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-4 max-w-2xl text-body leading-relaxed text-slate-500 sm:mt-5"
+            className="mx-auto mt-4 max-w-2xl text-[1.2rem] font-medium leading-relaxed text-slate-700 sm:mt-5 sm:text-[1.35rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -369,7 +358,7 @@ export function WhyChooseUs() {
                         defaultValue={title}
                         as="h3"
                         className={cn(
-                          "font-heading text-[1rem] font-bold leading-snug sm:text-body",
+                          "font-heading text-[1.25rem] font-bold leading-snug sm:text-[1.3rem]",
                           NAVY,
                         )}
                       >
@@ -380,7 +369,7 @@ export function WhyChooseUs() {
                         kind="paragraph"
                         defaultValue={featureDescription}
                         as="p"
-                        className="mt-1.5 text-[0.8125rem] leading-relaxed text-slate-500 sm:text-small"
+                        className="mt-1.5 text-[1.05rem] font-medium leading-relaxed text-slate-700 sm:text-[1.15rem]"
                       >
                         {({ value }) => value || featureDescription}
                       </EditableElement>
@@ -424,7 +413,7 @@ export function WhyChooseUs() {
                   kind="heading"
                   defaultValue={title}
                   as="p"
-                  className="text-small font-medium leading-snug text-slate-600"
+                  className="text-[1.1rem] font-semibold leading-snug text-slate-700"
                 >
                   {({ value }) => value || title}
                 </EditableElement>
@@ -440,7 +429,7 @@ export function WhyChooseUs() {
             defaultValue={DEFAULT_FOOTER_HEADING}
             as="h3"
             className={cn(
-              "font-heading text-[1.125rem] font-bold leading-snug sm:text-h3",
+              "font-heading text-[1.35rem] font-bold leading-snug sm:text-[2.25rem]",
               NAVY,
             )}
           >
@@ -451,7 +440,7 @@ export function WhyChooseUs() {
             kind="paragraph"
             defaultValue={DEFAULT_FOOTER_BODY}
             as="p"
-            className="mx-auto mt-3 max-w-3xl text-[0.9375rem] leading-relaxed text-slate-500 sm:mt-4 sm:text-body"
+            className="mx-auto mt-3 max-w-3xl text-[1.125rem] font-medium leading-relaxed text-slate-700 sm:mt-4 sm:text-[1.2rem] lg:max-w-[75rem]"
           >
             {({ value }) => value || footerBody}
           </EditableElement>

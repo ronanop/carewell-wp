@@ -88,7 +88,7 @@ function TestimonialVideoCard({
 
   return (
     <article
-      className="home-testimonials-card w-[min(14.5rem,78vw)] shrink-0 sm:w-[17.5rem]"
+      className="home-testimonials-card w-[min(16.5rem,88vw)] shrink-0 sm:w-[20rem] lg:w-[22rem]"
       aria-hidden={inertDuplicate || undefined}
     >
       <a
@@ -117,16 +117,16 @@ function TestimonialVideoCard({
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] transition-transform duration-300 group-hover:scale-110"
             aria-hidden
           >
-            <YouTubePlayIcon className="h-10 w-auto sm:h-12" />
+            <YouTubePlayIcon className="h-11 w-auto sm:h-14" />
           </span>
         </div>
 
         {/* ~1/3 — category + title */}
-        <div className="flex min-h-[5.25rem] flex-1 flex-col gap-1.5 px-3.5 py-3 sm:min-h-[6.25rem] sm:px-5 sm:py-4">
-          <p className="text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-primary sm:text-[0.6875rem]">
+        <div className="flex min-h-[6rem] flex-1 flex-col gap-1.5 px-4 py-3.5 sm:min-h-[7.25rem] sm:px-5 sm:py-4">
+          <p className="text-[0.8rem] font-semibold uppercase tracking-[0.12em] text-primary sm:text-[0.9rem]">
             {categoryLabel}
           </p>
-          <h3 className="font-heading text-[0.875rem] font-bold leading-snug text-[#0A2540] sm:text-base">
+          <h3 className="font-heading text-[1.1rem] font-bold leading-snug text-[#0A2540] sm:text-[1.3rem]">
             <span className="line-clamp-2">{video.title}</span>
             <span className="sr-only"> (opens on YouTube)</span>
           </h3>
@@ -251,7 +251,7 @@ export function TestimonialsSection({
             kind="label"
             defaultValue={DEFAULT_OVERLINE}
             as="p"
-            className="text-label uppercase text-accent"
+            className="text-[0.9rem] font-medium uppercase text-accent"
           >
             {({ value }) => value || overline}
           </EditableElement>
@@ -260,7 +260,7 @@ export function TestimonialsSection({
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="mt-3 font-heading text-[1.5rem] font-bold leading-tight text-[#0A2540] sm:text-h2"
+            className="mt-3 font-heading text-[1.8rem] font-bold leading-tight text-[#0A2540] sm:text-[2.7rem]"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -269,7 +269,7 @@ export function TestimonialsSection({
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mt-3 max-w-2xl text-body leading-relaxed text-muted-foreground sm:mt-4 sm:text-body-lg"
+            className="mt-3 max-w-2xl text-[1.2rem] leading-relaxed text-muted-foreground sm:mt-4 sm:text-[1.35rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -307,7 +307,7 @@ export function TestimonialsSection({
         </div>
       ) : (
         <div className="container-content">
-          <p className="mt-10 text-small text-muted-foreground">
+          <p className="mt-10 text-[1.05rem] text-muted-foreground">
             Latest videos from the CareWell YouTube channel appear here on the
             live site.
           </p>
@@ -321,7 +321,7 @@ export function TestimonialsSection({
           rel="noopener noreferrer"
           className={cn(
             buttonVariants({ variant: "secondary" }),
-            "h-11 no-underline hover:no-underline",
+            "h-11 text-[1.05rem] no-underline hover:no-underline",
           )}
         >
           View more on YouTube

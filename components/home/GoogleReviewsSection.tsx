@@ -14,7 +14,6 @@ import {
 import { resolveRepeaterItems } from "@/lib/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_LABEL = "Consulting";
 const DEFAULT_HEADING = "What Our Patients Say";
 const DEFAULT_DESCRIPTION =
   "Verified patient feedback from Google—focused on care quality, clear communication, and natural results at our South Delhi clinic.";
@@ -119,10 +118,10 @@ function ReviewCard({
             {(initial || name).charAt(0).toUpperCase()}
           </span>
           <div className="min-w-0">
-            <p className={cn("truncate text-small font-semibold", NAVY)}>
+            <p className={cn("truncate text-[1.05rem] font-semibold", NAVY)}>
               {name}
             </p>
-            <p className="text-[0.75rem] text-slate-500">Google review</p>
+            <p className="text-[0.9rem] text-slate-500">Google review</p>
           </div>
         </div>
         <GoogleMark className="size-4 shrink-0" />
@@ -139,12 +138,12 @@ function ReviewCard({
         >
           “
         </span>
-        <p className="pl-4 text-[0.875rem] leading-relaxed text-slate-600 sm:text-[0.9375rem]">
+        <p className="pl-4 text-[1.05rem] leading-relaxed text-slate-600 sm:text-[1.125rem]">
           {text}
         </p>
       </div>
 
-      <span className="mt-4 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[0.6875rem] font-semibold text-emerald-700 ring-1 ring-emerald-100">
+      <span className="mt-4 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[0.825rem] font-semibold text-emerald-700 ring-1 ring-emerald-100">
         <Check className="size-3" strokeWidth={2.5} aria-hidden />
         Verified review
       </span>
@@ -162,7 +161,6 @@ export function GoogleReviewsSection() {
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(2);
 
-  const label = resolveElementText(config, "home.reviews.label", DEFAULT_LABEL);
   const heading = resolveElementText(
     config,
     "home.reviews.heading",
@@ -251,35 +249,13 @@ export function GoogleReviewsSection() {
     >
       <div className="container-content section-padding">
         <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
-          <div className="flex items-center justify-center gap-3">
-            <span
-              aria-hidden
-              className="hidden h-px w-10 bg-slate-300 sm:block"
-            />
-            <span aria-hidden className="size-1.5 rotate-45 bg-slate-300" />
-            <EditableElement
-              id="home.reviews.label"
-              kind="label"
-              defaultValue={DEFAULT_LABEL}
-              as="p"
-              className="text-label uppercase tracking-[0.18em] text-slate-500"
-            >
-              {({ value }) => value || label}
-            </EditableElement>
-            <span aria-hidden className="size-1.5 rotate-45 bg-slate-300" />
-            <span
-              aria-hidden
-              className="hidden h-px w-10 bg-slate-300 sm:block"
-            />
-          </div>
-
           <EditableElement
             id="home.reviews.heading"
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
             className={cn(
-              "mt-3 font-heading text-[1.5rem] font-bold leading-tight tracking-tight sm:text-h2",
+              "font-heading text-[1.8rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]",
               NAVY,
             )}
           >
@@ -293,7 +269,7 @@ export function GoogleReviewsSection() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-3 max-w-2xl text-body leading-relaxed text-slate-500 sm:mt-4"
+            className="mx-auto mt-3 max-w-2xl text-[1.2rem] leading-relaxed text-slate-500 sm:mt-4 sm:text-[1.35rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -302,7 +278,7 @@ export function GoogleReviewsSection() {
         <StaggerReveal
           stepMs={90}
           className={cn(
-            "relative mx-auto mt-10 overflow-hidden rounded-[1.5rem] border border-white bg-white sm:mt-12",
+            "relative mx-auto mt-7 overflow-hidden rounded-[1.5rem] border border-white bg-white sm:mt-10",
             PANEL_SHADOW,
           )}
         >
@@ -328,14 +304,14 @@ export function GoogleReviewsSection() {
                 defaultValue={DEFAULT_RATING}
                 as="p"
                 className={cn(
-                  "mt-4 font-heading text-[2.5rem] font-bold leading-none tracking-tight sm:text-[2.75rem]",
+                  "mt-4 font-heading text-[3rem] font-bold leading-none tracking-tight sm:text-[3.3rem]",
                   NAVY,
                 )}
               >
                 {({ value }) => (
                   <>
                     {value || ratingValue}
-                    <span className="text-[1.25rem] font-semibold text-slate-400">
+                    <span className="text-[1.5rem] font-semibold text-slate-400">
                       {" "}
                       / 5
                     </span>
@@ -348,7 +324,7 @@ export function GoogleReviewsSection() {
                 defaultValue={DEFAULT_RATING_LABEL}
                 as="p"
                 className={cn(
-                  "mt-2 text-[0.75rem] font-bold uppercase tracking-[0.14em]",
+                  "mt-2 text-[0.9rem] font-bold uppercase tracking-[0.14em]",
                   NAVY,
                 )}
               >
@@ -362,7 +338,7 @@ export function GoogleReviewsSection() {
                 kind="paragraph"
                 defaultValue={DEFAULT_COUNT}
                 as="p"
-                className="mt-4 max-w-[14rem] text-[0.8125rem] leading-snug text-slate-500"
+                className="mt-4 max-w-[14rem] text-[0.975rem] leading-snug text-slate-500"
               >
                 {({ value }) => {
                   const line = String(value || countLine);
@@ -386,7 +362,7 @@ export function GoogleReviewsSection() {
                 kind="badge"
                 defaultValue={DEFAULT_BADGE}
                 as="p"
-                className="mt-6 inline-flex max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[0.75rem] font-medium text-slate-600"
+                className="mt-6 inline-flex max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[0.9rem] font-medium text-slate-600"
               >
                 {({ value }) => (
                   <>
@@ -493,7 +469,7 @@ export function GoogleReviewsSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  "inline-flex h-12 items-center justify-center gap-2.5 rounded-full bg-[#0A2540] px-6 text-[0.9375rem] font-semibold text-white",
+                  "inline-flex h-12 items-center justify-center gap-2.5 rounded-full bg-[#0A2540] px-6 text-[1.125rem] font-semibold text-white",
                   "no-underline shadow-[0_10px_28px_-12px_rgb(10_37_64/0.55)] transition-transform duration-200",
                   "hover:-translate-y-0.5 hover:bg-[#0A2540]/92 hover:no-underline",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -513,7 +489,7 @@ export function GoogleReviewsSection() {
             kind="caption"
             defaultValue={DEFAULT_DISCLAIMER}
             as="p"
-            className="max-w-xs text-center text-[0.75rem] leading-snug text-slate-500 sm:text-left"
+            className="max-w-xs text-center text-[0.9rem] leading-snug text-slate-500 sm:text-left"
           >
             {({ value }) => value || disclaimer}
           </EditableElement>

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 
 import { BlogDoctorCard } from "@/components/blog/BlogDoctorCard";
+import { BlogFaqAccordion } from "@/components/blog/BlogFaqAccordion";
 import { BlogNextPosts } from "@/components/blog/BlogNextPosts";
 import { BlogSidebar } from "@/components/blog/BlogSidebar";
 import { BlogTableOfContents } from "@/components/blog/BlogTableOfContents";
@@ -91,9 +92,12 @@ function splitBodyAtSection(
 function PostCard({ post }: { post: SanityPostCard }) {
   const href = postPublicPath(post);
   const imageUrl = post.mainImage?.asset
-    ? urlFor(post.mainImage).width(800).height(500).fit("crop").url()
+    ? urlFor(post.mainImage).width(1200).height(675).fit("crop").url()
     : null;
   const date = formatDate(post.publishedAt);
+  const excerpt =
+    post.excerpt?.trim() ||
+    `Doctor-led guidance on ${post.title}, including what to expect and what to discuss with your doctor.`;
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-border/80 bg-surface transition-colors hover:border-primary/25">
@@ -102,7 +106,7 @@ function PostCard({ post }: { post: SanityPostCard }) {
         className="flex h-full flex-col no-underline hover:no-underline"
       >
         {imageUrl ? (
-          <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+          <div className="relative aspect-video overflow-hidden bg-muted">
             <Image
               src={imageUrl}
               alt={post.mainImage?.alt || post.title}
@@ -112,7 +116,7 @@ function PostCard({ post }: { post: SanityPostCard }) {
             />
           </div>
         ) : (
-          <div className="aspect-[16/10] bg-gradient-to-br from-secondary via-surface to-primary/5" />
+          <div className="aspect-video bg-gradient-to-br from-secondary via-surface to-primary/5" />
         )}
         <div className="flex flex-1 flex-col p-4 sm:p-6">
           {post.categories?.[0] ? (
@@ -123,13 +127,9 @@ function PostCard({ post }: { post: SanityPostCard }) {
           <h2 className="mt-2 font-heading text-[1.0625rem] font-semibold leading-snug text-[#0A2540] transition-colors group-hover:text-primary sm:text-h4">
             {post.title}
           </h2>
-          {post.excerpt ? (
-            <p className="mt-2 line-clamp-3 flex-1 text-[0.8125rem] leading-relaxed text-muted-foreground sm:text-small">
-              {post.excerpt}
-            </p>
-          ) : (
-            <div className="mt-2 flex-1" />
-          )}
+          <p className="mt-2 min-h-[4.75rem] line-clamp-3 flex-1 text-[0.9375rem] leading-relaxed text-slate-600 sm:min-h-[5.25rem] sm:text-[1.05rem]">
+            {excerpt}
+          </p>
           <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-muted-foreground">
             {date ? (
               <time dateTime={post.publishedAt || undefined}>{date}</time>
@@ -163,7 +163,7 @@ export function SanityBlogListing({
             <h1 className="mt-3 font-heading text-[1.75rem] font-bold leading-tight text-[#0A2540] sm:text-h1">
               Blog
             </h1>
-            <p className="mt-3 max-w-2xl text-body leading-relaxed text-muted-foreground sm:text-body-lg">
+            <p className="mt-3 max-w-2xl text-[1.2rem] font-medium leading-relaxed text-slate-700 sm:text-[1.35rem]">
               Educational articles to help you make informed decisions about
               hair, skin, and cosmetic care.
             </p>
@@ -195,6 +195,7 @@ export function SanityBlogListing({
             </div>
           )}
         </section>
+        <BlogFaqAccordion />
       </main>
       <FooterPlaceholder />
     </>
@@ -448,6 +449,7 @@ export function SanityPostTemplate({
           </div>
         </article>
 
+        <BlogFaqAccordion />
         <BlogNextPosts posts={nextPosts} />
       </main>
       <FooterPlaceholder />

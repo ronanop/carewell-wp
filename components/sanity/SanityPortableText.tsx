@@ -183,7 +183,7 @@ function buildComponents(
         </h4>
       ),
       normal: ({ children }) => (
-        <p className="mb-4 text-base leading-relaxed text-slate-700">{children}</p>
+        <p className="mb-4 text-base font-medium leading-relaxed text-slate-700">{children}</p>
       ),
       blockquote: ({ children }) => (
         <blockquote className="my-6 border-l-4 border-slate-300 pl-4 text-slate-600 italic">

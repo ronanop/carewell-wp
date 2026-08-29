@@ -82,7 +82,7 @@ export function ServiceCard3D({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface shadow-md no-underline",
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border-[1.5px] border-[#0A2540] bg-surface shadow-md no-underline",
         "transition-[transform,box-shadow] duration-300 ease-out will-change-transform",
         hovered ? "shadow-xl" : "shadow-md",
         reducedMotion && "hover:-translate-y-1",
@@ -113,13 +113,13 @@ export function ServiceCard3D({
       </div>
 
       <div className="flex flex-1 flex-col items-center px-4 pb-5 pt-4 text-center sm:px-6 sm:pb-7 sm:pt-6">
-        <h3 className="font-heading text-[1.0625rem] font-bold leading-snug text-[#0A2540] sm:text-h4">
+        <h3 className="font-heading text-[1.275rem] font-bold leading-snug text-[#0A2540] sm:text-[1.8rem]">
           {title}
         </h3>
-        <p className="mt-2 flex-1 text-[0.8125rem] leading-relaxed text-muted-foreground sm:mt-3 sm:text-small">
+        <p className="mt-2 flex-1 text-[1.35rem] font-medium leading-relaxed text-slate-600 sm:mt-3 sm:text-[1.45rem]">
           {description}
         </p>
-        <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-small font-medium text-primary sm:mt-5">
+        <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[1.05rem] font-medium text-primary sm:mt-5">
           Learn more
           <ArrowRight
             className="size-4 transition-transform duration-300 ease-out group-hover:translate-x-1"

@@ -32,7 +32,6 @@ import {
 import { resolveRepeaterItems } from "@/lib/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_LABEL = "ABOUT US";
 const DEFAULT_HEADING = "Redefining Aesthetic & Cosmetic Care.";
 const DEFAULT_BODY =
   "Care Well Medical Centre: We believe in enhancing your natural features safely, responsibly, and ethically.";
@@ -95,11 +94,17 @@ function FeatureCard({
   return (
     <li
       className={cn(
-        "flex flex-col items-center rounded-xl bg-white px-2.5 py-3 text-center sm:rounded-2xl sm:px-3 sm:py-4",
-        "shadow-[0_4px_18px_rgb(10_37_64/0.07)] ring-1 ring-[rgb(10_37_64/0.04)]",
+        "flex min-h-[6.5rem] flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-50/70 px-3 py-4 text-center",
+        "shadow-[0_4px_18px_rgb(10_37_64/0.07)] transition-[transform,box-shadow,border-color] duration-200",
+        "hover:-translate-y-1 hover:border-accent-gold-300 hover:shadow-[0_10px_24px_rgb(10_37_64/0.1)]",
       )}
     >
-      <span className={cn("flex size-8 items-center justify-center sm:size-9", GOLD)}>
+      <span
+        className={cn(
+          "flex size-9 items-center justify-center rounded-full bg-accent-gold-50 sm:size-10",
+          GOLD,
+        )}
+      >
         <Icon className="size-4 sm:size-5" strokeWidth={1.5} aria-hidden />
       </span>
       <EditableElement
@@ -108,7 +113,7 @@ function FeatureCard({
         defaultValue={label}
         as="span"
         className={cn(
-          "mt-1.5 text-[0.75rem] font-medium leading-snug sm:mt-2 sm:text-small",
+          "mt-2 text-[0.975rem] font-semibold leading-snug sm:text-[1.1rem]",
           NAVY,
         )}
       >
@@ -142,7 +147,7 @@ function ValueCard({
   return (
     <article
       className={cn(
-        "group relative flex aspect-[4/3] w-full flex-col overflow-hidden rounded-2xl p-3 sm:aspect-square sm:rounded-[1.25rem] sm:p-5",
+        "group relative flex h-[17.6rem] w-full flex-col overflow-hidden rounded-2xl p-3 sm:h-[22rem] sm:rounded-[1.25rem] sm:p-5",
         "shadow-[0_8px_28px_rgb(10_37_64/0.18)]",
       )}
     >
@@ -189,7 +194,7 @@ function ValueCard({
           kind="heading"
           defaultValue={title}
           as="h3"
-          className="mt-2 line-clamp-2 font-heading text-[0.8125rem] font-semibold leading-snug text-white sm:mt-3.5 sm:text-[1.0625rem]"
+          className="mt-2 line-clamp-2 font-heading text-[0.975rem] font-semibold leading-snug text-white sm:mt-3.5 sm:text-[1.275rem]"
         >
           {({ value }) => value || title}
         </EditableElement>
@@ -199,7 +204,7 @@ function ValueCard({
           kind="paragraph"
           defaultValue={description}
           as="p"
-          className="mt-1 line-clamp-2 flex-1 text-[0.6875rem] leading-snug text-white/80 sm:mt-1.5 sm:line-clamp-3 sm:text-small sm:leading-relaxed"
+          className="mt-1 flex-1 text-[0.825rem] leading-snug text-white/90 sm:mt-1.5 sm:text-[1rem] sm:leading-relaxed"
         >
           {({ value }) => value || description}
         </EditableElement>
@@ -225,7 +230,6 @@ function ValueCard({
 export function AboutSection() {
   const { config } = useStaticEditContext();
 
-  const label = resolveElementText(config, "home.about.label", DEFAULT_LABEL);
   const heading = resolveElementText(
     config,
     "home.about.heading",
@@ -260,29 +264,16 @@ export function AboutSection() {
   return (
     <section className="bg-white">
       <div className="container-content section-padding">
-        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] lg:gap-12 xl:gap-14">
+        <div className="grid items-start gap-8 lg:-ml-4 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] lg:gap-20 xl:gap-24">
           {/* Left column */}
-          <StaggerReveal className="min-w-0" stepMs={75}>
-            <EditableElement
-              id="home.about.label"
-              kind="label"
-              defaultValue={DEFAULT_LABEL}
-              as="p"
-              className={cn(
-                "text-label font-medium uppercase tracking-[0.14em]",
-                GOLD,
-              )}
-            >
-              {({ value }) => value || label}
-            </EditableElement>
-
+          <StaggerReveal className="min-w-0 lg:pr-3" stepMs={75}>
             <EditableElement
               id="home.about.heading"
               kind="heading"
               defaultValue={DEFAULT_HEADING}
               as="h2"
               className={cn(
-                "mt-3 max-w-md font-heading text-[1.5rem] font-bold leading-tight sm:text-h2",
+                "mt-3 max-w-lg font-heading text-[2rem] font-bold leading-[1.08] tracking-[-0.03em] sm:text-[2.8rem]",
                 NAVY,
               )}
             >
@@ -294,7 +285,7 @@ export function AboutSection() {
               kind="paragraph"
               defaultValue={DEFAULT_BODY}
               as="p"
-              className="mt-3 max-w-md text-body leading-relaxed text-muted-foreground sm:mt-4"
+              className="mt-4 max-w-lg text-[1.15rem] font-medium leading-[1.75] text-slate-600 sm:mt-5 sm:text-[1.3rem]"
             >
               {({ value }) => value || body}
             </EditableElement>
@@ -305,7 +296,7 @@ export function AboutSection() {
               defaultValue={DEFAULT_FEATURES_HEADING}
               as="h3"
               className={cn(
-                "mt-7 font-heading text-[1.125rem] font-semibold sm:mt-8 sm:text-h4",
+                "mt-8 font-heading text-[1.4rem] font-semibold tracking-[-0.02em] sm:mt-9 sm:text-[1.8rem]",
                 NAVY,
               )}
             >
@@ -339,9 +330,8 @@ export function AboutSection() {
                   <Link
                     href={String(fields.href ?? buttonHref)}
                     className={cn(
-                      "group inline-flex min-h-11 items-center gap-1.5 text-body font-semibold no-underline",
-                      "transition-colors duration-200 hover:text-accent-gold-600 hover:no-underline",
-                      NAVY,
+                      "group inline-flex min-h-12 items-center gap-2 rounded-full bg-[#0A2540] px-6 text-[1.05rem] font-semibold text-white no-underline shadow-[0_8px_18px_rgb(10_37_64/0.16)]",
+                      "transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:bg-[#163A5C] hover:shadow-[0_12px_24px_rgb(10_37_64/0.2)] hover:no-underline",
                     )}
                   >
                     {String(fields.label ?? buttonLabel)}
@@ -367,7 +357,7 @@ export function AboutSection() {
                     item.__index % HOME_ABOUT_VALUE_DEFAULTS.length
                   ];
                 return (
-                  <li key={item.__index} className="min-w-0">
+                  <li key={item.__index} className="h-full min-w-0">
                     <ValueCard
                       index={item.__index}
                       title={String(item.title ?? fallback.title)}

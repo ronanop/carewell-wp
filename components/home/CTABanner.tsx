@@ -190,7 +190,7 @@ export function CTABanner() {
       <div className="container-content relative section-padding">
         <StaggerReveal
           stepMs={80}
-          className="mx-auto flex max-w-4xl flex-col items-center text-center"
+          className="mx-auto flex max-w-4xl flex-col items-center text-center lg:scale-[1.2]"
         >
           <EditableElement
             id="home.cta.heading"

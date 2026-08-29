@@ -17,8 +17,8 @@ export function NavbarPlaceholder() {
       <div className="sticky top-0 z-sticky">
         <PromoStrip />
         <header className="navbar-compact relative border-b border-border bg-background/95">
-          <div className="container-content relative flex h-[4.75rem] items-center justify-between gap-6">
-            <SiteLogo />
+          <div className="container-content relative flex h-[4.75rem] min-w-0 items-center justify-between gap-2 sm:gap-4">
+            <SiteLogo className="min-w-0" />
 
             <nav
               aria-label="Main navigation"
@@ -57,7 +57,7 @@ export function NavbarPlaceholder() {
               </Link>
             </nav>
 
-            <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <MobileNav />
               <NavbarCtaButton />
             </div>

@@ -11,7 +11,6 @@ import { resolveElementText } from "@/lib/static-pages/elementOverrides";
 import { resolveRepeaterItems } from "@/lib/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_LABEL = "Consultation & Expertise";
 const DEFAULT_HEADING = "Our Aesthetic Consultation Specialties";
 const DEFAULT_DESCRIPTION =
   "At Care Well Medical Centre, every treatment begins with a personalised, doctor-led consultation. We focus on understanding your concern first, then recommending the safest and most effective option.";
@@ -70,11 +69,6 @@ function resolveSpecialtyIcon(code: string, name: string): string | null {
 export function ConsultationSpecialties() {
   const { config } = useStaticEditContext();
 
-  const label = resolveElementText(
-    config,
-    "home.specialties.label",
-    DEFAULT_LABEL,
-  );
   const heading = resolveElementText(
     config,
     "home.specialties.heading",
@@ -96,22 +90,13 @@ export function ConsultationSpecialties() {
   return (
     <section className="bg-muted/30">
       <div className="container-content section-padding">
-        <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
-          <EditableElement
-            id="home.specialties.label"
-            kind="label"
-            defaultValue={DEFAULT_LABEL}
-            as="p"
-            className="text-label uppercase text-[#3B82F6]"
-          >
-            {({ value }) => value || label}
-          </EditableElement>
+        <StaggerReveal className="mx-auto max-w-3xl text-center lg:max-w-[64rem]" stepMs={70}>
           <EditableElement
             id="home.specialties.heading"
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="mt-3 font-heading text-[1.5rem] font-bold leading-tight text-[#0A2540] sm:text-h2"
+            className="mt-3 font-heading text-[1.8rem] font-bold leading-tight text-[#0A2540] sm:text-[2.7rem] lg:whitespace-nowrap"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -120,7 +105,7 @@ export function ConsultationSpecialties() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-3 max-w-[42rem] text-body leading-relaxed text-muted-foreground sm:mt-4"
+            className="mx-auto mt-3 max-w-[42rem] text-[1.2rem] leading-relaxed text-muted-foreground sm:mt-4 sm:text-[1.35rem] lg:max-w-[64rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -129,7 +114,7 @@ export function ConsultationSpecialties() {
         <StaggerReveal
           as="ul"
           stepMs={55}
-          className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-10 sm:gap-4 md:grid-cols-3 lg:grid-cols-6"
+          className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-5 md:grid-cols-3 lg:grid-cols-6 lg:gap-6"
         >          {specialties.map((specialty) => {
             const code = String(specialty.code ?? "");
             const name = String(specialty.name ?? "");
@@ -154,14 +139,15 @@ export function ConsultationSpecialties() {
                       <Link
                         href={`/services/${slugify(displayName)}`}
                         className={cn(
-                          "flex h-full min-h-[6.5rem] flex-col items-center justify-center rounded-xl bg-secondary px-2.5 py-4 text-center no-underline sm:min-h-0 sm:px-3 sm:py-6",
-                          "border border-transparent transition-all duration-300",
-                          "hover:-translate-y-0.5 hover:border-border hover:shadow-[0_8px_24px_rgb(10_37_64/0.06)]",
+                          "relative flex h-full min-h-[8rem] flex-col items-center justify-center overflow-hidden rounded-2xl border border-[#DCE8F5] bg-gradient-to-br from-white via-[#F8FBFF] to-[#EEF5FF] px-3 py-5 text-center no-underline sm:min-h-[10rem] sm:px-3 sm:py-6",
+                          "shadow-[0_8px_24px_rgb(10_37_64/0.06)] transition-[transform,box-shadow,border-color] duration-300",
+                          "before:absolute before:inset-x-6 before:top-0 before:h-1 before:rounded-b-full before:bg-gradient-to-r before:from-[#5BA3E8] before:via-[#B09468] before:to-[#0A2540] before:opacity-80 before:content-['']",
+                          "hover:-translate-y-1 hover:border-[#9CC7EE] hover:shadow-[0_14px_30px_rgb(10_37_64/0.12)]",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                         )}
                       >
                         {iconSrc ? (
-                          <span className="relative flex h-9 w-9 items-center justify-center sm:h-12 sm:w-12">
+                          <span className="relative flex h-[3.175rem] w-[3.175rem] items-center justify-center rounded-full bg-white p-2 shadow-sm ring-1 ring-[#DCE8F5] sm:h-[3.8rem] sm:w-[3.8rem]">
                             <Image
                               src={iconSrc}
                               alt=""
@@ -172,11 +158,11 @@ export function ConsultationSpecialties() {
                             />
                           </span>
                         ) : (
-                          <span className="text-label font-medium uppercase tracking-[0.12em] text-[#7DC4DC]">
+                          <span className="text-[0.9rem] font-medium uppercase tracking-[0.12em] text-[#7DC4DC]">
                             {displayCode}
                           </span>
                         )}
-                        <span className="mt-1.5 font-heading text-[0.8125rem] font-bold leading-snug text-[#0A2540] sm:mt-2 sm:text-body">
+                        <span className="mt-1.5 font-heading text-[0.975rem] font-bold leading-snug text-[#0A2540] sm:mt-2 sm:text-[1.2rem]">
                           {displayName}
                         </span>
                       </Link>

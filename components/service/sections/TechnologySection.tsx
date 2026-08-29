@@ -69,11 +69,11 @@ export function TechnologySection({
           </header>
         )}
 
-        <ul className="mx-auto flex list-none flex-wrap justify-center gap-4 p-0 sm:gap-5">
+        <ul className="service-card-grid mx-auto list-none p-0">
           {list.map((tech, i) => (
             <li
               key={`${i}-${tech.title}`}
-              className="min-h-0 w-full max-w-[17.5rem] basis-[min(100%,17.5rem)]"
+              className="min-w-0 w-full"
             >
               <article
                 className={cn(

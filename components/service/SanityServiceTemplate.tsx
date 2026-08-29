@@ -277,6 +277,63 @@ export type SanityServiceDoc = {
   };
 };
 
+const TECHNICAL_STRING_KEYS = new Set([
+  "_id",
+  "_key",
+  "_ref",
+  "_type",
+  "ctaHref",
+  "mapEmbedUrl",
+  "mapHref",
+  "phone",
+  "primaryHref",
+  "secondaryHref",
+  "slug",
+  "uri",
+  "url",
+  "whatsapp",
+  "youtubeId",
+]);
+
+/**
+ * Keep imported service copy readable without changing the Sanity source.
+ * This gives every page the same baseline for common brand/place-name casing,
+ * spacing, and punctuation while leaving URLs and document identifiers intact.
+ */
+function polishServiceValue(value: unknown, key?: string): unknown {
+  if (typeof value === "string") {
+    if (key && TECHNICAL_STRING_KEYS.has(key)) return value;
+
+    return value
+      .replace(/[ \t]+/g, " ")
+      .replace(/[ \t]+([,.;!?])/g, "$1")
+      .replace(/\bdr\.?\s+sandeep\s+bhasin\b/gi, "Dr. Sandeep Bhasin")
+      .replace(/\bcare\s*well\b/gi, "Care Well")
+      .replace(/\bdelhi\s+ncr\b/gi, "Delhi NCR")
+      .replace(/\bdelhi\b/gi, "Delhi")
+      .trim();
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => polishServiceValue(item, key));
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([entryKey, entryValue]) => [
+        entryKey,
+        polishServiceValue(entryValue, entryKey),
+      ]),
+    );
+  }
+
+  return value;
+}
+
+function polishServiceCopy(service: SanityServiceDoc): SanityServiceDoc {
+  return polishServiceValue(service) as SanityServiceDoc;
+}
+
 export function buildSanityServiceMetadata(
   service: SanityServiceDoc,
 ): Metadata {
@@ -297,16 +354,17 @@ export function buildSanityServiceMetadata(
  * Served at the document's original WordPress URI for SEO.
  */
 export function SanityServiceTemplate({
-  service,
+  service: rawService,
 }: {
   service: SanityServiceDoc;
 }) {
+  const service = polishServiceCopy(rawService);
   const heading = service.title;
 
   return (
     <>
       <NavbarPlaceholder />
-      <main className="bg-[#FAFBFE] text-slate-900">
+      <main className="service-page bg-[#FAFBFE] text-slate-900">
         <HeroBanner
           heading={heading}
           tagline={service.hero?.tagline}
@@ -323,8 +381,8 @@ export function SanityServiceTemplate({
           note={service.hero?.quickFactsNote}
         />
 
-        <div className="mx-auto grid w-full max-w-[90rem] gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-8 xl:gap-16 xl:px-10">
-          <div className="min-w-0 space-y-2">
+        <div className="service-content mx-auto grid w-full max-w-[90rem] gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-8 xl:gap-16 xl:px-10">
+          <div className="service-main-column min-w-0 space-y-2">
             <OverviewSection
               eyebrow={service.overview?.eyebrow}
               title={service.overview?.heading}

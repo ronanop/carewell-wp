@@ -13,7 +13,6 @@ import { resolveElementText } from "@/lib/static-pages/elementOverrides";
 import { resolveRepeaterItems } from "@/lib/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_OVERLINE = "From our blog";
 const DEFAULT_HEADING = "Latest insights";
 const DEFAULT_DESCRIPTION =
   "Educational articles written to help you make informed decisions about your care.";
@@ -39,11 +38,6 @@ export function BlogSection({
 }) {
   const { config, mode } = useStaticEditContext();
 
-  const overline = resolveElementText(
-    config,
-    "home.blog.overline",
-    DEFAULT_OVERLINE,
-  );
   const heading = resolveElementText(
     config,
     "home.blog.heading",
@@ -78,20 +72,11 @@ export function BlogSection({
       <div className="container-content section-padding">
         <StaggerReveal stepMs={70}>
           <EditableElement
-            id="home.blog.overline"
-            kind="label"
-            defaultValue={DEFAULT_OVERLINE}
-            as="p"
-            className="text-label uppercase text-accent"
-          >
-            {({ value }) => value || overline}
-          </EditableElement>
-          <EditableElement
             id="home.blog.heading"
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="mt-3 font-heading text-[1.5rem] font-bold leading-tight text-foreground sm:text-h2"
+            className="font-heading text-[1.8rem] font-bold leading-tight text-foreground sm:text-[2.7rem]"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -100,15 +85,18 @@ export function BlogSection({
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mt-3 max-w-2xl text-body leading-relaxed text-muted-foreground sm:mt-4 sm:text-body-lg"
+            className="mt-3 max-w-2xl text-[1.2rem] leading-relaxed text-muted-foreground sm:mt-4 sm:text-[1.35rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
         </StaggerReveal>
 
         {posts.length > 0 ? (
-          <StaggerReveal stepMs={90} className="mt-8 grid-cw sm:mt-12">
+          <StaggerReveal stepMs={90} className="mt-6 grid-cw sm:mt-10">
             {posts.map((post) => {
+              const excerpt =
+                post.excerpt.trim() ||
+                `Doctor-led guidance on ${post.title}, including what to expect and what to discuss with your doctor.`;
               const card = (
                 <Link
                   href={post.href}
@@ -131,20 +119,16 @@ export function BlogSection({
                     {useLivePosts ? (
                       <>
                         {post.category ? (
-                          <p className="text-label uppercase text-accent">
+                          <p className="text-[0.9rem] font-medium uppercase text-accent">
                             {post.category}
                           </p>
                         ) : null}
-                        <h3 className="mt-2 font-heading text-[1.0625rem] font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mt-3 sm:text-h4">
+                        <h3 className="mt-2 font-heading text-[1.275rem] font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mt-3 sm:text-[1.8rem]">
                           {post.title}
                         </h3>
-                        {post.excerpt ? (
-                          <p className="mt-2 flex-1 text-[0.8125rem] leading-relaxed text-muted-foreground sm:mt-3 sm:text-small">
-                            {post.excerpt}
-                          </p>
-                        ) : (
-                          <div className="mt-2 flex-1 sm:mt-3" />
-                        )}
+                        <p className="mt-2 min-h-[4.75rem] flex-1 line-clamp-3 text-[0.975rem] leading-relaxed text-slate-600 sm:mt-3 sm:text-[1.05rem]">
+                          {excerpt}
+                        </p>
                       </>
                     ) : (
                       <>
@@ -153,25 +137,25 @@ export function BlogSection({
                           kind="label"
                           defaultValue={post.category}
                           as="p"
-                          className="text-label uppercase text-accent"
+                          className="text-[0.9rem] font-medium uppercase text-accent"
                         >
                           {({ value }) => value || post.category}
                         </EditableElement>
-                        <h3 className="mt-2 font-heading text-[1.0625rem] font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mt-3 sm:text-h4">
+                        <h3 className="mt-2 font-heading text-[1.275rem] font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mt-3 sm:text-[1.8rem]">
                           {post.title}
                         </h3>
                         <EditableElement
                           id={`home.blog.item.${post.__index}.excerpt`}
                           kind="paragraph"
-                          defaultValue={post.excerpt}
+                          defaultValue={excerpt}
                           as="p"
-                          className="mt-2 flex-1 text-[0.8125rem] leading-relaxed text-muted-foreground sm:mt-3 sm:text-small"
+                          className="mt-2 min-h-[4.75rem] flex-1 line-clamp-3 text-[0.975rem] leading-relaxed text-slate-600 sm:mt-3 sm:text-[1.05rem]"
                         >
-                          {({ value }) => value || post.excerpt}
+                          {({ value }) => value || excerpt}
                         </EditableElement>
                       </>
                     )}
-                    <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-small font-medium text-primary sm:mt-6">
+                    <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-[1.05rem] font-medium text-primary sm:mt-6">
                       Read article
                       <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                     </span>
@@ -206,7 +190,7 @@ export function BlogSection({
             href="/blogs"
             className={cn(
               buttonVariants({ variant: "secondary" }),
-              "h-11 no-underline hover:no-underline",
+              "h-11 text-[1.05rem] no-underline hover:no-underline",
             )}
           >
             Read our blog

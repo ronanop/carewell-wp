@@ -599,6 +599,8 @@
   html {
     @apply font-body antialiased;
     scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -609,6 +611,8 @@
 
   body {
     @apply bg-background text-foreground min-h-full;
+    max-width: 100%;
+    overflow-x: clip;
     font-feature-settings: "kern" 1, "liga" 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -1029,9 +1033,9 @@
 
 /* Homepage post-hero + footer: desktop visual shrink only (0.76 × 1.1 = 0.836).
    Mobile/tablet stay at 1× so sections feel native — not uniformly “zoomed”.
-   Transform fallback for engines without zoom; width compensated to avoid gaps. */
+   CSS zoom keeps the visual scale and document flow aligned, avoiding a blank
+   gap before the footer that transform-only scaling can create. */
 .homepage-compact {
-  zoom: 1;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
@@ -1092,12 +1096,15 @@
 @media (min-width: 1024px) {
   .homepage-compact {
     zoom: 0.836;
+    width: 119.6172%; /* 100 / 0.836 */
+    max-width: none;
+    margin-inline: -9.8086%; /* center the oversized box */
   }
 }
 
 @supports not (zoom: 1) {
   .homepage-compact {
-    zoom: unset;
+    transform: none;
   }
 
   @media (min-width: 1024px) {
@@ -1113,7 +1120,6 @@
 
 /* Homepage footer only: +10% vs surrounding .homepage-compact — desktop only. */
 .homepage-compact > footer {
-  zoom: 1;
   width: 100%;
   max-width: 100%;
 }
@@ -1121,12 +1127,15 @@
 @media (min-width: 1024px) {
   .homepage-compact > footer {
     zoom: 1.1;
+    width: 90.9091%; /* 100 / 1.1 */
+    max-width: none;
+    margin-inline: 4.54545%; /* center the scaled box */
   }
 }
 
 @supports not (zoom: 1) {
   .homepage-compact > footer {
-    zoom: unset;
+    transform: none;
   }
 
   @media (min-width: 1024px) {
@@ -1147,9 +1156,9 @@
   }
 }
 
-/* Hero: slight visual shrink on desktop only — mobile keeps true 1× for touch UX. */
+/* Hero: slight visual shrink on desktop only — mobile keeps true 1× for touch UX.
+   Transform bounds are reported consistently by element inspection tools. */
 .hero-compact {
-  zoom: 1;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
@@ -1157,13 +1166,17 @@
 
 @media (min-width: 1024px) {
   .hero-compact {
-    zoom: 0.9;
+    transform: scale(0.9);
+    transform-origin: top center;
+    width: 111.1111%; /* 100 / 0.9 */
+    max-width: none;
+    margin-inline: -5.5556%; /* center the oversized box */
   }
 }
 
 @supports not (zoom: 1) {
   .hero-compact {
-    zoom: unset;
+    transform: none;
   }
 
   @media (min-width: 1024px) {
@@ -1179,20 +1192,22 @@
 
 /* Navbar: light visual shrink — keep sticky chrome compact without undersizing type. */
 .navbar-compact {
-  zoom: 0.96;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
+  transform: scale(0.96);
+  transform-origin: top center;
+  width: 104.1667%; /* 100 / 0.96 */
+  max-width: none;
+  margin-inline: -2.0833%; /* center the oversized box */
 }
 
 @supports not (zoom: 1) {
   .navbar-compact {
-    zoom: unset;
-    transform: scale(0.96);
-    transform-origin: top center;
-    width: 104.1667%; /* 100 / 0.96 */
-    max-width: none;
-    margin-inline: -2.0833%; /* center the oversized box */
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
   }
 }
 
@@ -1583,7 +1598,8 @@
 
 .blog-prose {
   color: var(--foreground);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
+  font-weight: 500;
   line-height: 1.75;
 }
 
@@ -1593,7 +1609,7 @@
 
 .blog-prose p {
   margin: 0 0 1.15rem;
-  color: color-mix(in oklab, var(--foreground) 78%, var(--muted-foreground));
+  color: #334155;
 }
 
 .blog-prose h2,
@@ -1647,7 +1663,7 @@
   position: relative;
   margin: 0 0 0.7rem;
   padding-left: 1.35rem;
-  color: color-mix(in oklab, var(--foreground) 78%, var(--muted-foreground));
+  color: #334155;
 }
 
 .blog-prose ul > li::before {
@@ -1728,7 +1744,7 @@
   text-align: center;
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: var(--muted-foreground);
+  color: #475569;
 }
 
 .blog-prose .blog-prose__media {
@@ -1779,12 +1795,98 @@
 
 @media (max-width: 767px) {
   .blog-prose {
-    font-size: 1rem;
+    font-size: 1.0625rem;
     line-height: 1.7;
   }
 
   .blog-prose h2 {
     margin-top: 2.25rem;
     padding-top: 1.35rem;
+  }
+}
+
+/* =============================================================================
+   Service page composition — one visual rhythm for every Sanity service
+   ============================================================================= */
+.service-page {
+  --service-border: color-mix(in oklab, var(--border) 78%, transparent);
+  --service-ink: #0a2e52;
+  --service-muted: #475569;
+}
+
+.service-page .service-content {
+  align-items: start;
+}
+
+.service-page {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.service-page .text-sm,
+.service-page [class~="text-[0.9375rem]"],
+.service-page [class~="sm:text-[0.9375rem]"] {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.service-page .text-xs {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+.service-page .text-slate-600 {
+  color: #334155;
+}
+
+.service-page .text-slate-500 {
+  color: #475569;
+}
+
+.service-page .service-main-column > section {
+  overflow: hidden;
+  border: 1px solid var(--service-border);
+  border-radius: 1.5rem;
+  background: #ffffff;
+}
+
+.service-page .service-main-column > section:nth-child(even) {
+  background: #f6f8fc;
+}
+
+.service-page .service-main-column > section + section {
+  margin-top: 0.75rem;
+}
+
+.service-page .service-main-column > section > div {
+  max-width: 80rem;
+}
+
+.service-page .service-main-column h2 {
+  color: var(--service-ink);
+  text-wrap: balance;
+}
+
+.service-page .service-main-column p {
+  text-wrap: pretty;
+}
+
+.service-page .service-main-column > section > div > header {
+  max-width: 42rem;
+}
+
+.service-page .service-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 767px) {
+  .service-page .service-main-column > section {
+    border-radius: 1.25rem;
+  }
+
+  .service-page .service-card-grid {
+    gap: 0.875rem;
   }
 }

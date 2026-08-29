@@ -6,11 +6,18 @@ import { spawn } from "node:child_process";
 import { existsSync, rmSync } from "node:fs";
 import path from "node:path";
 
-const nextDir = path.join(process.cwd(), ".next");
+// Development and production use separate Next.js output directories. Remove
+// both here once so projects upgraded from the old shared `.next` cache start
+// cleanly; future production builds cannot invalidate the dev cache.
+const nextDirs = [".next-dev", ".next"].map((directory) =>
+  path.join(process.cwd(), directory),
+);
 
-if (existsSync(nextDir)) {
-  rmSync(nextDir, { recursive: true, force: true });
-  console.log("[dev:clean] Removed stale .next cache");
+for (const nextDir of nextDirs) {
+  if (existsSync(nextDir)) {
+    rmSync(nextDir, { recursive: true, force: true });
+    console.log(`[dev:clean] Removed stale ${path.basename(nextDir)} cache`);
+  }
 }
 
 const child = spawn("next", ["dev"], {

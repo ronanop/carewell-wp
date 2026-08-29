@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -30,7 +31,10 @@ export default function RootLayout({
       lang="en"
       className={`${plusJakartaSans.variable} ${geistMono.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <FloatingWhatsApp />
+      </body>
     </html>
   );
 }

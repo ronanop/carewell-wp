@@ -14,7 +14,7 @@ export function SiteLogo({ className }: SiteLogoProps) {
     <Link
       href="/"
       className={cn(
-        "inline-flex items-center gap-2.5 leading-none no-underline hover:no-underline",
+        "inline-flex min-w-0 items-center gap-2 leading-none no-underline hover:no-underline sm:gap-2.5",
         className
       )}
     >
@@ -23,14 +23,14 @@ export function SiteLogo({ className }: SiteLogoProps) {
         alt="Carewell Medical Centre logo"
         width={40}
         height={40}
-        className="size-10 shrink-0 object-contain"
+        className="size-9 shrink-0 object-contain sm:size-10"
         priority
       />
-      <span className="flex flex-col">
-        <span className="text-[19px] font-semibold tracking-[-0.01em] text-[#0A2540]">
+      <span className="min-w-0 flex flex-col">
+        <span className="truncate whitespace-nowrap text-[clamp(0.95rem,5.2vw,1.1875rem)] font-semibold tracking-[-0.01em] text-[#0A2540]">
           Carewell Medical Centre
         </span>
-        <span className="mt-1 text-xs font-normal leading-tight text-neutral-500">
+        <span className="mt-1 truncate whitespace-nowrap text-[0.625rem] font-normal leading-tight text-neutral-500 sm:text-xs">
           Laparoscopic &amp; Cosmetic Surgery Centre
         </span>
       </span>

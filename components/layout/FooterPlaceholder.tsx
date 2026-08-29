@@ -68,13 +68,13 @@ const socialLinks = [
 ] as const;
 
 const headingClass =
-  "font-heading text-xs font-bold uppercase tracking-wide text-[#0A2540] lg:text-sm";
+  "font-heading text-[0.8625rem] font-bold uppercase tracking-wide text-[#0A2540] lg:text-[1rem]";
 
 const bodyClass =
-  "text-[0.8125rem] leading-snug text-muted-foreground lg:text-small lg:leading-normal";
+  "text-[0.9375rem] leading-snug text-muted-foreground lg:text-[1rem] lg:leading-normal";
 
 const linkClass =
-  "text-[0.8125rem] leading-snug text-muted-foreground no-underline transition-colors hover:text-primary hover:no-underline lg:text-small lg:leading-normal";
+  "text-[0.9375rem] leading-snug text-muted-foreground no-underline transition-colors hover:text-primary hover:no-underline lg:text-[1rem] lg:leading-normal";
 
 export function FooterPlaceholder() {
   const year = new Date().getFullYear();
@@ -161,7 +161,7 @@ export function FooterPlaceholder() {
         </div>
 
         <div className="mt-6 border-t border-border pt-4 sm:mt-8 sm:pt-6 lg:mt-12 lg:pt-8">
-          <p className="text-[0.75rem] leading-snug text-muted-foreground lg:text-caption lg:leading-normal">
+          <p className="text-[0.875rem] leading-snug text-muted-foreground lg:text-[1rem] lg:leading-normal">
             © {year} Care Well Medical Centre. All rights reserved.
           </p>
         </div>

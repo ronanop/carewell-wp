@@ -33,7 +33,6 @@ import { cn } from "@/lib/utils";
 
 const DEFAULT_PHOTO_SRC = "/images/dr-sandeep-bhasin-cutout.png";
 const DEFAULT_PHOTO_ALT = "Dr. Sandeep Bhasin";
-const DEFAULT_LABEL = "Meet Your Surgeon";
 const DEFAULT_HEADING = "Meet Your Cosmetic Surgeon";
 const DEFAULT_NAME = "Dr. Sandeep Bhasin";
 const DEFAULT_DESCRIPTION =
@@ -109,7 +108,6 @@ export function DoctorsSection() {
     "alt",
     DEFAULT_PHOTO_ALT,
   );
-  const label = resolveElementText(config, "home.doctors.label", DEFAULT_LABEL);
   const heading = resolveElementText(
     config,
     "home.doctors.heading",
@@ -206,30 +204,16 @@ export function DoctorsSection() {
         }
       `}</style>
 
-      <div className="container-content section-padding">
+      <div className="container-content section-padding lg:pt-0">
         <div className="mx-auto max-w-[75rem]">
           {/* Header */}
-          <StaggerReveal className="mx-auto flex max-w-[44rem] flex-col items-center text-center" stepMs={70}>
-            <div className="flex w-full max-w-[18rem] items-center gap-3 sm:max-w-[22rem] sm:gap-4">
-              <span aria-hidden className="h-px flex-1 bg-[#CBD5E1]" />
-              <EditableElement
-                id="home.doctors.label"
-                kind="label"
-                defaultValue={DEFAULT_LABEL}
-                as="p"
-                className="shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-[#64748B] sm:text-[0.75rem]"
-              >
-                {({ value }) => value || label}
-              </EditableElement>
-              <span aria-hidden className="h-px flex-1 bg-[#CBD5E1]" />
-            </div>
-
+          <StaggerReveal className="mx-auto flex max-w-[52rem] flex-col items-center text-center lg:max-w-[72rem]" stepMs={70}>
             <EditableElement
               id="home.doctors.heading"
               kind="heading"
               defaultValue={DEFAULT_HEADING}
               as="h2"
-              className="mt-4 font-heading text-[1.625rem] font-bold leading-[1.15] tracking-tight text-[#0A2540] sm:mt-5 sm:text-[2.25rem] lg:text-[3.5rem]"
+              className="mt-4 font-heading text-[1.794rem] font-bold leading-[1.15] tracking-tight text-[#0A2540] sm:mt-5 sm:text-[2.484rem] lg:text-[3.864rem]"
             >
               {({ value }) => value || heading}
             </EditableElement>
@@ -239,7 +223,7 @@ export function DoctorsSection() {
               kind="heading"
               defaultValue={DEFAULT_NAME}
               as="h3"
-              className="mt-2 font-heading text-[1.25rem] font-bold leading-tight tracking-tight text-[#0A2540] sm:text-[1.75rem] lg:text-[2.125rem]"
+              className="mt-2 font-heading text-[1.65rem] font-bold leading-tight tracking-tight text-[#0A2540] sm:text-[2.31rem] lg:text-[2.805rem]"
             >
               {({ value }) => value || name}
             </EditableElement>
@@ -249,20 +233,11 @@ export function DoctorsSection() {
               kind="paragraph"
               defaultValue={DEFAULT_DESCRIPTION}
               as="p"
-              className="mt-3.5 max-w-[20.5rem] px-1 text-[0.9375rem] leading-[1.7] text-[#64748B] sm:mt-5 sm:max-w-[43.75rem] sm:px-0 sm:text-body-lg sm:leading-[1.7]"
+              className="mt-3.5 max-w-[20.5rem] px-1 text-[1.125rem] font-medium leading-[1.7] text-[#475569] sm:mt-5 sm:max-w-[52rem] sm:px-0 sm:text-[1.25rem] sm:leading-[1.7] lg:max-w-[72rem]"
             >
               {({ value }) => value || description}
             </EditableElement>
 
-            <EditableElement
-              id="home.doctors.note"
-              kind="paragraph"
-              defaultValue={DEFAULT_NOTE}
-              as="p"
-              className="mt-5 max-w-[19rem] px-1 text-center text-[0.875rem] font-medium leading-[1.55] tracking-[0.015em] text-[#475569] sm:mt-6 sm:max-w-[43.75rem] sm:px-0 sm:text-[0.9375rem] sm:font-normal sm:leading-snug sm:tracking-normal sm:text-[#64748B]"
-            >
-              {({ value }) => value || note}
-            </EditableElement>
           </StaggerReveal>
 
           {/* Main composition: portrait + structured stats */}
@@ -353,7 +328,7 @@ export function DoctorsSection() {
                             field="value"
                             defaultValue={value}
                             as="p"
-                            className="font-heading text-[1.5rem] font-bold leading-none tracking-tight text-[#0A2540] sm:text-[2.25rem]"
+                            className="font-heading text-[1.8rem] font-bold leading-none tracking-tight text-[#0A2540] sm:text-[2.7rem]"
                           >
                             {({ value: v }) => String(v || value)}
                           </EditableElement>
@@ -363,7 +338,7 @@ export function DoctorsSection() {
                             field="label"
                             defaultValue={statLabel}
                             as="p"
-                            className="mt-1 text-[0.8125rem] leading-snug text-[#64748B] sm:mt-1.5 sm:text-[0.875rem]"
+                            className="mt-1 text-[1.05rem] font-medium leading-snug text-[#475569] sm:mt-1.5 sm:text-[1.15rem]"
                           >
                             {({ value: v }) => String(v || statLabel)}
                           </EditableElement>
@@ -389,7 +364,7 @@ export function DoctorsSection() {
                             field="value"
                             defaultValue={value}
                             as="p"
-                            className="font-heading text-lg font-bold text-[#0A2540]"
+                            className="font-heading text-[1.35rem] font-bold text-[#0A2540]"
                           >
                             {({ value: v }) => String(v || value)}
                           </EditableElement>
@@ -399,7 +374,7 @@ export function DoctorsSection() {
                             field="label"
                             defaultValue={statLabel}
                             as="p"
-                            className="mt-1 text-small text-muted-foreground"
+                            className="mt-1 text-[1.1rem] font-medium text-[#475569]"
                           >
                             {({ value: v }) => String(v || statLabel)}
                           </EditableElement>
@@ -451,7 +426,7 @@ export function DoctorsSection() {
                       kind="list-item"
                       defaultValue={text}
                       as="span"
-                      className="text-[0.8125rem] font-semibold leading-snug text-[#0A2540] sm:text-[0.9375rem]"
+                      className="text-[0.975rem] font-semibold leading-snug text-[#0A2540] sm:text-[1.125rem]"
                     >
                       {({ value }) => value || text}
                     </EditableElement>
@@ -460,6 +435,16 @@ export function DoctorsSection() {
               })}
             </ul>
           </div>
+
+          <EditableElement
+            id="home.doctors.note"
+            kind="paragraph"
+            defaultValue={DEFAULT_NOTE}
+            as="p"
+            className="mx-auto mt-5 max-w-[19rem] px-1 text-center text-[1.05rem] font-medium italic leading-[1.55] tracking-[0.015em] text-[#475569] sm:mt-6 sm:max-w-[43.75rem] sm:px-0 sm:text-[1.2rem] sm:leading-snug sm:tracking-normal"
+          >
+            {({ value }) => value || note}
+          </EditableElement>
 
           {/* CTAs */}
           <div className="mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-10 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
@@ -476,7 +461,7 @@ export function DoctorsSection() {
                   href={String(fields.href ?? primaryHref)}
                   className={cn(
                     buttonVariants({ size: "lg" }),
-                    "h-11 w-full cursor-pointer rounded-full bg-[#0A2540] px-7 text-base text-white",
+                    "h-11 w-full cursor-pointer rounded-full bg-[#0A2540] px-7 text-[1.2rem] text-white",
                     "hover:bg-[#0A2540]/90 no-underline hover:no-underline",
                     "motion-safe:transition-transform motion-safe:duration-200 motion-safe:hover:scale-[1.02]",
                   )}
@@ -499,7 +484,7 @@ export function DoctorsSection() {
                   href={String(fields.href ?? secondaryHref)}
                   className={cn(
                     buttonVariants({ variant: "outline", size: "lg" }),
-                    "h-11 w-full cursor-pointer rounded-full border-[#0A2540]/35 bg-white px-7 text-base text-[#0A2540]",
+                    "h-11 w-full cursor-pointer rounded-full border-[#0A2540]/35 bg-white px-7 text-[1.2rem] text-[#0A2540]",
                     "hover:bg-[#0A2540]/5 no-underline hover:no-underline",
                     "motion-safe:transition-transform motion-safe:duration-200 motion-safe:hover:scale-[1.02]",
                   )}

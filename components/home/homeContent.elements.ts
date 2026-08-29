@@ -320,12 +320,12 @@ export const HOME_JOURNEY_DEFAULTS = [
       "Detailed scalp, skin, or body analysis using medical protocols and experience.",
   },
   {
-    title: "Personalised Treatment Plan",
+    title: "Personalised Treatment",
     description:
       "Only treatments you medically need. Clear explanation of procedure, recovery, and cost.",
   },
   {
-    title: "Safe Procedure & Follow-up",
+    title: "Safe Procedure",
     description:
       "Advanced technology, strict hygiene, and proper post-treatment care.",
   },

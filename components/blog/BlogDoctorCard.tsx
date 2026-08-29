@@ -66,7 +66,7 @@ export function BlogDoctorCard({
           </h2>
           <p className="mt-1 text-small font-medium text-primary">{role}</p>
 
-          <p className="mt-4 text-small leading-relaxed text-muted-foreground sm:text-body">
+          <p className="mt-4 text-[1rem] font-medium leading-relaxed text-slate-700 sm:text-[1.125rem]">
             {bio}
           </p>
 

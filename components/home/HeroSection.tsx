@@ -147,7 +147,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
             href={String(fields.href ?? primaryHref)}
             className={cn(
               buttonVariants({ size: "lg" }),
-              "h-12 w-full rounded-xl bg-[#18181B] px-6 text-white shadow-md hover:bg-[#18181B]/90 no-underline hover:no-underline sm:h-11 sm:w-auto sm:rounded-lg",
+              "h-12 w-full rounded-xl bg-[#18181B] px-6 text-[0.9625rem] text-white shadow-md hover:bg-[#18181B]/90 no-underline hover:no-underline sm:h-11 sm:w-auto sm:rounded-lg",
             )}
           >
             {String(fields.label ?? primaryLabel)}
@@ -169,7 +169,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
             href={String(fields.href ?? secondaryHref)}
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              "h-12 w-full rounded-xl border-[#0A2540]/15 bg-white px-6 text-[#0A2540] hover:bg-white/90 no-underline hover:no-underline sm:h-11 sm:w-auto sm:rounded-lg sm:border-[#2D2926]/25",
+              "h-12 w-full rounded-xl border-[#0A2540]/15 bg-white px-6 text-[0.9625rem] text-[#0A2540] hover:bg-white/90 no-underline hover:no-underline sm:h-11 sm:w-auto sm:rounded-lg sm:border-[#2D2926]/25",
             )}
           >
             {String(fields.label ?? secondaryLabel)}
@@ -256,7 +256,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                     strokeWidth={2}
                     aria-hidden
                   />
-                  <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.06em] text-primary">
+                  <span className="text-[0.75625rem] font-semibold uppercase tracking-[0.06em] text-primary">
                     {value || badge}
                   </span>
                 </>
@@ -268,7 +268,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
               kind="heading"
               defaultValue={DEFAULT_TITLE}
               as="h1"
-              className="mt-4 text-[2.03rem] font-bold leading-[1.15] tracking-[-0.02em] text-[#0A2540] sm:mt-5 sm:text-[clamp(2.32rem,3.71vw+0.87rem,3.625rem)] sm:leading-[1.12]"
+              className="mt-4 text-[2.233rem] font-bold leading-[1.15] tracking-[-0.02em] text-[#0A2540] sm:mt-5 sm:text-[clamp(2.55rem,4.08vw+0.96rem,4rem)] sm:leading-[1.12]"
             >
               {({ value }) =>
                 (value || title) === DEFAULT_TITLE || titleIsDefault ? (
@@ -288,7 +288,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
               kind="paragraph"
               defaultValue={DEFAULT_SUBTITLE}
               as="p"
-              className="mt-3 text-[0.9375rem] leading-relaxed text-[#64748B] sm:mt-5 sm:max-w-xl sm:text-[1.0625rem] md:text-[1.125rem] lg:mx-0"
+              className="mt-3 text-[1.03125rem] leading-relaxed text-[#64748B] sm:mt-5 sm:max-w-xl sm:text-[1.16875rem] md:text-[1.2375rem] lg:mx-0"
             >
               {({ value }) => value || subtitle}
             </EditableElement>
@@ -312,7 +312,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                         />
                       ))}
                     </div>
-                    <span className="text-[0.875rem] font-semibold text-[#0A2540]">
+                    <span className="text-[0.9625rem] font-semibold text-[#0A2540]">
                       {value || rating}
                     </span>
                     <GoogleMark />
@@ -338,7 +338,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                         aria-hidden
                       />
                     </span>
-                    <span className="text-left text-[0.75rem] font-medium leading-snug text-[#0A2540] sm:text-[0.875rem]">
+                    <span className="text-left text-[0.825rem] font-medium leading-snug text-[#0A2540] sm:text-[0.9625rem]">
                       {value || experience}
                     </span>
                   </>
@@ -411,7 +411,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                     kind="label"
                     defaultValue={item.title}
                     as="p"
-                    className="text-[0.6875rem] font-semibold leading-tight text-[#0A2540] sm:text-[0.8125rem]"
+                    className="text-[0.75625rem] font-semibold leading-tight text-[#0A2540] sm:text-[0.89375rem]"
                   >
                     {({ value }) => value || item.title}
                   </EditableElement>
@@ -420,7 +420,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                     kind="caption"
                     defaultValue={item.subtitle}
                     as="p"
-                    className="text-[0.625rem] leading-snug text-[#64748B] sm:text-[0.75rem]"
+                    className="text-[0.6875rem] leading-snug text-[#64748B] sm:text-[0.825rem]"
                   >
                     {({ value }) => value || item.subtitle}
                   </EditableElement>

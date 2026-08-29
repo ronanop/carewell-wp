@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Keep the dev compiler cache separate from production builds. Running
+  // `next build` while the dev server is active must not corrupt its chunks.
+  distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
   // Match WordPress permalinks (trailing slash) for SEO continuity.
   trailingSlash: true,
   images: {

@@ -16,9 +16,6 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
-/** Matches `.navbar-compact` zoom so the portal clears the sticky header. */
-const HEADER_CLEARANCE = "calc(4.75rem * 0.96)";
-
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -89,12 +86,11 @@ export function MobileNav() {
       {createPortal(
         <div
           className={cn(
-            "fixed inset-x-0 bottom-0 z-[110] transition-opacity duration-200 xl:hidden",
+            "fixed inset-x-0 bottom-0 top-[4.75rem] z-[110] transition-opacity duration-200 lg:top-[7rem] xl:hidden",
             open
               ? "pointer-events-auto visible opacity-100"
               : "pointer-events-none invisible opacity-0",
           )}
-          style={{ top: HEADER_CLEARANCE }}
           aria-hidden={!open}
         >
           <button
@@ -109,7 +105,7 @@ export function MobileNav() {
             id={panelId}
             aria-label="Mobile navigation"
             className={cn(
-              "absolute inset-y-0 right-0 z-[120] flex w-full max-w-sm flex-col overflow-y-auto border-l border-border bg-background shadow-lg transition-transform duration-200",
+              "absolute inset-y-0 right-0 z-[120] flex w-full max-w-sm flex-col overflow-y-auto overscroll-contain border-l border-border bg-background shadow-lg transition-transform duration-200",
               open ? "translate-x-0" : "translate-x-full",
             )}
           >

@@ -57,7 +57,7 @@ function NextPostCard({ post }: { post: SanityPostCard }) {
             {post.title}
           </h3>
           {post.excerpt ? (
-            <p className="mt-2 line-clamp-2 flex-1 text-small leading-relaxed text-muted-foreground">
+            <p className="mt-2 line-clamp-3 min-h-[4.75rem] flex-1 text-[1rem] font-medium leading-relaxed text-slate-600 sm:text-[1.1rem]">
               {post.excerpt}
             </p>
           ) : (

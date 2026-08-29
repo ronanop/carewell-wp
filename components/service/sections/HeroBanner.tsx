@@ -11,6 +11,15 @@ import type { QuickFact, SanityImage, SectionBaseProps } from "./types";
 
 const DEFAULT_HERO_BG = "/images/service-hero-background.jpg";
 
+function formatCategoryLabel(category: string): string {
+  return category
+    .trim()
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((word) => word[0]!.toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -97,6 +106,7 @@ export function HeroBanner({
   id = "hero",
   heading,
   tagline,
+  category,
   uri = "",
   breadcrumbs,
   image,
@@ -162,7 +172,7 @@ export function HeroBanner({
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-7 lg:px-8 lg:pb-14 lg:pt-8">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-6 sm:px-6 sm:pb-16 sm:pt-7 lg:px-8 lg:pb-20 lg:pt-8">
         <nav aria-label="Breadcrumb" className="text-sm text-white/70">
           <ol className="flex flex-wrap items-center gap-1.5">
             {crumbItems.map((item, i) => {
@@ -186,13 +196,18 @@ export function HeroBanner({
           </ol>
         </nav>
 
-        <div className="mt-6 grid items-center gap-8 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)] lg:gap-10 xl:gap-12">
+        <div className="mt-8 grid items-center gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)] lg:gap-12 xl:gap-16">
           <div className="min-w-0">
-            <h1 className="font-heading text-[clamp(1.75rem,3.6vw,2.625rem)] font-bold leading-[1.15] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)]">
+            {category?.trim() ? (
+              <p className="mb-3 text-[0.6875rem] font-semibold tracking-[0.18em] text-sky-100/85 uppercase">
+                {formatCategoryLabel(category)} care
+              </p>
+            ) : null}
+            <h1 className="max-w-3xl font-heading text-[clamp(2rem,4.2vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)]">
               {heading}
             </h1>
             {tagline ? (
-              <p className="mt-3 max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
                 {tagline}
               </p>
             ) : null}

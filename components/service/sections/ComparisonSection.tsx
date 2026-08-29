@@ -78,14 +78,14 @@ export function ComparisonSection({
         {display.length ? (
           <ul
             className={cn(
-              "mx-auto flex list-none flex-wrap justify-center gap-4 p-0",
+              "service-card-grid mx-auto list-none p-0",
               html ? "mb-8 sm:mb-10" : undefined,
             )}
           >
             {display.map((col, i) => (
               <li
                 key={`${i}-${col.title}`}
-                className="min-w-0 w-full max-w-[18.5rem] basis-[min(100%,18.5rem)]"
+                className="min-w-0 w-full"
               >
                 <article
                   className={cn(

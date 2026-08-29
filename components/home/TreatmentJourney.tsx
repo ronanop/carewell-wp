@@ -63,7 +63,6 @@ const TRUST_ITEMS = [
   },
 ] as const;
 
-const DEFAULT_LABEL = "Fast, Safe & Doctor-Led Solutions";
 const DEFAULT_HEADING = "Your Treatment Journey at Care Well Medical Centre";
 const DEFAULT_DESCRIPTION =
   "A clear, doctor-led process focused on safety, results, and personalised care.";
@@ -116,7 +115,6 @@ function parseStepTitle(title: string, index: number) {
 export function TreatmentJourney() {
   const { config } = useStaticEditContext();
 
-  const label = resolveElementText(config, "home.journey.label", DEFAULT_LABEL);
   const heading = resolveElementText(
     config,
     "home.journey.heading",
@@ -137,24 +135,15 @@ export function TreatmentJourney() {
 
   return (
     <section className="bg-background">
-      <div className="container-content section-padding">
-        <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
-          <EditableElement
-            id="home.journey.label"
-            kind="label"
-            defaultValue={DEFAULT_LABEL}
-            as="p"
-            className="text-label uppercase tracking-[0.12em] text-slate-400"
-          >
-            {({ value }) => value || label}
-          </EditableElement>
+      <div className="container-content section-padding lg:pt-20">
+        <StaggerReveal className="mx-auto max-w-[55rem] text-center" stepMs={70}>
           <EditableElement
             id="home.journey.heading"
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
             className={cn(
-              "mt-3 font-heading text-[1.5rem] font-bold leading-tight tracking-tight sm:text-h2",
+              "mt-3 font-heading text-[2.1rem] font-bold leading-tight tracking-tight sm:text-[3rem]",
               NAVY,
             )}
           >
@@ -165,7 +154,7 @@ export function TreatmentJourney() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-3 max-w-2xl text-body leading-relaxed text-slate-500 sm:mt-4 sm:text-body-lg"
+            className="mx-auto mt-3 max-w-none text-[1.35rem] leading-relaxed text-slate-500 sm:mt-4 lg:whitespace-nowrap"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -174,7 +163,7 @@ export function TreatmentJourney() {
         <StaggerReveal
           as="ol"
           stepMs={90}
-          className="mt-10 flex flex-col items-center sm:mt-14 lg:mt-16 lg:flex-row lg:items-start lg:justify-center"
+          className="mt-10 flex flex-col items-center sm:mt-14 lg:mt-16 lg:flex-row lg:items-start lg:justify-center lg:gap-x-1"
         >          {steps.flatMap((step, index) => {
             const Icon = STEP_ICONS[step.__index % STEP_ICONS.length] ?? Search;
             const theme =
@@ -190,7 +179,7 @@ export function TreatmentJourney() {
             const stepItem = (
               <li
                 key={`step-${step.__index}`}
-                className="flex w-full max-w-[15rem] flex-col items-center text-center sm:max-w-[16.5rem] lg:max-w-none lg:flex-1 lg:px-2 xl:px-3"
+                className="flex w-full max-w-[15rem] flex-col items-center text-center sm:max-w-[16.5rem] lg:max-w-none lg:flex-1 lg:scale-110 lg:px-1 lg:origin-top xl:px-3"
               >
                 <div className="relative flex size-[7.25rem] items-center justify-center sm:size-[9.25rem]">
                   <span
@@ -226,7 +215,7 @@ export function TreatmentJourney() {
 
                 <p
                   className={cn(
-                    "mt-4 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] sm:mt-5",
+                    "mt-4 text-[0.825rem] font-semibold uppercase tracking-[0.14em] sm:mt-5",
                     theme.label,
                   )}
                 >
@@ -239,7 +228,7 @@ export function TreatmentJourney() {
                   defaultValue={title}
                   as="h3"
                   className={cn(
-                    "mt-2 text-[1.0625rem] font-bold leading-snug sm:text-[1.125rem]",
+                    "mt-2 text-[1.275rem] font-bold leading-snug sm:text-[1.35rem] lg:whitespace-nowrap",
                     NAVY,
                   )}
                 >
@@ -256,7 +245,7 @@ export function TreatmentJourney() {
                   kind="paragraph"
                   defaultValue={stepDescription}
                   as="p"
-                  className="mt-2.5 max-w-[15rem] text-[0.875rem] leading-relaxed text-slate-500"
+                  className="mt-2.5 max-w-[15rem] text-[1.15rem] font-medium leading-relaxed text-slate-600"
                 >
                   {({ value }) => value || stepDescription}
                 </EditableElement>
@@ -280,7 +269,7 @@ export function TreatmentJourney() {
 
         <StaggerReveal
           stepMs={80}
-          className="mx-auto mt-10 max-w-4xl rounded-2xl bg-[#F4F6F8] px-4 py-4 shadow-[0_8px_30px_-18px_rgba(10,37,64,0.28)] sm:mt-16 sm:px-7 sm:py-6"
+          className="mx-auto mt-10 max-w-4xl rounded-2xl bg-[#F4F6F8] px-4 py-4 shadow-[0_8px_30px_-18px_rgba(10,37,64,0.28)] sm:mt-20 sm:px-7 sm:py-6"
         >
           <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:gap-5 sm:text-left">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE] text-[#2563EB] sm:size-12">
@@ -310,15 +299,15 @@ export function TreatmentJourney() {
         <StaggerReveal
           as="ul"
           stepMs={70}
-          className="mx-auto mt-8 flex max-w-3xl flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-3"
+          className="mx-auto mt-8 flex max-w-3xl flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-3 lg:max-w-[52rem] lg:flex-nowrap lg:gap-x-4"
         >
           {TRUST_ITEMS.map((item) => (
             <li
               key={item.label}
-              className="flex items-center gap-2 text-[0.8125rem] text-slate-500"
+              className="flex items-center gap-2 text-[1.0725rem] font-semibold text-slate-600 lg:whitespace-nowrap"
             >
               <item.icon
-                className="size-3.5 shrink-0 text-slate-400"
+                className="size-[1.2rem] shrink-0 text-slate-500"
                 strokeWidth={1.75}
                 aria-hidden
               />
