@@ -96,7 +96,7 @@ export function ConsultationSpecialties() {
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="mt-3 font-heading text-[1.8rem] font-bold leading-tight text-[#0A2540] sm:text-[2.7rem] lg:whitespace-nowrap"
+            className="mt-3 font-heading text-[1.5rem] font-bold leading-tight text-[#0A2540] sm:text-[2.7rem] lg:whitespace-nowrap"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -105,7 +105,7 @@ export function ConsultationSpecialties() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-3 max-w-[42rem] text-[1.2rem] leading-relaxed text-muted-foreground sm:mt-4 sm:text-[1.35rem] lg:max-w-[64rem]"
+            className="mx-auto mt-3 max-w-[42rem] text-[0.795rem] leading-relaxed text-muted-foreground sm:mt-4 sm:text-[1.35rem] lg:max-w-[64rem]"
           >
             {({ value }) => value || description}
           </EditableElement>

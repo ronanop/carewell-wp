@@ -101,10 +101,10 @@ export function AiSkinAnalysis() {
           stepMs={80}
           className={cn(
             // Mobile: compact vertical promo card
-            "relative flex min-w-0 flex-col items-stretch gap-5 overflow-hidden rounded-2xl bg-surface px-5 py-6",
+            "relative flex min-w-0 flex-col items-stretch gap-4 overflow-hidden rounded-xl bg-surface px-4 py-4",
             "ai-skin-analysis-card border-transparent",
             // Desktop (lg+): preserve side-by-side layout
-            "lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:p-12",
+            "sm:gap-5 sm:rounded-2xl sm:px-5 sm:py-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:p-12",
           )}
         >
           {/* Copy + CTA — hierarchy: eyebrow → heading → body → CTA */}
@@ -114,7 +114,7 @@ export function AiSkinAnalysis() {
               kind="label"
               defaultValue={DEFAULT_LABEL}
               as="p"
-              className="text-[0.9rem] font-medium uppercase tracking-[0.14em] text-[#3B82F6]"
+              className="text-[0.75rem] font-medium uppercase tracking-[0.14em] text-[#3B82F6] sm:text-[0.9rem]"
             >
               {({ value }) => value || label}
             </EditableElement>
@@ -123,7 +123,7 @@ export function AiSkinAnalysis() {
               kind="heading"
               defaultValue={DEFAULT_HEADING}
               as="h2"
-              className="mt-2 font-heading text-[1.65rem] font-bold leading-snug text-[#0A2540] sm:mt-3 sm:text-[1.8rem] sm:leading-tight lg:text-[2.7rem]"
+              className="mt-1.5 font-heading text-[1.3rem] font-bold leading-snug text-[#0A2540] sm:mt-3 sm:text-[1.8rem] sm:leading-tight lg:text-[2.7rem]"
             >
               {({ value }) => (
                 <span id="ai-skin-analysis-heading">{value || heading}</span>
@@ -134,11 +134,11 @@ export function AiSkinAnalysis() {
               kind="paragraph"
               defaultValue={DEFAULT_DESCRIPTION}
               as="p"
-              className="mx-auto mt-2.5 max-w-[22rem] text-[1.2rem] font-medium leading-relaxed text-slate-600 sm:mt-3 sm:max-w-lg sm:text-[1.3rem] lg:mx-0 lg:mt-4"
+              className="mx-auto mt-2 max-w-[18rem] text-[0.75rem] font-medium leading-relaxed text-slate-600 sm:mt-3 sm:max-w-lg sm:text-[1.3rem] lg:mx-0 lg:mt-4"
             >
               {({ value }) => value || description}
             </EditableElement>
-            <div className="mt-5 sm:mt-6 lg:mt-7">
+            <div className="mt-3 sm:mt-6 lg:mt-7">
               <EditableElement
                 id="home.ai-skin.button"
                 kind="button"
@@ -152,7 +152,7 @@ export function AiSkinAnalysis() {
                     href={String(fields.href ?? buttonHref)}
                     className={cn(
                       buttonVariants({ size: "lg" }),
-                      "h-12 w-full rounded-lg bg-[#0A2540] text-[1.2rem] text-white no-underline hover:bg-[#0A2540]/90 hover:no-underline lg:h-11 lg:w-auto lg:text-[1.05rem]",
+                      "h-10 w-full rounded-lg bg-[#0A2540] text-[0.75rem] text-white no-underline hover:bg-[#0A2540]/90 hover:no-underline sm:h-12 sm:text-[1.2rem] lg:h-11 lg:w-auto lg:text-[1.05rem]",
                     )}
                   >
                     {String(fields.label ?? buttonLabel)}

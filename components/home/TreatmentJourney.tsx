@@ -93,6 +93,20 @@ function highlightBrandName(text: string) {
   );
 }
 
+function formatJourneyHeading(text: string) {
+  if (text !== DEFAULT_HEADING) return highlightBrandName(text);
+
+  return (
+    <>
+      <span className="block whitespace-nowrap sm:inline">Your Treatment Journey</span>{" "}
+      <span className="block whitespace-nowrap sm:inline">at</span>{" "}
+      <span className="block whitespace-nowrap text-primary sm:inline">
+        Care Well Medical Centre
+      </span>
+    </>
+  );
+}
+
 function parseStepTitle(title: string, index: number) {
   const match = title.match(/^Step\s+(\d+)\s*:\s*(.+)$/i);
   if (match) {
@@ -143,18 +157,18 @@ export function TreatmentJourney() {
             defaultValue={DEFAULT_HEADING}
             as="h2"
             className={cn(
-              "mt-3 font-heading text-[2.1rem] font-bold leading-tight tracking-tight sm:text-[3rem]",
+              "mt-3 font-heading text-[1.61rem] font-bold leading-[1.15] tracking-tight sm:text-[3rem] sm:leading-tight",
               NAVY,
             )}
           >
-            {({ value }) => highlightBrandName(value || heading)}
+            {({ value }) => formatJourneyHeading(value || heading)}
           </EditableElement>
           <EditableElement
             id="home.journey.description"
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-3 max-w-none text-[1.35rem] leading-relaxed text-slate-500 sm:mt-4 lg:whitespace-nowrap"
+            className="mx-auto mt-3 max-w-none text-[0.75rem] leading-relaxed text-slate-500 sm:mt-4 sm:text-[1.35rem] lg:whitespace-nowrap"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -245,7 +259,7 @@ export function TreatmentJourney() {
                   kind="paragraph"
                   defaultValue={stepDescription}
                   as="p"
-                  className="mt-2.5 max-w-[15rem] text-[1.15rem] font-medium leading-relaxed text-slate-600"
+                  className="mt-2.5 max-w-[15rem] text-[0.75rem] font-medium leading-relaxed text-slate-600 sm:text-[1.15rem]"
                 >
                   {({ value }) => value || stepDescription}
                 </EditableElement>
@@ -258,7 +272,7 @@ export function TreatmentJourney() {
               stepItem,
               <li
                 key={`connector-${step.__index}`}
-                className="flex list-none items-center justify-center py-4 text-slate-300 sm:py-6 lg:mt-[3.75rem] lg:shrink-0 lg:self-start lg:px-1 lg:py-0 xl:mt-16 xl:px-2"
+                className="hidden list-none items-center justify-center py-4 text-slate-300 sm:flex sm:py-6 lg:mt-[3.75rem] lg:shrink-0 lg:self-start lg:px-1 lg:py-0 xl:mt-16 xl:px-2"
                 aria-hidden
               >
                 <CircleArrowRight className="size-5 rotate-90 sm:size-6 lg:rotate-0" />
@@ -299,15 +313,15 @@ export function TreatmentJourney() {
         <StaggerReveal
           as="ul"
           stepMs={70}
-          className="mx-auto mt-8 flex max-w-3xl flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-3 lg:max-w-[52rem] lg:flex-nowrap lg:gap-x-4"
+          className="mx-auto mt-8 flex max-w-3xl flex-col items-center justify-center gap-2 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-3 lg:max-w-[52rem] lg:flex-nowrap lg:gap-x-4"
         >
           {TRUST_ITEMS.map((item) => (
             <li
               key={item.label}
-              className="flex items-center gap-2 text-[1.0725rem] font-semibold text-slate-600 lg:whitespace-nowrap"
+              className="flex items-center gap-1.5 whitespace-nowrap text-[0.75rem] font-semibold text-slate-600 sm:gap-2 sm:text-[1.0725rem] lg:whitespace-nowrap"
             >
               <item.icon
-                className="size-[1.2rem] shrink-0 text-slate-500"
+                className="size-4 shrink-0 text-slate-500 sm:size-[1.2rem]"
                 strokeWidth={1.75}
                 aria-hidden
               />

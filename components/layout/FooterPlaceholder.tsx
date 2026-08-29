@@ -68,33 +68,33 @@ const socialLinks = [
 ] as const;
 
 const headingClass =
-  "font-heading text-[0.8625rem] font-bold uppercase tracking-wide text-[#0A2540] lg:text-[1rem]";
+  "font-heading text-[0.75rem] font-bold uppercase tracking-wide text-[#0A2540] sm:text-[0.8625rem] lg:text-[1rem]";
 
 const bodyClass =
-  "text-[0.9375rem] leading-snug text-muted-foreground lg:text-[1rem] lg:leading-normal";
+  "text-[0.75rem] leading-snug text-muted-foreground sm:text-[0.9375rem] lg:text-[1rem] lg:leading-normal";
 
 const linkClass =
-  "text-[0.9375rem] leading-snug text-muted-foreground no-underline transition-colors hover:text-primary hover:no-underline lg:text-[1rem] lg:leading-normal";
+  "text-[0.75rem] leading-snug text-muted-foreground no-underline transition-colors hover:text-primary hover:no-underline sm:text-[0.9375rem] lg:text-[1rem] lg:leading-normal";
 
 export function FooterPlaceholder() {
   const year = new Date().getFullYear();
 
   return (
     <footer className="bg-secondary">
-      <div className="container-content py-8 sm:py-10 lg:py-[var(--section-padding-y-desktop)]">
-        <div className="grid grid-cols-2 gap-x-5 gap-y-5 sm:gap-x-8 sm:gap-y-6 lg:grid-cols-4 lg:gap-8">
+      <div className="container-content py-6 sm:py-10 lg:py-[var(--section-padding-y-desktop)]">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4 sm:gap-x-8 sm:gap-y-6 lg:grid-cols-4 lg:gap-8">
           {/* ABOUT US */}
           <div className="col-span-2 lg:col-span-1">
             <h2 className={headingClass}>About Us</h2>
-            <p className={`mt-2 lg:mt-4 ${bodyClass}`}>
+            <p className={`mt-1.5 sm:mt-2 lg:mt-4 ${bodyClass}`}>
               Care Well Medical Centre is a leading cosmetic surgery clinic in
               Delhi, offering advanced aesthetic and reconstructive treatments
               with expert care.
             </p>
-            <p className={`mt-2 lg:mt-4 ${bodyClass}`}>
+            <p className={`mt-1.5 sm:mt-2 lg:mt-4 ${bodyClass}`}>
               House No. 1, NRI Complex, Chittaranjan Park, Delhi
             </p>
-            <ul className="mt-3 flex items-center gap-2.5 lg:mt-5 lg:gap-4">
+            <ul className="mt-2 flex items-center gap-2.5 lg:mt-5 lg:gap-4">
               {socialLinks.map((social) => (
                 <li key={social.label}>
                   <a
@@ -112,12 +112,12 @@ export function FooterPlaceholder() {
           {/* QUICK LINKS */}
           <div>
             <h2 className={headingClass}>Quick Links</h2>
-            <ul className="mt-2 space-y-0 lg:mt-4 lg:space-y-2.5">
+            <ul className="mt-1.5 space-y-0 sm:mt-2 lg:mt-4 lg:space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={`${linkClass} inline-flex min-h-8 items-center lg:min-h-10`}
+                    className={`${linkClass} inline-flex min-h-7 items-center sm:min-h-8 lg:min-h-10`}
                   >
                     {link.label}
                   </Link>
@@ -129,12 +129,12 @@ export function FooterPlaceholder() {
           {/* SERVICES */}
           <div>
             <h2 className={headingClass}>Services</h2>
-            <ul className="mt-2 space-y-0 lg:mt-4 lg:space-y-2.5">
+            <ul className="mt-1.5 space-y-0 sm:mt-2 lg:mt-4 lg:space-y-2.5">
               {serviceLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={`${linkClass} inline-flex min-h-8 items-center lg:min-h-10`}
+                    className={`${linkClass} inline-flex min-h-7 items-center sm:min-h-8 lg:min-h-10`}
                   >
                     {link.label}
                   </Link>
@@ -146,7 +146,7 @@ export function FooterPlaceholder() {
           {/* OPENING HOURS */}
           <div className="col-span-2 lg:col-span-1">
             <h2 className={headingClass}>Opening Hours</h2>
-            <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 lg:mt-4 lg:grid-cols-1 lg:gap-y-2">
+            <ul className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-0.5 sm:mt-2 sm:gap-x-4 sm:gap-y-1 lg:mt-4 lg:grid-cols-1 lg:gap-y-2">
               {openingHours.map((day) => (
                 <li
                   key={day}
@@ -161,7 +161,7 @@ export function FooterPlaceholder() {
         </div>
 
         <div className="mt-6 border-t border-border pt-4 sm:mt-8 sm:pt-6 lg:mt-12 lg:pt-8">
-          <p className="text-[0.875rem] leading-snug text-muted-foreground lg:text-[1rem] lg:leading-normal">
+          <p className="text-[0.75rem] leading-snug text-muted-foreground sm:text-[0.875rem] lg:text-[1rem] lg:leading-normal">
             © {year} Care Well Medical Centre. All rights reserved.
           </p>
         </div>

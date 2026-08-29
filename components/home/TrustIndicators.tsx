@@ -20,12 +20,13 @@ export function TrustIndicators() {
 
   return (
     <section className="border-y border-border bg-muted/40">
-      <div className="container-content py-10 md:py-16 lg:py-24">
+      <div className="container-content py-6 sm:py-10 md:py-16 lg:py-24">
         <StaggerReveal
           as="ul"
           stepMs={75}
-          className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 sm:gap-y-8 lg:grid-cols-6 lg:divide-x lg:divide-border lg:gap-y-0"
-        >          {DEFAULT_INDICATORS.map((item, index) => {
+          className="grid grid-cols-2 gap-x-1 gap-y-5 sm:grid-cols-3 sm:gap-x-2 sm:gap-y-8 lg:grid-cols-6 lg:divide-x lg:divide-border lg:gap-y-0"
+        >
+          {DEFAULT_INDICATORS.map((item, index) => {
             const valueId = `home.trust.stat.${index}.value`;
             const labelId = `home.trust.stat.${index}.label`;
             const value = resolveElementField(
@@ -44,14 +45,14 @@ export function TrustIndicators() {
             return (
               <li
                 key={item.label}
-                className="flex flex-col items-center px-2 text-center sm:px-4 lg:px-5"
+                className="flex flex-col items-center px-1 text-center sm:px-4 lg:px-5"
               >
                 <EditableElement
                   id={valueId}
                   kind="statistic"
                   defaultValue={item.value}
                   as="p"
-                  className="text-[1.423125rem] font-semibold leading-tight tracking-tight text-foreground sm:text-[1.58125rem] md:text-[1.739375rem]"
+                  className="text-[1.125rem] font-semibold leading-tight tracking-tight text-foreground sm:text-[1.58125rem] md:text-[1.739375rem]"
                 >
                   {({ value: v }) => (
                     <AnimatedStat value={String(v || value)} />
@@ -62,7 +63,7 @@ export function TrustIndicators() {
                   kind="label"
                   defaultValue={item.label}
                   as="p"
-                  className="mt-1 text-[0.94875rem] leading-snug text-muted-foreground sm:mt-1.5 sm:text-[1.0278125rem]"
+                  className="mt-0.5 max-w-[9rem] text-[0.75rem] leading-[1.25] text-muted-foreground sm:mt-1.5 sm:max-w-none sm:text-[1.0278125rem]"
                 >
                   {({ value: v }) => String(v || label)}
                 </EditableElement>

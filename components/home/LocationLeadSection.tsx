@@ -24,11 +24,11 @@ const TREATMENT_OPTIONS = [
 ] as const;
 
 const fieldClassName = cn(
-  "mt-1.5 w-full rounded-lg border border-border bg-surface px-3.5 py-3",
-  "text-body text-foreground placeholder:text-muted-foreground",
+  "mt-1.5 w-full rounded-lg border border-border bg-surface px-3 py-2.5",
+  "text-[0.75rem] text-foreground placeholder:text-muted-foreground sm:text-body",
   "transition-colors focus-visible:outline-none focus-visible:ring-2",
   "focus-visible:ring-ring focus-visible:ring-offset-2",
-  "min-h-11 sm:py-2.5",
+  "min-h-10 sm:min-h-11 sm:py-2.5",
 );
 
 const DEFAULT_HEADING = "Conveniently Located in South Delhi";
@@ -162,22 +162,22 @@ export function LocationLeadSection() {
       className="overflow-x-hidden bg-[#F5F6F8]"
       aria-labelledby="location-lead-heading"
     >
-      <div className="container-content section-padding min-w-0">
+      <div className="container-content section-padding min-w-0 max-[767px]:!py-6">
         <StaggerReveal
           stepMs={80}
           className={cn(
-            "min-w-0 max-w-full overflow-hidden rounded-2xl border border-border/60 bg-white/70 p-4 shadow-[0_8px_30px_rgb(10_37_64/0.06)]",
+            "min-w-0 max-w-full overflow-hidden rounded-2xl border border-border/60 bg-white/70 p-3 shadow-[0_8px_30px_rgb(10_37_64/0.06)]",
             "sm:p-8 lg:p-10",
           )}
         >
-          <div className="grid min-w-0 items-start gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-10">
+          <div className="grid min-w-0 items-start gap-4 sm:gap-8 lg:grid-cols-2 lg:gap-10">
             <div className="min-w-0 max-w-full">
               <EditableElement
                 id="home.location.heading"
                 kind="heading"
                 defaultValue={DEFAULT_HEADING}
                 as="h2"
-                className="font-heading text-[1.5rem] font-bold leading-tight text-[#0A2540] sm:text-h2"
+                className="font-heading text-[1.25rem] font-bold leading-tight text-[#0A2540] sm:text-h2"
               >
                 {({ value }) => (
                   <span id="location-lead-heading">{value || heading}</span>
@@ -188,7 +188,7 @@ export function LocationLeadSection() {
                 kind="paragraph"
                 defaultValue={DEFAULT_ADDRESS}
                 as="p"
-                className="mt-2.5 text-body text-muted-foreground sm:mt-3"
+                className="mt-2 text-[0.75rem] text-muted-foreground sm:mt-3 sm:text-body"
               >
                 {({ value }) => value || address}
               </EditableElement>
@@ -199,7 +199,7 @@ export function LocationLeadSection() {
                 field="query"
                 defaultValue={DEFAULT_MAP_QUERY}
                 className={cn(
-                  "relative mt-5 aspect-[16/10] w-full min-w-0 max-w-full max-h-[240px]",
+                  "relative mt-4 aspect-[16/10] w-full min-w-0 max-w-full max-h-[180px]",
                   "overflow-hidden rounded-xl border border-border/60 bg-[#E8EEF2]",
                   "sm:mt-6 sm:max-h-none sm:min-h-[320px] sm:rounded-2xl",
                 )}
@@ -224,11 +224,11 @@ export function LocationLeadSection() {
 
             <div
               className={cn(
-                "min-w-0 max-w-full rounded-xl border border-border/60 bg-white p-4",
+                "min-w-0 max-w-full rounded-xl border border-border/60 bg-white p-3",
                 "shadow-[0_8px_30px_rgb(10_37_64/0.08)] sm:rounded-2xl sm:p-8",
               )}
             >
-              <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
                 <div>
                   <EditableElement
                     id="home.location.form.nameLabel"
@@ -240,7 +240,7 @@ export function LocationLeadSection() {
                       <>
                         <label
                           htmlFor="lead-name"
-                          className="block text-small font-medium text-[#0A2540]"
+                          className="block text-[0.75rem] font-medium text-[#0A2540] sm:text-small"
                         >
                           {String(fields.text ?? nameLabel)}
                         </label>
@@ -279,7 +279,7 @@ export function LocationLeadSection() {
                       <>
                         <label
                           htmlFor="lead-mobile"
-                          className="block text-small font-medium text-[#0A2540]"
+                          className="block text-[0.75rem] font-medium text-[#0A2540] sm:text-small"
                         >
                           {String(fields.text ?? mobileLabel)}
                         </label>
@@ -322,7 +322,7 @@ export function LocationLeadSection() {
                       <>
                         <label
                           htmlFor="lead-treatment"
-                          className="block text-small font-medium text-[#0A2540]"
+                          className="block text-[0.75rem] font-medium text-[#0A2540] sm:text-small"
                         >
                           {value || treatmentLabel}
                         </label>
@@ -384,7 +384,7 @@ export function LocationLeadSection() {
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full rounded-lg bg-[#0A2540] text-white hover:bg-[#0A2540]/90"
+                      className="h-10 w-full rounded-lg bg-[#0A2540] text-[0.75rem] text-white hover:bg-[#0A2540]/90 sm:h-11 sm:text-base"
                     >
                       {String(fields.label ?? buttonLabel)}
                     </Button>
@@ -396,7 +396,7 @@ export function LocationLeadSection() {
                   kind="caption"
                   defaultValue={DEFAULT_PRIVACY}
                   as="p"
-                  className="flex items-start justify-center gap-2 text-center text-small text-muted-foreground"
+                  className="flex items-start justify-center gap-2 text-center text-[0.7rem] text-muted-foreground sm:text-small"
                 >
                   {({ value }) => (
                     <>

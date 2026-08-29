@@ -85,7 +85,7 @@ const STAGGER_CLASS = [
 function SectionDivider() {
   return (
     <div
-      className="mx-auto mt-5 flex w-full max-w-[11rem] items-center gap-2"
+      className="mx-auto mt-4 flex w-full max-w-[11rem] items-center gap-2 sm:mt-5"
       aria-hidden
     >
       <span className="h-px flex-1 bg-slate-200" />
@@ -127,14 +127,14 @@ function DoctorPortrait({
   return (
     <div
       className={cn(
-        "relative mx-auto flex h-full w-full max-w-[17rem] flex-col overflow-hidden rounded-[1.5rem] bg-white px-5 pb-6 pt-7 sm:max-w-[20rem] sm:rounded-[1.75rem] sm:px-7 sm:pb-8 sm:pt-9",
+        "relative mx-auto flex h-full w-full max-w-[15rem] flex-col overflow-hidden rounded-[1.25rem] bg-white px-4 pb-4 pt-5 sm:max-w-[20rem] sm:rounded-[1.75rem] sm:px-7 sm:pb-8 sm:pt-9",
         CARD_SHADOW,
         "ring-1 ring-black/[0.03]",
       )}
     >
       <DecorativeDots className="absolute left-5 top-5 z-20" />
 
-      <div className="relative mx-auto flex min-h-0 w-full max-w-[13.5rem] flex-1 flex-col items-center justify-center sm:max-w-[15.5rem]">
+      <div className="relative mx-auto flex min-h-0 w-full max-w-[12rem] flex-1 flex-col items-center justify-center sm:max-w-[15.5rem]">
         <div className="relative flex aspect-[3/4] w-full min-h-0 flex-1 items-end justify-center lg:aspect-auto lg:max-h-none">
           <span
             className="pointer-events-none absolute left-1/2 top-[48%] size-[14rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,186,140,0.62)_0%,rgba(255,220,190,0.38)_42%,transparent_70%)] lg:size-[min(100%,18rem)]"
@@ -165,14 +165,14 @@ function DoctorPortrait({
         </div>
       </div>
 
-      <div className="relative z-10 mt-5 shrink-0 text-center lg:mt-6">
+      <div className="relative z-10 mt-3 shrink-0 text-center sm:mt-5 lg:mt-6">
         <EditableElement
           id="home.why.doctorName"
           kind="heading"
           defaultValue={DEFAULT_DOCTOR_NAME}
           as="p"
           className={cn(
-            "font-heading text-[1.275rem] font-bold sm:text-[1.2rem]",
+            "font-heading text-[0.95rem] font-bold sm:text-[1.2rem]",
             NAVY,
           )}
         >
@@ -183,7 +183,7 @@ function DoctorPortrait({
           kind="paragraph"
           defaultValue={DEFAULT_DOCTOR_TITLE}
           as="p"
-          className="mt-1 text-[1.1rem] font-medium text-slate-700"
+          className="mt-1 text-[0.75rem] font-medium text-slate-700 sm:text-[1.1rem]"
         >
           {({ value }) => value || title}
         </EditableElement>
@@ -192,7 +192,7 @@ function DoctorPortrait({
           kind="paragraph"
           defaultValue={DEFAULT_DOCTOR_LOCATION}
           as="p"
-          className="mt-0.5 text-[1.1rem] font-medium text-slate-700"
+          className="mt-0.5 text-[0.75rem] font-medium text-slate-700 sm:text-[1.1rem]"
         >
           {({ value }) => value || location}
         </EditableElement>
@@ -276,7 +276,7 @@ export function WhyChooseUs() {
             defaultValue={DEFAULT_HEADING}
             as="h2"
             className={cn(
-              "mt-3 font-heading text-[1.8rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]",
+              "mt-3 font-heading text-[1.5rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]",
               NAVY,
             )}
           >
@@ -288,13 +288,13 @@ export function WhyChooseUs() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-4 max-w-2xl text-[1.2rem] font-medium leading-relaxed text-slate-700 sm:mt-5 sm:text-[1.35rem]"
+            className="mx-auto mt-4 max-w-2xl text-[0.75rem] font-medium leading-relaxed text-slate-700 sm:mt-5 sm:text-[1.35rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
         </StaggerReveal>
 
-        <div className="mt-10 grid items-start gap-8 lg:mt-14 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,20rem)] lg:items-stretch lg:gap-24 xl:gap-32">
+        <div className="mt-8 grid items-start gap-5 sm:mt-10 sm:gap-8 lg:mt-14 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,20rem)] lg:items-stretch lg:gap-24 xl:gap-32">
           <StaggerReveal as="ul" stepMs={85} className="flex flex-col gap-3.5 sm:gap-5">
             {features.map((feature) => {
               const index = feature.__index;
@@ -314,7 +314,7 @@ export function WhyChooseUs() {
                 <li
                   key={feature.__index}
                   className={cn(
-                    "relative overflow-hidden rounded-xl bg-white p-4 transition-transform duration-300 ease-out sm:rounded-2xl sm:p-6",
+                    "relative overflow-hidden rounded-xl bg-white p-3 transition-transform duration-300 ease-out sm:rounded-2xl sm:p-6",
                     CARD_SHADOW,
                     "ring-1 ring-black/[0.03]",
                     "motion-safe:hover:-translate-y-0.5",
@@ -337,10 +337,10 @@ export function WhyChooseUs() {
                     {number}
                   </span>
 
-                  <div className="relative z-10 flex items-start gap-3 pr-7 sm:gap-5 sm:pr-12">
+                  <div className="relative z-10 flex items-start gap-2 pr-7 sm:gap-5 sm:pr-12">
                     <span
                       className={cn(
-                        "flex size-11 shrink-0 items-center justify-center rounded-full sm:size-[3.25rem]",
+                        "flex size-9 shrink-0 items-center justify-center rounded-full sm:size-[3.25rem]",
                         theme.iconBg,
                         theme.iconColor,
                       )}
@@ -358,7 +358,7 @@ export function WhyChooseUs() {
                         defaultValue={title}
                         as="h3"
                         className={cn(
-                          "font-heading text-[1.25rem] font-bold leading-snug sm:text-[1.3rem]",
+                          "font-heading text-[0.95rem] font-bold leading-snug sm:text-[1.3rem]",
                           NAVY,
                         )}
                       >
@@ -369,7 +369,7 @@ export function WhyChooseUs() {
                         kind="paragraph"
                         defaultValue={featureDescription}
                         as="p"
-                        className="mt-1.5 text-[1.05rem] font-medium leading-relaxed text-slate-700 sm:text-[1.15rem]"
+                        className="mt-1.5 text-[0.75rem] font-medium leading-relaxed text-slate-700 sm:text-[1.15rem]"
                       >
                         {({ value }) => value || featureDescription}
                       </EditableElement>
@@ -394,7 +394,7 @@ export function WhyChooseUs() {
         <StaggerReveal
           as="ul"
           stepMs={70}
-          className="mt-10 grid grid-cols-1 gap-3 sm:mt-14 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4"
+          className="mt-8 grid grid-cols-1 gap-2.5 sm:mt-14 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4"
         >          {trustItems.map((item) => {
             const Icon =
               TRUST_ICONS[item.__index % TRUST_ICONS.length] ?? ShieldCheck;
@@ -403,17 +403,17 @@ export function WhyChooseUs() {
             return (
               <li
                 key={item.__index}
-                className="flex min-h-11 items-center gap-3 rounded-xl border border-slate-200/80 bg-white px-3.5 py-3 sm:rounded-2xl sm:px-5 sm:py-3.5"
+                className="flex min-h-10 items-center gap-2 rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 sm:rounded-2xl sm:px-5 sm:py-3.5"
               >
-                <span className="flex size-9 shrink-0 items-center justify-center text-[#5BA3E8]">
-                  <Icon className="size-5" strokeWidth={1.75} aria-hidden />
+                <span className="flex size-8 shrink-0 items-center justify-center text-[#5BA3E8] sm:size-9">
+                  <Icon className="size-4 sm:size-5" strokeWidth={1.75} aria-hidden />
                 </span>
                 <EditableElement
                   id={`home.why.trust.item.${item.__index}.title`}
                   kind="heading"
                   defaultValue={title}
                   as="p"
-                  className="text-[1.1rem] font-semibold leading-snug text-slate-700"
+                  className="text-[0.75rem] font-semibold leading-snug text-slate-700 sm:text-[1.1rem]"
                 >
                   {({ value }) => value || title}
                 </EditableElement>
@@ -422,14 +422,14 @@ export function WhyChooseUs() {
           })}
         </StaggerReveal>
 
-        <StaggerReveal className="mt-10 text-center sm:mt-14" stepMs={70}>
+        <StaggerReveal className="mt-8 text-center sm:mt-14" stepMs={70}>
           <EditableElement
             id="home.why.footerHeading"
             kind="heading"
             defaultValue={DEFAULT_FOOTER_HEADING}
             as="h3"
             className={cn(
-              "font-heading text-[1.35rem] font-bold leading-snug sm:text-[2.25rem]",
+              "font-heading text-[1.1rem] font-bold leading-snug sm:text-[2.25rem]",
               NAVY,
             )}
           >
@@ -440,7 +440,7 @@ export function WhyChooseUs() {
             kind="paragraph"
             defaultValue={DEFAULT_FOOTER_BODY}
             as="p"
-            className="mx-auto mt-3 max-w-3xl text-[1.125rem] font-medium leading-relaxed text-slate-700 sm:mt-4 sm:text-[1.2rem] lg:max-w-[75rem]"
+            className="mx-auto mt-3 max-w-3xl text-[0.75rem] font-medium leading-relaxed text-slate-700 sm:mt-4 sm:text-[1.2rem] lg:max-w-[75rem]"
           >
             {({ value }) => value || footerBody}
           </EditableElement>

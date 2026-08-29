@@ -276,7 +276,7 @@ export function ServicesCarousel({
         </StaggerReveal>
 
         <div
-          className="flex shrink-0 items-center gap-2 self-end"
+          className="hidden shrink-0 items-center gap-2 self-end sm:flex"
           role="group"
           aria-label="Service cards"
         >
@@ -352,7 +352,7 @@ export function ServicesCarousel({
                 data-service-slide
                 className={cn(
                   "min-w-0 shrink-0",
-                  "w-[min(17.5rem,82cqi)]",
+                  "w-[min(16rem,78cqi)]",
                   "sm:w-[85cqi]",
                   "md:w-[45cqi]",
                   "lg:w-[30cqi]",
@@ -364,6 +364,44 @@ export function ServicesCarousel({
             ))}
           </div>
         </div>
+      </div>
+      <div
+        className="mt-3 flex justify-center gap-2 sm:hidden"
+        role="group"
+        aria-label="Service cards"
+      >
+        <button
+          type="button"
+          aria-label="Previous services"
+          disabled={!canScrollPrev}
+          onClick={goPrev}
+          className={cn(
+            "inline-flex size-11 items-center justify-center rounded-full",
+            "border border-[#0A2540] bg-[#0A2540] text-white shadow-sm",
+            "transition-[opacity,background-color,box-shadow] duration-200",
+            "hover:bg-[#163A5C] hover:shadow-md",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "disabled:pointer-events-none disabled:opacity-35"
+          )}
+        >
+          <ChevronLeft className="size-5" aria-hidden />
+        </button>
+        <button
+          type="button"
+          aria-label="Next services"
+          disabled={!canScrollNext}
+          onClick={goNext}
+          className={cn(
+            "inline-flex size-11 items-center justify-center rounded-full",
+            "border border-[#0A2540] bg-[#0A2540] text-white shadow-sm",
+            "transition-[opacity,background-color,box-shadow] duration-200",
+            "hover:bg-[#163A5C] hover:shadow-md",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "disabled:pointer-events-none disabled:opacity-35"
+          )}
+        >
+          <ChevronRight className="size-5" aria-hidden />
+        </button>
       </div>
     </div>
   );

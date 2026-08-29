@@ -187,7 +187,7 @@ export function CTABanner() {
     >
       <Atmosphere />
 
-      <div className="container-content relative section-padding">
+      <div className="container-content relative section-padding max-[767px]:!py-6">
         <StaggerReveal
           stepMs={80}
           className="mx-auto flex max-w-4xl flex-col items-center text-center lg:scale-[1.2]"
@@ -197,7 +197,7 @@ export function CTABanner() {
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="font-heading text-[1.5rem] font-bold leading-tight tracking-tight text-white sm:text-[2.125rem] lg:text-[2.5rem]"
+            className="font-heading text-[1.35rem] font-bold leading-tight tracking-tight text-white sm:text-[2.125rem] lg:text-[2.5rem]"
           >
             {({ value }) => (
               <span id="home-cta-heading">{value || heading}</span>
@@ -209,12 +209,12 @@ export function CTABanner() {
             kind="paragraph"
             defaultValue={DEFAULT_SUBTITLE}
             as="p"
-            className="mt-3 max-w-xl text-[0.9375rem] leading-relaxed text-sky-100/70 sm:mt-4 sm:text-base"
+            className="mt-2 max-w-[19rem] text-[0.75rem] leading-relaxed text-sky-100/70 sm:mt-4 sm:max-w-xl sm:text-base"
           >
             {({ value }) => value || subtitle}
           </EditableElement>
 
-          <div className="mt-7 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-9 sm:w-auto sm:flex-row sm:items-center sm:gap-3.5">
+          <div className="mt-5 flex w-full flex-col items-stretch justify-center gap-2 sm:mt-9 sm:w-auto sm:flex-row sm:items-center sm:gap-3.5">
             <EditableElement
               id="home.cta.button"
               kind="button"
@@ -228,7 +228,7 @@ export function CTABanner() {
                 <Link
                   href={String(fields.href ?? bookHref)}
                   className={cn(
-                    "inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-white px-6 text-[0.9375rem] font-semibold text-[#0A2540]",
+                    "inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-white px-4 text-[0.75rem] font-semibold text-[#0A2540] sm:h-12 sm:gap-2.5 sm:px-6 sm:text-[0.9375rem]",
                     "shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_8px_28px_-6px_rgba(125,211,252,0.55)]",
                     "no-underline transition-transform duration-200 hover:-translate-y-0.5 hover:bg-white/95 hover:no-underline sm:w-auto",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A2540]",
@@ -258,7 +258,7 @@ export function CTABanner() {
                 <a
                   href={String(fields.href ?? callHref)}
                   className={cn(
-                    "inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full border border-sky-200/35 bg-transparent px-6 text-[0.9375rem] font-semibold text-white",
+                    "inline-flex h-10 w-full items-center justify-center gap-2 rounded-full border border-sky-200/35 bg-transparent px-4 text-[0.75rem] font-semibold text-white sm:h-12 sm:gap-2.5 sm:px-6 sm:text-[0.9375rem]",
                     "no-underline transition-colors duration-200 hover:bg-white/5 hover:no-underline sm:w-auto",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A2540]",
                   )}
@@ -275,7 +275,7 @@ export function CTABanner() {
             </EditableElement>
           </div>
 
-          <p className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[0.875rem] text-sky-100/65 sm:mt-7">
+          <p className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[0.75rem] text-sky-100/65 sm:mt-7 sm:text-[0.875rem]">
             <span>Or</span>
             <EditableElement
               id="home.cta.whatsapp"
@@ -306,7 +306,7 @@ export function CTABanner() {
 
           <ul
             className={cn(
-              "mt-8 grid w-full max-w-3xl list-none grid-cols-1 overflow-hidden rounded-xl border border-white/10 bg-[#06182c]/55 backdrop-blur-[2px] sm:mt-12 sm:rounded-2xl",
+              "mt-5 grid w-full max-w-3xl list-none grid-cols-2 overflow-hidden rounded-xl border border-white/10 bg-[#06182c]/55 backdrop-blur-[2px] sm:mt-12 sm:rounded-2xl",
               "sm:grid-cols-2 lg:grid-cols-4",
             )}
           >
@@ -325,7 +325,7 @@ export function CTABanner() {
                 <li
                   key={titleId}
                   className={cn(
-                    "flex min-h-11 items-center gap-3 px-3.5 py-3.5 text-left sm:flex-col sm:items-center sm:gap-2.5 sm:px-3 sm:py-5 sm:text-center lg:px-4",
+                    "flex min-h-[4.5rem] flex-col items-center gap-1 px-2 py-2.5 text-center sm:min-h-11 sm:gap-2.5 sm:px-3 sm:py-5 lg:px-4",
                     "border-white/10",
                     index > 0 && "border-t sm:border-t-0",
                     index % 2 === 1 && "sm:border-l",
@@ -333,7 +333,7 @@ export function CTABanner() {
                     index > 0 && "lg:border-l",
                   )}
                 >
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-sky-200/20 bg-sky-400/10 text-sky-200">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-sky-200/20 bg-sky-400/10 text-sky-200 sm:size-9">
                     <Icon className="size-4" strokeWidth={1.75} aria-hidden />
                   </span>
                   <div className="min-w-0">
@@ -342,7 +342,7 @@ export function CTABanner() {
                       kind="label"
                       defaultValue={item.title}
                       as="p"
-                      className="text-[0.875rem] font-semibold leading-snug text-white"
+                      className="text-[0.75rem] font-semibold leading-snug text-white sm:text-[0.875rem]"
                     >
                       {({ value }) => value || title}
                     </EditableElement>
@@ -351,7 +351,7 @@ export function CTABanner() {
                       kind="caption"
                       defaultValue={item.subtitle}
                       as="p"
-                      className="mt-0.5 text-[0.8125rem] leading-snug text-sky-100/55"
+                      className="mt-0.5 text-[0.7rem] leading-snug text-sky-100/55 sm:text-[0.8125rem]"
                     >
                       {({ value }) => value || valueSubtitle}
                     </EditableElement>

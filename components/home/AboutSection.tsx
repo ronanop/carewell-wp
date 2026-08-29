@@ -3,6 +3,8 @@
 import {
   ArrowRight,
   Clock,
+  ChevronLeft,
+  ChevronRight,
   Headphones,
   Monitor,
   PersonStanding,
@@ -31,6 +33,7 @@ import {
 } from "@/lib/static-pages/elementOverrides";
 import { resolveRepeaterItems } from "@/lib/static-pages/repeaterOverrides";
 import { cn } from "@/lib/utils";
+import { useRef, useState } from "react";
 
 const DEFAULT_HEADING = "Redefining Aesthetic & Cosmetic Care.";
 const DEFAULT_BODY =
@@ -94,18 +97,18 @@ function FeatureCard({
   return (
     <li
       className={cn(
-        "flex min-h-[6.5rem] flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-50/70 px-3 py-4 text-center",
+        "flex min-h-[4.75rem] min-w-0 flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-50/70 px-2 py-2.5 text-center sm:min-h-[6.5rem] sm:px-3 sm:py-4",
         "shadow-[0_4px_18px_rgb(10_37_64/0.07)] transition-[transform,box-shadow,border-color] duration-200",
         "hover:-translate-y-1 hover:border-accent-gold-300 hover:shadow-[0_10px_24px_rgb(10_37_64/0.1)]",
       )}
     >
       <span
         className={cn(
-          "flex size-9 items-center justify-center rounded-full bg-accent-gold-50 sm:size-10",
+          "flex size-8 items-center justify-center rounded-full bg-accent-gold-50 sm:size-10",
           GOLD,
         )}
       >
-        <Icon className="size-4 sm:size-5" strokeWidth={1.5} aria-hidden />
+        <Icon className="size-3.5 sm:size-5" strokeWidth={1.5} aria-hidden />
       </span>
       <EditableElement
         id={id}
@@ -113,7 +116,7 @@ function FeatureCard({
         defaultValue={label}
         as="span"
         className={cn(
-          "mt-2 text-[0.975rem] font-semibold leading-snug sm:text-[1.1rem]",
+          "mt-2 min-w-0 max-w-full break-words text-[0.75rem] font-semibold leading-snug sm:text-[1.1rem]",
           NAVY,
         )}
       >
@@ -147,7 +150,7 @@ function ValueCard({
   return (
     <article
       className={cn(
-        "group relative flex h-[17.6rem] w-full flex-col overflow-hidden rounded-2xl p-3 sm:h-[22rem] sm:rounded-[1.25rem] sm:p-5",
+        "group relative flex h-[15rem] w-full flex-col overflow-hidden rounded-2xl p-3 sm:h-[22rem] sm:rounded-[1.25rem] sm:p-5",
         "shadow-[0_8px_28px_rgb(10_37_64/0.18)]",
       )}
     >
@@ -194,7 +197,7 @@ function ValueCard({
           kind="heading"
           defaultValue={title}
           as="h3"
-          className="mt-2 line-clamp-2 font-heading text-[0.975rem] font-semibold leading-snug text-white sm:mt-3.5 sm:text-[1.275rem]"
+          className="mt-2 line-clamp-2 font-heading text-[0.85rem] font-semibold leading-snug text-white sm:mt-3.5 sm:text-[1.275rem]"
         >
           {({ value }) => value || title}
         </EditableElement>
@@ -204,7 +207,7 @@ function ValueCard({
           kind="paragraph"
           defaultValue={description}
           as="p"
-          className="mt-1 flex-1 text-[0.825rem] leading-snug text-white/90 sm:mt-1.5 sm:text-[1rem] sm:leading-relaxed"
+          className="mt-1 flex-1 text-[0.75rem] leading-snug text-white/90 sm:mt-1.5 sm:text-[1rem] sm:leading-relaxed"
         >
           {({ value }) => value || description}
         </EditableElement>
@@ -224,6 +227,102 @@ function ValueCard({
         </div>
       </div>
     </article>
+  );
+}
+
+type AboutValue = {
+  __index: number;
+  title?: unknown;
+  description?: unknown;
+  imageSrc?: unknown;
+  imageAlt?: unknown;
+  href?: unknown;
+};
+
+function AboutValuesCarousel({ values }: { values: AboutValue[] }) {
+  const viewportRef = useRef<HTMLUListElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const syncActiveIndex = () => {
+    const viewport = viewportRef.current;
+    const firstSlide = viewport?.firstElementChild;
+    if (!viewport || !(firstSlide instanceof HTMLElement)) return;
+
+    const gap = Number.parseFloat(window.getComputedStyle(viewport).columnGap) || 0;
+    const step = firstSlide.offsetWidth + gap;
+    if (step > 0) {
+      setActiveIndex(
+        Math.max(0, Math.min(values.length - 1, Math.round(viewport.scrollLeft / step))),
+      );
+    }
+  };
+
+  const goTo = (index: number) => {
+    const viewport = viewportRef.current;
+    const slide = viewport?.children[index];
+    if (!viewport || !(slide instanceof HTMLElement)) return;
+
+    viewport.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+    setActiveIndex(index);
+  };
+
+  return (
+    <div className="w-full min-w-0 max-w-full sm:hidden">
+      <ul
+        ref={viewportRef}
+        className="flex w-full min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        onScroll={syncActiveIndex}
+        aria-label="About Care Well Medical Centre"
+      >
+        {values.map((item) => {
+          const fallback =
+            HOME_ABOUT_VALUE_DEFAULTS[
+              item.__index % HOME_ABOUT_VALUE_DEFAULTS.length
+            ];
+          return (
+            <li
+              key={item.__index}
+              className="w-full shrink-0 snap-center"
+            >
+              <ValueCard
+                index={item.__index}
+                title={String(item.title ?? fallback.title)}
+                description={String(item.description ?? fallback.description)}
+                imageSrc={String(item.imageSrc || fallback.imageSrc)}
+                imageAlt={String(item.imageAlt || fallback.imageAlt)}
+                href={String(item.href || fallback.href)}
+              />
+            </li>
+          );
+        })}
+      </ul>
+
+      {values.length > 1 ? (
+        <div className="mt-3 flex items-center justify-center gap-2">
+          <button
+            type="button"
+            aria-label="Previous about card"
+            disabled={activeIndex === 0}
+            onClick={() => goTo(activeIndex - 1)}
+            className="inline-flex size-10 items-center justify-center rounded-full bg-[#0A2540] text-white shadow-sm transition-opacity disabled:pointer-events-none disabled:opacity-35"
+          >
+            <ChevronLeft className="size-4" aria-hidden />
+          </button>
+          <span className="min-w-12 text-center text-xs font-semibold text-slate-500">
+            {activeIndex + 1} / {values.length}
+          </span>
+          <button
+            type="button"
+            aria-label="Next about card"
+            disabled={activeIndex === values.length - 1}
+            onClick={() => goTo(activeIndex + 1)}
+            className="inline-flex size-10 items-center justify-center rounded-full bg-[#0A2540] text-white shadow-sm transition-opacity disabled:pointer-events-none disabled:opacity-35"
+          >
+            <ChevronRight className="size-4" aria-hidden />
+          </button>
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -263,17 +362,17 @@ export function AboutSection() {
 
   return (
     <section className="bg-white">
-      <div className="container-content section-padding">
-        <div className="grid items-start gap-8 lg:-ml-4 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] lg:gap-20 xl:gap-24">
+      <div className="container-content section-padding max-[767px]:!py-6">
+        <div className="grid min-w-0 w-full max-w-full items-start gap-5 sm:gap-8 lg:-ml-4 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] lg:gap-20 xl:gap-24">
           {/* Left column */}
-          <StaggerReveal className="min-w-0 lg:pr-3" stepMs={75}>
+          <StaggerReveal className="w-full min-w-0 max-w-full lg:pr-3" stepMs={75}>
             <EditableElement
               id="home.about.heading"
               kind="heading"
               defaultValue={DEFAULT_HEADING}
               as="h2"
               className={cn(
-                "mt-3 max-w-lg font-heading text-[2rem] font-bold leading-[1.08] tracking-[-0.03em] sm:text-[2.8rem]",
+                "mt-3 w-full max-w-full font-heading text-[1.5rem] font-bold leading-[1.08] tracking-[-0.03em] break-words sm:max-w-lg sm:text-[2.8rem]",
                 NAVY,
               )}
             >
@@ -285,7 +384,7 @@ export function AboutSection() {
               kind="paragraph"
               defaultValue={DEFAULT_BODY}
               as="p"
-              className="mt-4 max-w-lg text-[1.15rem] font-medium leading-[1.75] text-slate-600 sm:mt-5 sm:text-[1.3rem]"
+              className="mt-4 w-full max-w-full break-words text-[0.75rem] font-medium leading-[1.5] text-slate-600 sm:mt-5 sm:max-w-lg sm:text-[1.3rem]"
             >
               {({ value }) => value || body}
             </EditableElement>
@@ -296,14 +395,14 @@ export function AboutSection() {
               defaultValue={DEFAULT_FEATURES_HEADING}
               as="h3"
               className={cn(
-                "mt-8 font-heading text-[1.4rem] font-semibold tracking-[-0.02em] sm:mt-9 sm:text-[1.8rem]",
+                "mt-6 w-full max-w-full break-words font-heading text-[1.1rem] font-semibold tracking-[-0.02em] sm:mt-9 sm:text-[1.8rem]",
                 NAVY,
               )}
             >
               {({ value }) => value || featuresHeading}
             </EditableElement>
 
-            <ul className="mt-3.5 grid grid-cols-2 gap-2.5 sm:mt-4 sm:gap-4">
+            <ul className="mt-3 min-w-0 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-4">
               {FEATURE_ITEMS.map((item) => (
                 <FeatureCard
                   key={item.id}
@@ -330,7 +429,7 @@ export function AboutSection() {
                   <Link
                     href={String(fields.href ?? buttonHref)}
                     className={cn(
-                      "group inline-flex min-h-12 items-center gap-2 rounded-full bg-[#0A2540] px-6 text-[1.05rem] font-semibold text-white no-underline shadow-[0_8px_18px_rgb(10_37_64/0.16)]",
+                      "group inline-flex min-h-10 items-center gap-2 rounded-full bg-[#0A2540] px-4 text-[0.75rem] font-semibold text-white no-underline shadow-[0_8px_18px_rgb(10_37_64/0.16)] sm:min-h-12 sm:px-6 sm:text-[1.05rem]",
                       "transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:bg-[#163A5C] hover:shadow-[0_12px_24px_rgb(10_37_64/0.2)] hover:no-underline",
                     )}
                   >
@@ -350,7 +449,7 @@ export function AboutSection() {
           <StaggerReveal
             as="ul"
             stepMs={80}
-            className="grid min-w-0 grid-cols-2 gap-2.5 sm:gap-5"
+            className="hidden min-w-0 grid-cols-2 gap-2.5 sm:grid sm:gap-5"
           >              {values.map((item) => {
                 const fallback =
                   HOME_ABOUT_VALUE_DEFAULTS[
@@ -372,6 +471,7 @@ export function AboutSection() {
                 );
               })}
           </StaggerReveal>
+          <AboutValuesCarousel values={values} />
         </div>
       </div>
     </section>

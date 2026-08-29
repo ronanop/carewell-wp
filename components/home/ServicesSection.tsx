@@ -45,7 +45,7 @@ export function ServicesSection() {
             kind="label"
             defaultValue={DEFAULT_LABEL}
             as="p"
-            className="text-[1rem] font-semibold uppercase text-primary"
+            className="hidden text-center text-[1rem] font-semibold uppercase text-primary sm:block sm:text-left"
           >
             {({ value }) => value || label}
           </EditableElement>
@@ -56,7 +56,7 @@ export function ServicesSection() {
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="mt-3 font-heading text-[1.8rem] font-bold leading-tight text-[#0A2540] sm:text-[2.4rem]"
+            className="mt-3 text-center font-heading text-[1.45rem] font-bold leading-tight text-[#0A2540] sm:text-left sm:text-[2.4rem]"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -67,7 +67,7 @@ export function ServicesSection() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mt-3 text-[1.1rem] font-medium leading-relaxed text-slate-700 sm:mt-4 sm:text-[1.25rem]"
+            className="mt-3 text-center text-[0.75rem] font-medium leading-relaxed text-slate-700 sm:mt-4 sm:text-left sm:text-[1.25rem]"
           >
             {({ value }) => value || description}
           </EditableElement>

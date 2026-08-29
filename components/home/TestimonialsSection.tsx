@@ -88,7 +88,7 @@ function TestimonialVideoCard({
 
   return (
     <article
-      className="home-testimonials-card w-[min(16.5rem,88vw)] shrink-0 sm:w-[20rem] lg:w-[22rem]"
+      className="home-testimonials-card w-[min(14.5rem,84vw)] shrink-0 sm:w-[20rem] lg:w-[22rem]"
       aria-hidden={inertDuplicate || undefined}
     >
       <a
@@ -110,23 +110,23 @@ function TestimonialVideoCard({
             src={video.thumbnailUrl}
             alt=""
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            className="object-cover transition-transform duration-300 sm:group-hover:scale-[1.02]"
             sizes="280px"
           />
           <span
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] transition-transform duration-300 group-hover:scale-110"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] transition-transform duration-300 sm:group-hover:scale-110"
             aria-hidden
           >
-            <YouTubePlayIcon className="h-11 w-auto sm:h-14" />
+            <YouTubePlayIcon className="h-9 w-auto sm:h-14" />
           </span>
         </div>
 
         {/* ~1/3 — category + title */}
-        <div className="flex min-h-[6rem] flex-1 flex-col gap-1.5 px-4 py-3.5 sm:min-h-[7.25rem] sm:px-5 sm:py-4">
-          <p className="text-[0.8rem] font-semibold uppercase tracking-[0.12em] text-primary sm:text-[0.9rem]">
+        <div className="flex min-h-[5rem] flex-1 flex-col gap-1 px-3 py-3 sm:min-h-[7.25rem] sm:gap-1.5 sm:px-5 sm:py-4">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-primary sm:text-[0.9rem]">
             {categoryLabel}
           </p>
-          <h3 className="font-heading text-[1.1rem] font-bold leading-snug text-[#0A2540] sm:text-[1.3rem]">
+          <h3 className="font-heading text-[0.9rem] font-bold leading-snug text-[#0A2540] sm:text-[1.3rem]">
             <span className="line-clamp-2">{video.title}</span>
             <span className="sr-only"> (opens on YouTube)</span>
           </h3>
@@ -171,7 +171,7 @@ export function TestimonialsSection({
   const marqueeDurationSec = Math.max(videos.length * 9, 28);
 
   return (
-    <section className="overflow-x-hidden bg-muted/30 section-padding">
+    <section className="overflow-x-hidden bg-muted/30 section-padding max-[767px]:!py-6">
       <style>{`
         @keyframes home-testimonials-marquee {
           from { transform: translate3d(0, 0, 0); }
@@ -207,6 +207,43 @@ export function TestimonialsSection({
         .home-testimonials-marquee:hover .home-testimonials-marquee__track,
         .home-testimonials-marquee:focus-within .home-testimonials-marquee__track {
           animation-play-state: paused;
+        }
+
+        @media (max-width: 639px) {
+          .home-testimonials-marquee {
+            overflow-x: auto;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            scroll-snap-type: x mandatory;
+            touch-action: pan-x;
+          }
+
+          .home-testimonials-marquee::-webkit-scrollbar {
+            display: none;
+          }
+
+          .home-testimonials-marquee__track {
+            animation: none;
+            transform: none;
+            will-change: auto;
+          }
+
+          .home-testimonials-marquee__duplicate {
+            display: none;
+          }
+
+          .home-testimonials-marquee__set {
+            padding-inline-start: var(--container-padding-x);
+          }
+
+          .home-testimonials-marquee article {
+            scroll-snap-align: start;
+          }
+
+          .home-testimonials-marquee article:last-child {
+            margin-inline-end: var(--container-padding-x);
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -251,7 +288,7 @@ export function TestimonialsSection({
             kind="label"
             defaultValue={DEFAULT_OVERLINE}
             as="p"
-            className="text-[0.9rem] font-medium uppercase text-accent"
+            className="text-[0.75rem] font-medium uppercase text-accent sm:text-[0.9rem]"
           >
             {({ value }) => value || overline}
           </EditableElement>
@@ -260,7 +297,7 @@ export function TestimonialsSection({
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="mt-3 font-heading text-[1.8rem] font-bold leading-tight text-[#0A2540] sm:text-[2.7rem]"
+            className="mt-3 font-heading text-[1.5rem] font-bold leading-tight text-[#0A2540] sm:text-[2.7rem]"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -269,7 +306,7 @@ export function TestimonialsSection({
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mt-3 max-w-2xl text-[1.2rem] leading-relaxed text-muted-foreground sm:mt-4 sm:text-[1.35rem]"
+            className="mt-3 max-w-[19rem] text-[0.75rem] leading-relaxed text-muted-foreground sm:mt-4 sm:max-w-2xl sm:text-[1.35rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -278,7 +315,7 @@ export function TestimonialsSection({
 
       {videos.length > 0 ? (
         <div
-          className="home-testimonials-marquee mt-8 sm:mt-12"
+          className="home-testimonials-marquee mt-6 sm:mt-12"
           style={
             {
               "--home-testimonials-marquee-duration": `${marqueeDurationSec}s`,
@@ -314,14 +351,14 @@ export function TestimonialsSection({
         </div>
       )}
 
-      <div className="container-content mt-8 sm:mt-12">
+      <div className="container-content mt-5 sm:mt-12">
         <Link
           href={CHANNEL_VIDEOS_URL}
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
             buttonVariants({ variant: "secondary" }),
-            "h-11 text-[1.05rem] no-underline hover:no-underline",
+            "h-10 text-[0.75rem] no-underline hover:no-underline sm:h-11 sm:text-[1.05rem]",
           )}
         >
           View more on YouTube

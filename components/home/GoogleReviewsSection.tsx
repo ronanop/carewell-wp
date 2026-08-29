@@ -105,7 +105,7 @@ function ReviewCard({
   return (
     <article
       className={cn(
-        "flex h-full min-w-0 flex-col rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5",
+        "flex h-full min-w-0 flex-col rounded-2xl border border-slate-200/80 bg-white p-3 sm:p-5",
         "shadow-[0_4px_18px_-10px_rgb(10_37_64/0.12)]",
       )}
     >
@@ -118,32 +118,39 @@ function ReviewCard({
             {(initial || name).charAt(0).toUpperCase()}
           </span>
           <div className="min-w-0">
-            <p className={cn("truncate text-[1.05rem] font-semibold", NAVY)}>
+            <p
+              className={cn(
+                "truncate text-[0.8rem] font-semibold sm:text-[1.05rem]",
+                NAVY,
+              )}
+            >
               {name}
             </p>
-            <p className="text-[0.9rem] text-slate-500">Google review</p>
+            <p className="text-[0.7rem] text-slate-500 sm:text-[0.9rem]">
+              Google review
+            </p>
           </div>
         </div>
         <GoogleMark className="size-4 shrink-0" />
       </div>
 
-      <div className="mt-3">
+      <div className="mt-2 sm:mt-3">
         <StarRow rating={rating} size="sm" />
       </div>
 
-      <div className="relative mt-3 flex-1">
+      <div className="relative mt-2 flex-1 sm:mt-3">
         <span
           className="pointer-events-none absolute -left-0.5 -top-1 font-heading text-3xl leading-none text-slate-200"
           aria-hidden
         >
           “
         </span>
-        <p className="pl-4 text-[1.05rem] leading-relaxed text-slate-600 sm:text-[1.125rem]">
+        <p className="pl-4 text-[0.75rem] leading-relaxed text-slate-600 sm:text-[1.125rem]">
           {text}
         </p>
       </div>
 
-      <span className="mt-4 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[0.825rem] font-semibold text-emerald-700 ring-1 ring-emerald-100">
+      <span className="mt-3 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[0.7rem] font-semibold text-emerald-700 ring-1 ring-emerald-100 sm:mt-4 sm:text-[0.825rem]">
         <Check className="size-3" strokeWidth={2.5} aria-hidden />
         Verified review
       </span>
@@ -247,7 +254,7 @@ export function GoogleReviewsSection() {
       className="overflow-x-hidden bg-[#F5F6F8]"
       aria-labelledby={headingId}
     >
-      <div className="container-content section-padding">
+      <div className="container-content section-padding max-[767px]:!py-6">
         <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
           <EditableElement
             id="home.reviews.heading"
@@ -255,7 +262,7 @@ export function GoogleReviewsSection() {
             defaultValue={DEFAULT_HEADING}
             as="h2"
             className={cn(
-              "font-heading text-[1.8rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]",
+              "font-heading text-[1.5rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]",
               NAVY,
             )}
           >
@@ -269,7 +276,7 @@ export function GoogleReviewsSection() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-3 max-w-2xl text-[1.2rem] leading-relaxed text-slate-500 sm:mt-4 sm:text-[1.35rem]"
+            className="mx-auto mt-3 max-w-[19rem] text-[0.75rem] leading-relaxed text-slate-500 sm:mt-4 sm:max-w-2xl sm:text-[1.35rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -278,7 +285,7 @@ export function GoogleReviewsSection() {
         <StaggerReveal
           stepMs={90}
           className={cn(
-            "relative mx-auto mt-7 overflow-hidden rounded-[1.5rem] border border-white bg-white sm:mt-10",
+            "relative mx-auto mt-5 overflow-hidden rounded-[1.25rem] border border-white bg-white sm:mt-10 sm:rounded-[1.5rem]",
             PANEL_SHADOW,
           )}
         >
@@ -295,8 +302,8 @@ export function GoogleReviewsSection() {
 
           <div className="relative grid lg:grid-cols-[minmax(14rem,0.34fr)_minmax(0,0.66fr)]">
             {/* Aggregate score */}
-            <div className="flex flex-col items-center border-b border-slate-100 px-6 py-8 text-center sm:px-8 sm:py-10 lg:items-start lg:border-b-0 lg:border-r lg:text-left">
-              <GoogleMark className="size-8" />
+            <div className="flex flex-col items-center border-b border-slate-100 px-4 py-5 text-center sm:px-8 sm:py-10 lg:items-start lg:border-b-0 lg:border-r lg:text-left">
+              <GoogleMark className="size-6 sm:size-8" />
               <EditableElement
                 id="home.reviews.rating"
                 kind="statistic"
@@ -304,14 +311,14 @@ export function GoogleReviewsSection() {
                 defaultValue={DEFAULT_RATING}
                 as="p"
                 className={cn(
-                  "mt-4 font-heading text-[3rem] font-bold leading-none tracking-tight sm:text-[3.3rem]",
+                  "mt-3 font-heading text-[2.25rem] font-bold leading-none tracking-tight sm:mt-4 sm:text-[3.3rem]",
                   NAVY,
                 )}
               >
                 {({ value }) => (
                   <>
                     {value || ratingValue}
-                    <span className="text-[1.5rem] font-semibold text-slate-400">
+                    <span className="text-[1.1rem] font-semibold text-slate-400 sm:text-[1.5rem]">
                       {" "}
                       / 5
                     </span>
@@ -324,13 +331,13 @@ export function GoogleReviewsSection() {
                 defaultValue={DEFAULT_RATING_LABEL}
                 as="p"
                 className={cn(
-                  "mt-2 text-[0.9rem] font-bold uppercase tracking-[0.14em]",
+                  "mt-1.5 text-[0.75rem] font-bold uppercase tracking-[0.14em] sm:mt-2 sm:text-[0.9rem]",
                   NAVY,
                 )}
               >
                 {({ value }) => value || ratingLabel}
               </EditableElement>
-              <div className="mt-3">
+              <div className="mt-2 sm:mt-3">
                 <StarRow rating={ratingNumber} />
               </div>
               <EditableElement
@@ -338,7 +345,7 @@ export function GoogleReviewsSection() {
                 kind="paragraph"
                 defaultValue={DEFAULT_COUNT}
                 as="p"
-                className="mt-4 max-w-[14rem] text-[0.975rem] leading-snug text-slate-500"
+                className="mt-3 max-w-[14rem] text-[0.75rem] leading-snug text-slate-500 sm:mt-4 sm:text-[0.975rem]"
               >
                 {({ value }) => {
                   const line = String(value || countLine);
@@ -362,7 +369,7 @@ export function GoogleReviewsSection() {
                 kind="badge"
                 defaultValue={DEFAULT_BADGE}
                 as="p"
-                className="mt-6 inline-flex max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[0.9rem] font-medium text-slate-600"
+                className="mt-4 inline-flex max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[0.75rem] font-medium text-slate-600 sm:mt-6 sm:px-3 sm:py-1.5 sm:text-[0.9rem]"
               >
                 {({ value }) => (
                   <>
@@ -378,8 +385,8 @@ export function GoogleReviewsSection() {
             </div>
 
             {/* Review carousel */}
-            <div className="relative flex min-w-0 flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-              <div className="grid min-h-[14rem] flex-1 gap-3 sm:gap-4 md:grid-cols-2">
+            <div className="relative flex min-w-0 flex-col px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
+              <div className="grid min-h-[11rem] flex-1 gap-3 sm:min-h-[14rem] sm:gap-4 md:grid-cols-2">
                 {visible.map((item) => {
                   const name = String(item.name ?? "Patient");
                   const initial = String(item.initial ?? name.charAt(0));
@@ -404,7 +411,7 @@ export function GoogleReviewsSection() {
                     onClick={goPrev}
                     aria-label="Previous reviews"
                     className={cn(
-                      "absolute left-1 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full",
+                      "absolute left-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full",
                       "border border-slate-200/80 bg-white/95 text-[#0A2540] shadow-sm",
                       "transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:left-2 sm:size-10",
                     )}
@@ -416,7 +423,7 @@ export function GoogleReviewsSection() {
                     onClick={goNext}
                     aria-label="Next reviews"
                     className={cn(
-                      "absolute right-1 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full",
+                      "absolute right-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full",
                       "border border-slate-200/80 bg-white/95 text-[#0A2540] shadow-sm",
                       "transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:right-2 sm:size-10",
                     )}
@@ -428,7 +435,7 @@ export function GoogleReviewsSection() {
 
               {pageCount > 1 ? (
                 <div
-                  className="mt-5 flex items-center justify-center gap-1.5"
+                  className="mt-3 flex items-center justify-center gap-1.5 sm:mt-5"
                   role="tablist"
                   aria-label="Review pages"
                 >
@@ -454,7 +461,7 @@ export function GoogleReviewsSection() {
 
         <StaggerReveal
           stepMs={80}
-          className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center sm:gap-5"
+          className="mt-6 flex flex-col items-center gap-2 sm:mt-10 sm:flex-row sm:justify-center sm:gap-5"
         >
           <EditableElement
             id="home.reviews.cta"
@@ -469,7 +476,7 @@ export function GoogleReviewsSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  "inline-flex h-12 items-center justify-center gap-2.5 rounded-full bg-[#0A2540] px-6 text-[1.125rem] font-semibold text-white",
+                  "inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#0A2540] px-4 text-[0.75rem] font-semibold text-white sm:h-12 sm:gap-2.5 sm:px-6 sm:text-[1.125rem]",
                   "no-underline shadow-[0_10px_28px_-12px_rgb(10_37_64/0.55)] transition-transform duration-200",
                   "hover:-translate-y-0.5 hover:bg-[#0A2540]/92 hover:no-underline",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -489,7 +496,7 @@ export function GoogleReviewsSection() {
             kind="caption"
             defaultValue={DEFAULT_DISCLAIMER}
             as="p"
-            className="max-w-xs text-center text-[0.9rem] leading-snug text-slate-500 sm:text-left"
+            className="max-w-xs text-center text-[0.75rem] leading-snug text-slate-500 sm:text-left sm:text-[0.9rem]"
           >
             {({ value }) => value || disclaimer}
           </EditableElement>

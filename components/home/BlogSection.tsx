@@ -69,14 +69,14 @@ export function BlogSection({
 
   return (
     <section className="bg-background">
-      <div className="container-content section-padding">
+      <div className="container-content section-padding max-[767px]:!py-6">
         <StaggerReveal stepMs={70}>
           <EditableElement
             id="home.blog.heading"
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="font-heading text-[1.8rem] font-bold leading-tight text-foreground sm:text-[2.7rem]"
+            className="font-heading text-[1.5rem] font-bold leading-tight text-foreground sm:text-[2.7rem]"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -85,14 +85,17 @@ export function BlogSection({
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mt-3 max-w-2xl text-[1.2rem] leading-relaxed text-muted-foreground sm:mt-4 sm:text-[1.35rem]"
+            className="mt-3 max-w-[19rem] text-[0.75rem] leading-relaxed text-muted-foreground sm:mt-4 sm:max-w-2xl sm:text-[1.35rem]"
           >
             {({ value }) => value || description}
           </EditableElement>
         </StaggerReveal>
 
         {posts.length > 0 ? (
-          <StaggerReveal stepMs={90} className="mt-6 grid-cw sm:mt-10">
+          <StaggerReveal
+            stepMs={90}
+            className="mt-5 grid-cw max-[767px]:gap-3 sm:mt-10"
+          >
             {posts.map((post) => {
               const excerpt =
                 post.excerpt.trim() ||
@@ -115,18 +118,18 @@ export function BlogSection({
                   ) : (
                     <div className="aspect-[16/10] bg-gradient-to-br from-secondary via-surface to-primary/5" />
                   )}
-                  <div className="flex flex-1 flex-col p-4 sm:p-6">
+                  <div className="flex flex-1 flex-col p-3 sm:p-6">
                     {useLivePosts ? (
                       <>
                         {post.category ? (
-                          <p className="text-[0.9rem] font-medium uppercase text-accent">
+                          <p className="text-[0.7rem] font-medium uppercase text-accent sm:text-[0.9rem]">
                             {post.category}
                           </p>
                         ) : null}
-                        <h3 className="mt-2 font-heading text-[1.275rem] font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mt-3 sm:text-[1.8rem]">
+                        <h3 className="mt-1.5 font-heading text-[0.95rem] font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mt-3 sm:text-[1.8rem]">
                           {post.title}
                         </h3>
-                        <p className="mt-2 min-h-[4.75rem] flex-1 line-clamp-3 text-[0.975rem] leading-relaxed text-slate-600 sm:mt-3 sm:text-[1.05rem]">
+                        <p className="mt-1.5 min-h-[3.75rem] flex-1 line-clamp-3 text-[0.75rem] leading-relaxed text-slate-600 sm:mt-3 sm:min-h-[4.75rem] sm:text-[1.05rem]">
                           {excerpt}
                         </p>
                       </>
@@ -137,11 +140,11 @@ export function BlogSection({
                           kind="label"
                           defaultValue={post.category}
                           as="p"
-                          className="text-[0.9rem] font-medium uppercase text-accent"
+                          className="text-[0.7rem] font-medium uppercase text-accent sm:text-[0.9rem]"
                         >
                           {({ value }) => value || post.category}
                         </EditableElement>
-                        <h3 className="mt-2 font-heading text-[1.275rem] font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mt-3 sm:text-[1.8rem]">
+                        <h3 className="mt-1.5 font-heading text-[0.95rem] font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mt-3 sm:text-[1.8rem]">
                           {post.title}
                         </h3>
                         <EditableElement
@@ -149,13 +152,13 @@ export function BlogSection({
                           kind="paragraph"
                           defaultValue={excerpt}
                           as="p"
-                          className="mt-2 min-h-[4.75rem] flex-1 line-clamp-3 text-[0.975rem] leading-relaxed text-slate-600 sm:mt-3 sm:text-[1.05rem]"
+                          className="mt-1.5 min-h-[3.75rem] flex-1 line-clamp-3 text-[0.75rem] leading-relaxed text-slate-600 sm:mt-3 sm:min-h-[4.75rem] sm:text-[1.05rem]"
                         >
                           {({ value }) => value || excerpt}
                         </EditableElement>
                       </>
                     )}
-                    <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-[1.05rem] font-medium text-primary sm:mt-6">
+                    <span className="mt-3 inline-flex min-h-10 items-center gap-2 text-[0.75rem] font-medium text-primary sm:mt-6 sm:min-h-11 sm:text-[1.05rem]">
                       Read article
                       <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                     </span>
@@ -185,12 +188,12 @@ export function BlogSection({
           </StaggerReveal>
         ) : null}
 
-        <StaggerReveal className="mt-8 sm:mt-12">
+        <StaggerReveal className="mt-6 sm:mt-12">
           <Link
             href="/blogs"
             className={cn(
               buttonVariants({ variant: "secondary" }),
-              "h-11 text-[1.05rem] no-underline hover:no-underline",
+              "h-10 text-[0.75rem] no-underline hover:no-underline sm:h-11 sm:text-[1.05rem]",
             )}
           >
             Read our blog

@@ -47,7 +47,12 @@ export function ServiceCard3D({
 
   const handleMouseMove = useCallback(
     (event: MouseEvent<HTMLAnchorElement>) => {
-      if (reducedMotion || !cardRef.current) return;
+      if (
+        reducedMotion ||
+        !cardRef.current ||
+        !window.matchMedia("(min-width: 640px)").matches
+      )
+        return;
 
       const rect = cardRef.current.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width;
@@ -62,6 +67,7 @@ export function ServiceCard3D({
   );
 
   const handleMouseEnter = useCallback(() => {
+    if (!window.matchMedia("(min-width: 640px)").matches) return;
     setHovered(true);
   }, []);
 
@@ -85,8 +91,8 @@ export function ServiceCard3D({
         "group relative flex h-full flex-col overflow-hidden rounded-2xl border-[1.5px] border-[#0A2540] bg-surface shadow-md no-underline",
         "transition-[transform,box-shadow] duration-300 ease-out will-change-transform",
         hovered ? "shadow-xl" : "shadow-md",
-        reducedMotion && "hover:-translate-y-1",
-        "hover:no-underline",
+        reducedMotion && "sm:hover:-translate-y-1",
+        "sm:hover:no-underline",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       )}
       style={
@@ -106,23 +112,23 @@ export function ServiceCard3D({
           sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
           className={cn(
             "object-cover transition-transform duration-300 ease-out",
-            !reducedMotion && "group-hover:scale-[1.03]"
+            !reducedMotion && "sm:group-hover:scale-[1.03]"
           )}
           style={{ objectPosition }}
         />
       </div>
 
       <div className="flex flex-1 flex-col items-center px-4 pb-5 pt-4 text-center sm:px-6 sm:pb-7 sm:pt-6">
-        <h3 className="font-heading text-[1.275rem] font-bold leading-snug text-[#0A2540] sm:text-[1.8rem]">
+        <h3 className="font-heading text-[1rem] font-bold leading-snug text-[#0A2540] sm:text-[1.8rem]">
           {title}
         </h3>
-        <p className="mt-2 flex-1 text-[1.35rem] font-medium leading-relaxed text-slate-600 sm:mt-3 sm:text-[1.45rem]">
+        <p className="mt-2 flex-1 text-[0.75rem] font-medium leading-relaxed text-slate-600 sm:mt-3 sm:text-[1.45rem]">
           {description}
         </p>
-        <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[1.05rem] font-medium text-primary sm:mt-5">
+        <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[0.75rem] font-medium text-primary sm:mt-5 sm:text-[1.05rem]">
           Learn more
           <ArrowRight
-            className="size-4 transition-transform duration-300 ease-out group-hover:translate-x-1"
+            className="size-4 transition-transform duration-300 ease-out sm:group-hover:translate-x-1"
             aria-hidden
           />
         </span>

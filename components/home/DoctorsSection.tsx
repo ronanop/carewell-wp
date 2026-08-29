@@ -233,7 +233,7 @@ export function DoctorsSection() {
               kind="paragraph"
               defaultValue={DEFAULT_DESCRIPTION}
               as="p"
-              className="mt-3.5 max-w-[20.5rem] px-1 text-[1.125rem] font-medium leading-[1.7] text-[#475569] sm:mt-5 sm:max-w-[52rem] sm:px-0 sm:text-[1.25rem] sm:leading-[1.7] lg:max-w-[72rem]"
+              className="mt-3.5 max-w-[20.5rem] px-1 text-[0.75rem] font-medium leading-[1.5] text-[#475569] sm:mt-5 sm:max-w-[52rem] sm:px-0 sm:text-[1.25rem] sm:leading-[1.7] lg:max-w-[72rem]"
             >
               {({ value }) => value || description}
             </EditableElement>
@@ -390,11 +390,11 @@ export function DoctorsSection() {
           {/* Feature grid — unified panel */}
           <div
             className={cn(
-              "doctors-feature-fade mt-6 rounded-2xl bg-[#F8FAFC] p-4 sm:mt-8 sm:rounded-3xl sm:p-6 lg:p-7",
+              "doctors-feature-fade mt-5 rounded-xl bg-[#F8FAFC] p-3 sm:mt-8 sm:rounded-3xl sm:p-6 lg:p-7",
               "ring-1 ring-[#0A2540]/[0.04]",
             )}
           >
-            <ul className="grid grid-cols-2 gap-x-3 gap-y-3.5 sm:gap-x-6 sm:gap-y-5 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-5">
+            <ul className="grid grid-cols-2 gap-x-2 gap-y-2.5 sm:gap-x-6 sm:gap-y-5 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-5">
               {highlights.map((item, index) => {
                 const text = String(item.text ?? "");
                 const Icon = HIGHLIGHT_ICONS[index % HIGHLIGHT_ICONS.length];
@@ -406,7 +406,7 @@ export function DoctorsSection() {
                   <li
                     key={item.__index}
                     className={cn(
-                      "flex items-center gap-2.5 text-left sm:gap-3",
+                      "flex items-center gap-2 text-left sm:gap-3",
                       centerOnMobile && "col-span-2 justify-center",
                       centerOnDesktop && "lg:col-span-3 lg:justify-center",
                       centerOnMobile &&
@@ -414,9 +414,9 @@ export function DoctorsSection() {
                         "lg:col-span-1 lg:justify-start",
                     )}
                   >
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#EFF6FF] sm:size-10">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#EFF6FF] sm:size-10">
                       <Icon
-                        className="size-[1.05rem] text-[#0A2540]"
+                        className="size-4 text-[#0A2540] sm:size-[1.05rem]"
                         strokeWidth={2}
                         aria-hidden
                       />
@@ -426,7 +426,7 @@ export function DoctorsSection() {
                       kind="list-item"
                       defaultValue={text}
                       as="span"
-                      className="text-[0.975rem] font-semibold leading-snug text-[#0A2540] sm:text-[1.125rem]"
+                      className="text-[0.75rem] font-semibold leading-snug text-[#0A2540] sm:text-[1.125rem]"
                     >
                       {({ value }) => value || text}
                     </EditableElement>
@@ -441,7 +441,7 @@ export function DoctorsSection() {
             kind="paragraph"
             defaultValue={DEFAULT_NOTE}
             as="p"
-            className="mx-auto mt-5 max-w-[19rem] px-1 text-center text-[1.05rem] font-medium italic leading-[1.55] tracking-[0.015em] text-[#475569] sm:mt-6 sm:max-w-[43.75rem] sm:px-0 sm:text-[1.2rem] sm:leading-snug sm:tracking-normal"
+            className="mx-auto mt-5 max-w-[19rem] px-1 text-center text-[0.966rem] font-medium italic leading-[1.55] tracking-[0.015em] text-[#475569] sm:mt-6 sm:max-w-[43.75rem] sm:px-0 sm:text-[1.2rem] sm:leading-snug sm:tracking-normal"
           >
             {({ value }) => value || note}
           </EditableElement>
@@ -461,7 +461,7 @@ export function DoctorsSection() {
                   href={String(fields.href ?? primaryHref)}
                   className={cn(
                     buttonVariants({ size: "lg" }),
-                    "h-11 w-full cursor-pointer rounded-full bg-[#0A2540] px-7 text-[1.2rem] text-white",
+                    "h-11 w-full cursor-pointer rounded-full bg-[#0A2540] px-7 text-[0.75rem] text-white sm:text-[1.2rem]",
                     "hover:bg-[#0A2540]/90 no-underline hover:no-underline",
                     "motion-safe:transition-transform motion-safe:duration-200 motion-safe:hover:scale-[1.02]",
                   )}
@@ -484,7 +484,7 @@ export function DoctorsSection() {
                   href={String(fields.href ?? secondaryHref)}
                   className={cn(
                     buttonVariants({ variant: "outline", size: "lg" }),
-                    "h-11 w-full cursor-pointer rounded-full border-[#0A2540]/35 bg-white px-7 text-[1.2rem] text-[#0A2540]",
+                    "h-11 w-full cursor-pointer rounded-full border-[#0A2540]/35 bg-white px-7 text-[0.75rem] text-[#0A2540] sm:text-[1.2rem]",
                     "hover:bg-[#0A2540]/5 no-underline hover:no-underline",
                     "motion-safe:transition-transform motion-safe:duration-200 motion-safe:hover:scale-[1.02]",
                   )}

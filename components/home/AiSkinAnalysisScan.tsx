@@ -21,7 +21,7 @@ export function AiSkinAnalysisScan() {
     <div
       className={cn(
         // Mobile: phone-sized accent (not a shrunk desktop circle)
-        "relative size-[7.25rem] shrink-0 overflow-hidden rounded-full sm:size-36",
+        "relative size-24 shrink-0 overflow-hidden rounded-full sm:size-36",
         // Desktop (lg+): original scale
         "lg:size-56",
         "border-[3px] border-white shadow-[0_8px_28px_rgb(10_37_64/0.12)]",
@@ -34,7 +34,7 @@ export function AiSkinAnalysisScan() {
         alt=""
         fill
         className="object-cover object-[center_20%]"
-        sizes="(max-width: 1023px) 7.25rem, 14rem"
+        sizes="(max-width: 639px) 6rem, (max-width: 1023px) 9rem, 14rem"
       />
 
       {/* Soft vignette so the scan line reads clearly on skin */}
