@@ -149,7 +149,7 @@ export function TreatmentJourney() {
 
   return (
     <section className="bg-background">
-      <div className="container-content section-padding lg:pt-20">
+      <div className="container-content section-padding max-[767px]:!pb-0 lg:pt-20">
         <StaggerReveal className="mx-auto max-w-[55rem] text-center" stepMs={70}>
           <EditableElement
             id="home.journey.heading"
@@ -168,7 +168,7 @@ export function TreatmentJourney() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-3 max-w-none text-[0.75rem] leading-relaxed text-slate-500 sm:mt-4 sm:text-[1.35rem] lg:whitespace-nowrap"
+            className="mx-auto mt-3 max-w-none text-[0.78rem] font-medium leading-[1.5] text-slate-500 sm:mt-4 sm:text-[1.25rem] sm:leading-[1.7] lg:whitespace-nowrap"
           >
             {({ value }) => value || description}
           </EditableElement>

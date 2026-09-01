@@ -1,5 +1,6 @@
 import { Clock, ExternalLink, MapPin, Phone } from "lucide-react";
 
+import { resolveGoogleMapsEmbedUrl } from "@/lib/maps/googleMapsEmbed";
 import { cn } from "@/lib/utils";
 import type { SectionBaseProps } from "./types";
 
@@ -44,8 +45,12 @@ export function LocationSection({
   const resolvedAddress = address?.trim() || "";
   const resolvedHours = hours?.trim() || "";
   const resolvedPhone = phone?.trim() || "";
-  const embedSrc = mapEmbedUrl?.trim() || "";
   const mapsLink = mapHref?.trim() || "";
+  const embedSrc = resolveGoogleMapsEmbedUrl({
+    mapEmbedUrl,
+    mapHref,
+    address: resolvedAddress,
+  });
 
   const hasDetails = Boolean(
     resolvedAddress || resolvedHours || resolvedPhone,
@@ -98,7 +103,7 @@ export function LocationSection({
           className={cn(
             "grid overflow-hidden rounded-2xl border border-slate-200/90 bg-white",
             "shadow-[0_16px_40px_-28px_rgba(10,46,82,0.35)]",
-            hasMap && "lg:grid-cols-2",
+            embedSrc && hasDetails && "lg:grid-cols-2",
           )}
         >
           {/* Details — left on desktop, first on mobile */}
@@ -192,8 +197,30 @@ export function LocationSection({
             </div>
           ) : null}
 
-          {/* Map — right on desktop, below details on mobile */}
-          {hasMap ? (
+          {/* Map preview — below details on mobile, right column on desktop */}
+          {embedSrc ? (
+            <div
+              className={cn(
+                "relative w-full overflow-hidden bg-[#E8EEF6]",
+                hasDetails
+                  ? "h-[240px] border-t border-slate-200/90 sm:h-[280px] lg:h-auto lg:min-h-[320px] lg:border-t-0 lg:border-l"
+                  : "h-[280px] sm:h-[320px]",
+              )}
+            >
+              <iframe
+                title={
+                  resolvedAddress
+                    ? `Map — ${resolvedAddress}`
+                    : "Clinic location map"
+                }
+                src={embedSrc}
+                className="h-full w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          ) : mapsLink ? (
             <div
               className={cn(
                 "relative min-h-[220px] bg-[#E8EEF6]",
@@ -203,40 +230,25 @@ export function LocationSection({
                   : "min-h-[280px]",
               )}
             >
-              {embedSrc ? (
-                <iframe
-                  title={
-                    resolvedAddress
-                      ? `Map — ${resolvedAddress}`
-                      : "Clinic location map"
-                  }
-                  src={embedSrc}
-                  className="absolute inset-0 h-full w-full border-0"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              ) : (
-                <a
-                  href={mapsLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    "absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center",
-                    "bg-gradient-to-br from-[#E8EEF6] to-[#F6F8FC]",
-                    "transition-colors hover:from-[#DDE6F2] hover:to-[#EEF2F8]",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1557A0]/40",
-                  )}
-                >
-                  <span className="flex size-14 items-center justify-center rounded-2xl bg-white text-[#1557A0] shadow-sm ring-1 ring-[#1557A0]/12">
-                    <MapPin className="size-7" strokeWidth={1.5} aria-hidden />
-                  </span>
-                  <span className="text-sm font-semibold text-[#0A2E52]">
-                    View clinic on Google Maps
-                  </span>
-                  <span className="text-xs text-slate-500">Opens in a new tab</span>
-                </a>
-              )}
+              <a
+                href={mapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  "absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center",
+                  "bg-gradient-to-br from-[#E8EEF6] to-[#F6F8FC]",
+                  "transition-colors hover:from-[#DDE6F2] hover:to-[#EEF2F8]",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1557A0]/40",
+                )}
+              >
+                <span className="flex size-14 items-center justify-center rounded-2xl bg-white text-[#1557A0] shadow-sm ring-1 ring-[#1557A0]/12">
+                  <MapPin className="size-7" strokeWidth={1.5} aria-hidden />
+                </span>
+                <span className="text-sm font-semibold text-[#0A2E52]">
+                  View clinic on Google Maps
+                </span>
+                <span className="text-xs text-slate-500">Opens in a new tab</span>
+              </a>
             </div>
           ) : null}
         </div>

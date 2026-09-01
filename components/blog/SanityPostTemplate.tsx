@@ -12,6 +12,11 @@ import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { SanityPortableText } from "@/components/sanity/SanityPortableText";
 import { buttonVariants } from "@/components/ui/button";
+import { transformBlogHtmlEmbeds } from "@/lib/blog/youtubeEmbed";
+import {
+  stripInlineFaqFromHtml,
+  stripInlineFaqFromPortableText,
+} from "@/lib/blog/stripInlineFaqs";
 import { urlFor } from "@/lib/sanity/client";
 import {
   postPublicPath,
@@ -273,7 +278,9 @@ export function SanityPostTemplate({
     },
   };
 
-  const body = Array.isArray(post.body) ? post.body : [];
+  const body = stripInlineFaqFromPortableText(
+    Array.isArray(post.body) ? post.body : [],
+  );
   const tocItems = extractPortableTextToc(body);
   const headingIds = tocHeadingIdMap(tocItems);
   const { before: firstHalf, after: secondHalf } = splitBodyAtSection(body);
@@ -422,7 +429,11 @@ export function SanityPostTemplate({
                   ) : post.rawHtml ? (
                     <div
                       className="blog-prose"
-                      dangerouslySetInnerHTML={{ __html: post.rawHtml }}
+                      dangerouslySetInnerHTML={{
+                        __html: transformBlogHtmlEmbeds(
+                          stripInlineFaqFromHtml(post.rawHtml),
+                        ),
+                      }}
                     />
                   ) : (
                     <p className="text-muted-foreground">

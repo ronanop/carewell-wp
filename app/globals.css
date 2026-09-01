@@ -1610,16 +1610,20 @@
 .blog-prose p {
   margin: 0 0 1.15rem;
   color: #334155;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .blog-prose h2,
 .blog-prose h3,
 .blog-prose h4 {
+  width: 100%;
+  max-width: none;
   font-family: var(--font-heading);
   color: #0a2540;
   letter-spacing: -0.015em;
   scroll-margin-top: 7rem;
-  text-wrap: balance;
+  text-wrap: wrap;
 }
 
 .blog-prose h2 {
@@ -1664,6 +1668,8 @@
   margin: 0 0 0.7rem;
   padding-left: 1.35rem;
   color: #334155;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .blog-prose ul > li::before {
@@ -1714,6 +1720,8 @@
   font-weight: 500;
   line-height: 1.55;
   color: #0a2540;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .blog-prose a {
@@ -1884,6 +1892,23 @@
 @media (max-width: 767px) {
   .service-page .service-main-column > section {
     border-radius: 1.25rem;
+    padding-inline: 1rem;
+  }
+
+  .service-page .service-main-column > section > div {
+    padding-inline: 0 !important;
+  }
+
+  .service-page .service-main-column h2,
+  .service-page .service-main-column h3 {
+    width: 100%;
+    max-width: none;
+    text-wrap: wrap;
+  }
+
+  .service-page .service-main-column p {
+    text-align: justify;
+    text-justify: inter-word;
   }
 
   .service-page .service-card-grid {

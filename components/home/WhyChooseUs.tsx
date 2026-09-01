@@ -127,21 +127,25 @@ function DoctorPortrait({
   return (
     <div
       className={cn(
-        "relative mx-auto flex h-full w-full max-w-[15rem] flex-col overflow-hidden rounded-[1.25rem] bg-white px-4 pb-4 pt-5 sm:max-w-[20rem] sm:rounded-[1.75rem] sm:px-7 sm:pb-8 sm:pt-9",
+        "relative flex w-full flex-col overflow-hidden rounded-[1.25rem] bg-white",
         CARD_SHADOW,
         "ring-1 ring-black/[0.03]",
+        // Mobile: edge-to-edge card within container
+        "max-lg:pb-4",
+        // Desktop: original compact portrait card
+        "lg:mx-auto lg:h-full lg:max-w-[20rem] lg:rounded-[1.75rem] lg:px-7 lg:pb-8 lg:pt-9",
       )}
     >
-      <DecorativeDots className="absolute left-5 top-5 z-20" />
+      <DecorativeDots className="absolute left-5 top-5 z-20 max-lg:hidden" />
 
-      <div className="relative mx-auto flex min-h-0 w-full max-w-[12rem] flex-1 flex-col items-center justify-center sm:max-w-[15.5rem]">
-        <div className="relative flex aspect-[3/4] w-full min-h-0 flex-1 items-end justify-center lg:aspect-auto lg:max-h-none">
+      <div className="relative w-full max-lg:min-h-[14rem] max-lg:aspect-[5/3] lg:mx-auto lg:flex lg:min-h-0 lg:max-w-[15.5rem] lg:flex-1 lg:flex-col lg:items-center lg:justify-center">
+        <div className="relative h-full w-full lg:flex lg:aspect-[3/4] lg:min-h-0 lg:flex-1 lg:items-end lg:justify-center">
           <span
-            className="pointer-events-none absolute left-1/2 top-[48%] size-[14rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,186,140,0.62)_0%,rgba(255,220,190,0.38)_42%,transparent_70%)] lg:size-[min(100%,18rem)]"
+            className="pointer-events-none absolute left-1/2 top-1/2 size-[min(100%,18rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,186,140,0.62)_0%,rgba(255,220,190,0.38)_42%,transparent_70%)] lg:top-[48%] lg:size-[min(100%,18rem)]"
             aria-hidden
           />
           <span
-            className="pointer-events-none absolute left-1/2 top-[48%] size-[11rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,200,160,0.45)_0%,transparent_68%)] blur-[2px] lg:size-[min(100%,14rem)]"
+            className="pointer-events-none absolute left-1/2 top-1/2 size-[min(85%,15rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,200,160,0.45)_0%,transparent_68%)] blur-[2px] lg:top-[48%] lg:size-[min(100%,14rem)]"
             aria-hidden
           />
 
@@ -150,29 +154,29 @@ function DoctorPortrait({
             kind="image"
             field="src"
             defaultValue={DEFAULT_DOCTOR_IMAGE_SRC}
-            className="relative z-10 h-full w-full overflow-hidden rounded-[1.25rem]"
+            className="relative z-10 h-full w-full overflow-hidden max-lg:rounded-t-[1.25rem] lg:rounded-[1.25rem]"
           >
             {() => (
               <Image
                 src={imageSrc}
                 alt={imageAlt}
                 fill
-                className="scale-x-[-1] object-cover object-top"
-                sizes="(max-width: 1024px) 15rem, 16rem"
+                className="scale-x-[-1] object-cover object-[center_12%] max-lg:object-[center_15%] lg:object-top"
+                sizes="(max-width: 767px) 100vw, (max-width: 1024px) 20rem, 16rem"
               />
             )}
           </EditableElement>
         </div>
       </div>
 
-      <div className="relative z-10 mt-3 shrink-0 text-center sm:mt-5 lg:mt-6">
+      <div className="relative z-10 shrink-0 px-4 pt-3 text-center max-lg:px-5 sm:pt-4 lg:mt-6 lg:px-0">
         <EditableElement
           id="home.why.doctorName"
           kind="heading"
           defaultValue={DEFAULT_DOCTOR_NAME}
           as="p"
           className={cn(
-            "font-heading text-[0.95rem] font-bold sm:text-[1.2rem]",
+            "font-heading text-[1.05rem] font-bold max-lg:text-[1.15rem] sm:text-[1.2rem]",
             NAVY,
           )}
         >
@@ -183,7 +187,7 @@ function DoctorPortrait({
           kind="paragraph"
           defaultValue={DEFAULT_DOCTOR_TITLE}
           as="p"
-          className="mt-1 text-[0.75rem] font-medium text-slate-700 sm:text-[1.1rem]"
+          className="mt-1 text-[0.78rem] font-medium leading-[1.5] text-slate-700 max-lg:text-[0.85rem] sm:text-[1.1rem]"
         >
           {({ value }) => value || title}
         </EditableElement>
@@ -192,7 +196,7 @@ function DoctorPortrait({
           kind="paragraph"
           defaultValue={DEFAULT_DOCTOR_LOCATION}
           as="p"
-          className="mt-0.5 text-[0.75rem] font-medium text-slate-700 sm:text-[1.1rem]"
+          className="mt-0.5 text-[0.78rem] font-medium leading-[1.5] text-slate-700 max-lg:text-[0.85rem] sm:text-[1.1rem]"
         >
           {({ value }) => value || location}
         </EditableElement>
@@ -276,7 +280,7 @@ export function WhyChooseUs() {
             defaultValue={DEFAULT_HEADING}
             as="h2"
             className={cn(
-              "mt-3 font-heading text-[1.5rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]",
+              "mt-3 font-heading text-[1.65rem] font-bold leading-tight tracking-tight sm:text-[2.7rem]",
               NAVY,
             )}
           >
@@ -288,7 +292,7 @@ export function WhyChooseUs() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mx-auto mt-4 max-w-2xl text-[0.75rem] font-medium leading-relaxed text-slate-700 sm:mt-5 sm:text-[1.35rem]"
+            className="mx-auto mt-4 max-w-2xl text-[0.78rem] font-medium leading-[1.5] text-slate-700 sm:mt-5 sm:text-[1.25rem] sm:leading-[1.7]"
           >
             {({ value }) => value || description}
           </EditableElement>
@@ -380,7 +384,7 @@ export function WhyChooseUs() {
             })}
           </StaggerReveal>
 
-          <StaggerReveal className="flex justify-center lg:h-full lg:justify-end">
+          <StaggerReveal className="w-full max-lg:min-w-0 lg:flex lg:h-full lg:justify-end">
             <DoctorPortrait
               imageSrc={doctorImageSrc}
               imageAlt={doctorImageAlt}
@@ -440,7 +444,7 @@ export function WhyChooseUs() {
             kind="paragraph"
             defaultValue={DEFAULT_FOOTER_BODY}
             as="p"
-            className="mx-auto mt-3 max-w-3xl text-[0.75rem] font-medium leading-relaxed text-slate-700 sm:mt-4 sm:text-[1.2rem] lg:max-w-[75rem]"
+            className="mx-auto mt-3 max-w-3xl text-[0.78rem] font-medium leading-[1.5] text-slate-700 sm:mt-4 sm:text-[1.25rem] sm:leading-[1.7] lg:max-w-[75rem]"
           >
             {({ value }) => value || footerBody}
           </EditableElement>

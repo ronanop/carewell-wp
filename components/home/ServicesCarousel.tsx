@@ -320,6 +320,7 @@ export function ServicesCarousel({
           ref={viewportRef}
           className={cn(
             "w-full overflow-hidden [container-type:inline-size]",
+            "max-[767px]:pb-2",
             isDragging && "cursor-grabbing"
           )}
           style={{ perspective: "1000px", touchAction: "pan-y" }}

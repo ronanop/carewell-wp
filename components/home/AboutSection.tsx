@@ -362,7 +362,7 @@ export function AboutSection() {
 
   return (
     <section className="bg-white">
-      <div className="container-content section-padding max-[767px]:!py-6">
+      <div className="container-content section-padding max-[767px]:!pt-6 max-[767px]:!pb-0">
         <div className="grid min-w-0 w-full max-w-full items-start gap-5 sm:gap-8 lg:-ml-4 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] lg:gap-20 xl:gap-24">
           {/* Left column */}
           <StaggerReveal className="w-full min-w-0 max-w-full lg:pr-3" stepMs={75}>
@@ -372,7 +372,7 @@ export function AboutSection() {
               defaultValue={DEFAULT_HEADING}
               as="h2"
               className={cn(
-                "mt-3 w-full max-w-full font-heading text-[1.5rem] font-bold leading-[1.08] tracking-[-0.03em] break-words sm:max-w-lg sm:text-[2.8rem]",
+                "mt-3 w-full max-w-full text-center font-heading text-[1.794rem] font-bold leading-[1.15] tracking-tight break-words sm:max-w-lg sm:text-left sm:text-[2.484rem] lg:text-[3.864rem]",
                 NAVY,
               )}
             >
@@ -384,7 +384,7 @@ export function AboutSection() {
               kind="paragraph"
               defaultValue={DEFAULT_BODY}
               as="p"
-              className="mt-4 w-full max-w-full break-words text-[0.75rem] font-medium leading-[1.5] text-slate-600 sm:mt-5 sm:max-w-lg sm:text-[1.3rem]"
+              className="mt-4 w-full max-w-full break-words text-center text-[0.78rem] font-medium leading-[1.5] text-slate-600 sm:mt-5 sm:max-w-lg sm:text-left sm:text-[1.25rem] sm:leading-[1.7]"
             >
               {({ value }) => value || body}
             </EditableElement>

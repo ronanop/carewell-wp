@@ -23,6 +23,7 @@ import {
   QuickFactsCard,
   RecoverySection,
   RelatedServicesSection,
+  RelatedBlogsSection,
   ResultsExpectationsSection,
   EmiCalculatorSection,
   RisksSection,
@@ -34,6 +35,7 @@ import {
   WhenDoctorsRecommendSection,
   WhyChooseUsSection,
 } from "@/components/service/sections";
+import type { SanityPostCard } from "@/lib/sanity/post";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 
@@ -355,8 +357,10 @@ export function buildSanityServiceMetadata(
  */
 export function SanityServiceTemplate({
   service: rawService,
+  relatedPosts = [],
 }: {
   service: SanityServiceDoc;
+  relatedPosts?: SanityPostCard[];
 }) {
   const service = polishServiceCopy(rawService);
   const heading = service.title;
@@ -576,6 +580,7 @@ export function SanityServiceTemplate({
               title={service.related?.heading}
               services={service.related?.services ?? []}
             />
+            <RelatedBlogsSection posts={relatedPosts} />
           </div>
 
           <div className="space-y-4 lg:sticky lg:top-36 lg:self-start">

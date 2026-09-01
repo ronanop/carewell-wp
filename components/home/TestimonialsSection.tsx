@@ -306,7 +306,7 @@ export function TestimonialsSection({
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mt-3 max-w-[19rem] text-[0.75rem] leading-relaxed text-muted-foreground sm:mt-4 sm:max-w-2xl sm:text-[1.35rem]"
+            className="mt-3 max-w-[19rem] text-[0.78rem] font-medium leading-[1.5] text-muted-foreground sm:mt-4 sm:max-w-2xl sm:text-[1.25rem] sm:leading-[1.7]"
           >
             {({ value }) => value || description}
           </EditableElement>

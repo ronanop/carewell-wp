@@ -14,6 +14,7 @@ import { getSanityPageByUri } from "@/lib/sanity/page";
 import {
   getSanityMorePosts,
   getSanityPostByUri,
+  getSanityRelatedPostsForService,
   mergeNextPosts,
   postPublicPath,
 } from "@/lib/sanity/post";
@@ -127,7 +128,17 @@ export default async function CatchAllPage({ params }: CatchAllPageProps) {
 
   const sanityService = await getSanityServiceByUri(normalizedUri);
   if (sanityService) {
-    return <SanityServiceTemplate service={sanityService} />;
+    const relatedPosts = await getSanityRelatedPostsForService({
+      category: sanityService.category,
+      title: sanityService.title,
+      limit: 3,
+    });
+    return (
+      <SanityServiceTemplate
+        service={sanityService}
+        relatedPosts={relatedPosts}
+      />
+    );
   }
 
   const sanityPost = await getSanityPostByUri(normalizedUri);

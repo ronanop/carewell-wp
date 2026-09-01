@@ -169,7 +169,7 @@ export function BookingFormSection({
         ) : null}
         <h2
           className={cn(
-            "font-heading text-lg font-semibold tracking-tight text-[#0A2E52] sm:text-xl",
+            "w-full max-w-none font-heading text-lg font-semibold tracking-tight text-[#0A2E52] [text-wrap:wrap] sm:text-xl",
             eyebrow ? "mt-1" : undefined,
           )}
         >

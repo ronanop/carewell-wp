@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { BlogEmbedContent } from "@/components/blog/BlogEmbedContent";
 import { urlFor } from "@/lib/sanity/client";
 import { cn } from "@/lib/utils";
 
@@ -131,12 +132,7 @@ function buildComponents(
           );
         },
         embed: ({ value }) =>
-          value?.html ? (
-            <div
-              className="blog-prose__embed"
-              dangerouslySetInnerHTML={{ __html: value.html }}
-            />
-          ) : null,
+          value?.html ? <BlogEmbedContent html={value.html} /> : null,
         htmlTable: ({ value }) =>
           value?.html ? (
             <div
@@ -183,7 +179,7 @@ function buildComponents(
         </h4>
       ),
       normal: ({ children }) => (
-        <p className="mb-4 text-base font-medium leading-relaxed text-slate-700">{children}</p>
+        <p className="mb-4 w-full text-base font-medium leading-relaxed text-slate-700 max-lg:text-justify">{children}</p>
       ),
       blockquote: ({ children }) => (
         <blockquote className="my-6 border-l-4 border-slate-300 pl-4 text-slate-600 italic">

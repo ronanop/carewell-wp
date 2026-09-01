@@ -33,7 +33,7 @@ export function BlogSidebar({
         action="/blogs/"
         method="get"
         role="search"
-        className="flex w-full overflow-hidden border border-[#2a2a2a]/80 bg-white"
+        className="flex w-full items-center gap-1.5 rounded-full border border-slate-200/90 bg-white p-1.5 shadow-[0_4px_20px_-8px_rgba(10,37,64,0.18)] transition-[border-color,box-shadow] focus-within:border-primary/30 focus-within:shadow-[0_6px_24px_-8px_rgba(10,37,64,0.22)] focus-within:ring-2 focus-within:ring-primary/10"
       >
         <label htmlFor="blog-sidebar-search" className="sr-only">
           Search blogs
@@ -44,11 +44,11 @@ export function BlogSidebar({
           name="q"
           defaultValue={defaultQuery}
           placeholder="Search…"
-          className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2.5 text-small text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-0"
+          className="min-w-0 flex-1 rounded-full border-0 bg-transparent px-4 py-2 text-small text-foreground outline-none placeholder:text-slate-400 focus-visible:ring-0"
         />
         <button
           type="submit"
-          className="flex size-11 shrink-0 items-center justify-center bg-primary text-primary-foreground transition-colors hover:bg-primary-800"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-[background-color,transform,box-shadow] hover:bg-primary/90 hover:shadow-md active:scale-[0.98]"
           aria-label="Search"
         >
           <Search className="size-4" aria-hidden />

@@ -90,13 +90,19 @@ export function AiSkinAnalysis() {
             0 0 28px rgb(236 72 153 / 0.1);
         }
 
+        @media (max-width: 767px) {
+          .ai-skin-analysis-card {
+            box-shadow: none;
+          }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .ai-skin-analysis-card {
             animation: none;
           }
         }
       `}</style>
-      <div className="container-content section-padding lg:pt-[50px]">
+      <div className="container-content section-padding max-[767px]:!pt-4 max-[767px]:!pb-0 lg:pt-[50px]">
         <StaggerReveal
           stepMs={80}
           className={cn(
@@ -134,7 +140,7 @@ export function AiSkinAnalysis() {
               kind="paragraph"
               defaultValue={DEFAULT_DESCRIPTION}
               as="p"
-              className="mx-auto mt-2 max-w-[18rem] text-[0.75rem] font-medium leading-relaxed text-slate-600 sm:mt-3 sm:max-w-lg sm:text-[1.3rem] lg:mx-0 lg:mt-4"
+              className="mx-auto mt-2 max-w-[18rem] text-[0.78rem] font-medium leading-[1.5] text-slate-600 sm:mt-3 sm:max-w-lg sm:text-[1.25rem] sm:leading-[1.7] lg:mx-0 lg:mt-4"
             >
               {({ value }) => value || description}
             </EditableElement>

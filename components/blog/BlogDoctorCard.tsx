@@ -56,7 +56,7 @@ export function BlogDoctorCard({
           />
         </div>
 
-        <div className="flex flex-col justify-center p-5 sm:p-7">
+        <div className="flex flex-col items-center justify-center p-5 text-center sm:items-start sm:p-7 sm:text-left">
           <p className="text-label uppercase text-accent">Written & reviewed by</p>
           <h2
             id="blog-doctor-heading"
@@ -71,7 +71,7 @@ export function BlogDoctorCard({
           </p>
 
           {badges.length > 0 ? (
-            <ul className="mt-5 flex flex-wrap gap-2">
+            <ul className="mt-5 flex flex-wrap justify-center gap-2 sm:justify-start">
               {badges.map((badge) => (
                 <li
                   key={badge}
@@ -84,7 +84,7 @@ export function BlogDoctorCard({
             </ul>
           ) : null}
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3 sm:justify-start">
             <Link
               href="/about/dr-sandeep-bhasin/"
               className={cn(

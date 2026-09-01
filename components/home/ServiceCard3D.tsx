@@ -122,7 +122,7 @@ export function ServiceCard3D({
         <h3 className="font-heading text-[1rem] font-bold leading-snug text-[#0A2540] sm:text-[1.8rem]">
           {title}
         </h3>
-        <p className="mt-2 flex-1 text-[0.75rem] font-medium leading-relaxed text-slate-600 sm:mt-3 sm:text-[1.45rem]">
+        <p className="mt-2 flex-1 text-[0.78rem] font-medium leading-[1.5] text-slate-600 sm:mt-3 sm:text-[1.25rem] sm:leading-[1.7]">
           {description}
         </p>
         <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[0.75rem] font-medium text-primary sm:mt-5 sm:text-[1.05rem]">

@@ -154,10 +154,10 @@ export function HeroBanner({
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[center_30%]"
+          className="object-cover object-[center_22%] max-lg:scale-[1.08] lg:object-[center_30%]"
         />
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 hidden lg:block"
           style={{
             background:
               "linear-gradient(90deg, rgba(10,37,64,0.94) 0%, rgba(15,55,110,0.82) 32%, rgba(21,87,160,0.35) 58%, rgba(21,87,160,0.08) 78%, transparent 100%)",
@@ -167,7 +167,7 @@ export function HeroBanner({
           className="absolute inset-0 lg:hidden"
           style={{
             background:
-              "linear-gradient(180deg, rgba(10,37,64,0.25) 0%, transparent 35%, rgba(10,37,64,0.4) 100%)",
+              "linear-gradient(180deg, rgba(10,37,64,0.82) 0%, rgba(10,37,64,0.72) 42%, rgba(10,37,64,0.88) 100%)",
           }}
         />
       </div>
@@ -198,26 +198,21 @@ export function HeroBanner({
 
         <div className="mt-8 grid items-center gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)] lg:gap-12 xl:gap-16">
           <div className="min-w-0">
-            {category?.trim() ? (
-              <p className="mb-3 text-[0.6875rem] font-semibold tracking-[0.18em] text-sky-100/85 uppercase">
-                {formatCategoryLabel(category)} care
-              </p>
-            ) : null}
-            <h1 className="max-w-3xl font-heading text-[clamp(2rem,4.2vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)]">
+            <h1 className="mx-auto max-w-3xl text-center font-heading text-[clamp(2rem,4.2vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)] lg:mx-0 lg:text-left">
               {heading}
             </h1>
             {tagline ? (
-              <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
+              <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-white/90 sm:text-lg lg:mx-0 lg:text-left">
                 {tagline}
               </p>
             ) : null}
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-nowrap items-center gap-2 sm:gap-3">
               <a
                 href={primaryCtaHref}
                 className={cn(
                   buttonVariants({ variant: "default", size: "default" }),
-                  "rounded-md bg-primary px-5 text-primary-foreground shadow-none hover:bg-primary/90",
+                  "min-w-0 flex-1 rounded-md bg-primary px-3 text-sm text-primary-foreground shadow-none hover:bg-primary/90 sm:flex-none sm:px-5 sm:text-base",
                 )}
               >
                 {primaryCtaLabel}
@@ -228,7 +223,7 @@ export function HeroBanner({
                 rel="noopener noreferrer"
                 className={cn(
                   buttonVariants({ variant: "whatsapp", size: "default" }),
-                  "rounded-md px-5 shadow-none",
+                  "shrink-0 rounded-md px-3 text-sm shadow-none sm:px-5 sm:text-base",
                 )}
               >
                 <WhatsAppIcon className="size-4 shrink-0" />
@@ -238,7 +233,7 @@ export function HeroBanner({
           </div>
 
           {showBookingCard ? (
-            <div className="w-full max-w-[320px] justify-self-end">
+            <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:justify-self-end">
               <TreatmentHeroBookingCard chrome={chrome} />
             </div>
           ) : null}

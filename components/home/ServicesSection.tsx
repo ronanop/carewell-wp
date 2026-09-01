@@ -37,7 +37,7 @@ export function ServicesSection() {
   );
 
   return (
-    <section className="overflow-x-clip bg-background section-padding lg:pt-12 lg:pb-0">
+    <section className="overflow-x-clip bg-background section-padding max-[767px]:!pb-0 max-[767px]:!pt-4 lg:pt-12 lg:pb-0">
       <ServicesCarousel
         label={
           <EditableElement
@@ -67,7 +67,7 @@ export function ServicesSection() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mt-3 text-center text-[0.75rem] font-medium leading-relaxed text-slate-700 sm:mt-4 sm:text-left sm:text-[1.25rem]"
+            className="mt-3 text-center text-[0.78rem] font-medium leading-[1.5] text-slate-700 sm:mt-4 sm:text-left sm:text-[1.25rem] sm:leading-[1.7]"
           >
             {({ value }) => value || description}
           </EditableElement>

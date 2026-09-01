@@ -13,6 +13,7 @@ export * from "./PricingSection";
 export * from "./EmiCalculatorSection";
 export * from "./FaqAccordionSection";
 export * from "./RelatedServicesSection";
+export * from "./RelatedBlogsSection";
 export * from "./FinalCtaStrip";
 export * from "./DoctorProfileSection";
 export * from "./TestimonialsSection";

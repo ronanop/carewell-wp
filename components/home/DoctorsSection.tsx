@@ -204,7 +204,7 @@ export function DoctorsSection() {
         }
       `}</style>
 
-      <div className="container-content section-padding lg:pt-0">
+      <div className="container-content section-padding max-[767px]:!pt-4 lg:pt-0">
         <div className="mx-auto max-w-[75rem]">
           {/* Header */}
           <StaggerReveal className="mx-auto flex max-w-[52rem] flex-col items-center text-center lg:max-w-[72rem]" stepMs={70}>
@@ -213,7 +213,7 @@ export function DoctorsSection() {
               kind="heading"
               defaultValue={DEFAULT_HEADING}
               as="h2"
-              className="mt-4 font-heading text-[1.794rem] font-bold leading-[1.15] tracking-tight text-[#0A2540] sm:mt-5 sm:text-[2.484rem] lg:text-[3.864rem]"
+              className="mt-0 font-heading text-[1.794rem] font-bold leading-[1.15] tracking-tight text-[#0A2540] sm:mt-5 sm:text-[2.484rem] lg:text-[3.864rem]"
             >
               {({ value }) => value || heading}
             </EditableElement>
@@ -233,7 +233,7 @@ export function DoctorsSection() {
               kind="paragraph"
               defaultValue={DEFAULT_DESCRIPTION}
               as="p"
-              className="mt-3.5 max-w-[20.5rem] px-1 text-[0.75rem] font-medium leading-[1.5] text-[#475569] sm:mt-5 sm:max-w-[52rem] sm:px-0 sm:text-[1.25rem] sm:leading-[1.7] lg:max-w-[72rem]"
+              className="mt-3.5 max-w-[20.5rem] px-1 text-[0.78rem] font-medium leading-[1.5] text-[#475569] sm:mt-5 sm:max-w-[52rem] sm:px-0 sm:text-[1.25rem] sm:leading-[1.7] lg:max-w-[72rem]"
             >
               {({ value }) => value || description}
             </EditableElement>

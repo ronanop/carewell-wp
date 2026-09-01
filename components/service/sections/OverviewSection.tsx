@@ -75,7 +75,7 @@ export function OverviewSection({
               <h2
                 id={`${id}-heading`}
                 className={cn(
-                  "font-heading text-2xl font-semibold tracking-tight text-[#0A2E52] text-balance sm:text-3xl",
+                  "w-full font-heading text-2xl font-semibold tracking-tight text-[#0A2E52] sm:text-3xl lg:text-balance",
                   eyebrow ? "mt-2" : undefined,
                 )}
               >

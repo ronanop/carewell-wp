@@ -154,6 +154,126 @@ export async function getSanityPostByUri(
   return null;
 }
 
+const SERVICE_CATEGORY_KEYWORDS: Record<string, string[]> = {
+  hair: ["hair", "transplant", "prp", "beard", "eyebrow"],
+  skin: ["skin", "vitiligo", "acne", "laser", "pigment", "scar"],
+  face: ["face", "rhinoplasty", "facelift", "nose", "chin"],
+  body: [
+    "body",
+    "liposuction",
+    "lipo",
+    "tummy",
+    "gynecomastia",
+    "breast",
+    "abdominal",
+  ],
+  therapies: ["therapy", "prp", "iv", "wellness"],
+  "anti-aging": ["anti-aging", "aging", "botox", "filler", "wrinkle"],
+  other: [],
+};
+
+const TITLE_KEYWORD_STOP = new Set([
+  "with",
+  "your",
+  "delhi",
+  "care",
+  "well",
+  "medical",
+  "centre",
+  "center",
+  "treatment",
+  "procedure",
+  "cost",
+  "best",
+  "top",
+  "get",
+  "from",
+  "after",
+  "before",
+]);
+
+function titleKeywords(title: string): string[] {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .split(/\s+/)
+    .filter((word) => word.length > 3 && !TITLE_KEYWORD_STOP.has(word));
+}
+
+function relatedPostKeywords(options: {
+  category?: string | null;
+  title?: string | null;
+}): string[] {
+  const category = options.category?.trim().toLowerCase() || "";
+  const fromCategory = SERVICE_CATEGORY_KEYWORDS[category] || [];
+  const fromTitle = titleKeywords(options.title || "");
+  return [...new Set([...fromTitle, ...fromCategory])];
+}
+
+function scoreRelatedPost(post: SanityPostCard, keywords: string[]): number {
+  if (!keywords.length) return 0;
+
+  const haystack = [
+    post.title,
+    post.excerpt,
+    ...(post.categories || []),
+    ...(post.tags || []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return keywords.reduce(
+    (score, keyword) => (haystack.includes(keyword.toLowerCase()) ? score + 1 : score),
+    0,
+  );
+}
+
+/** Related blog cards for service pages — category/title match, then latest fill. */
+export async function getSanityRelatedPostsForService(options: {
+  category?: string | null;
+  title?: string | null;
+  limit?: number;
+}): Promise<SanityPostCard[]> {
+  const limit = options.limit ?? 3;
+  const keywords = relatedPostKeywords(options);
+  const pool = await getSanityLatestPosts(Math.max(limit * 12, 24));
+
+  const ranked = pool
+    .map((post) => ({
+      post,
+      score: scoreRelatedPost(post, keywords),
+    }))
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const aTime = Date.parse(a.post.publishedAt || "") || 0;
+      const bTime = Date.parse(b.post.publishedAt || "") || 0;
+      return bTime - aTime;
+    });
+
+  const out: SanityPostCard[] = [];
+  const seen = new Set<string>();
+
+  for (const { post, score } of ranked) {
+    if (score <= 0 && out.length >= limit) break;
+    if (seen.has(post._id)) continue;
+    seen.add(post._id);
+    out.push(post);
+    if (out.length >= limit) break;
+  }
+
+  if (out.length >= limit) return out.slice(0, limit);
+
+  for (const { post } of ranked) {
+    if (seen.has(post._id)) continue;
+    seen.add(post._id);
+    out.push(post);
+    if (out.length >= limit) break;
+  }
+
+  return out.slice(0, limit);
+}
+
 /** Homepage BlogSection cards from Sanity posts. */
 export function toHomeBlogPosts(posts: SanityPostCard[]): HomeBlogPost[] {
   return posts.map((post) => ({
