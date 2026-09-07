@@ -149,7 +149,7 @@ export function TreatmentJourney() {
 
   return (
     <section className="bg-background">
-      <div className="container-content section-padding max-[767px]:!pb-0 lg:pt-20">
+      <div className="container-content section-padding max-[767px]:!pb-0 lg:pb-8 lg:pt-12">
         <StaggerReveal className="mx-auto max-w-[55rem] text-center" stepMs={70}>
           <EditableElement
             id="home.journey.heading"

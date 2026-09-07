@@ -204,7 +204,7 @@ export function DoctorsSection() {
         }
       `}</style>
 
-      <div className="container-content section-padding max-[767px]:!pt-4 lg:pt-0">
+      <div className="container-content section-padding max-[767px]:!pt-4 lg:pb-8 lg:pt-0">
         <div className="mx-auto max-w-[75rem]">
           {/* Header */}
           <StaggerReveal className="mx-auto flex max-w-[52rem] flex-col items-center text-center lg:max-w-[72rem]" stepMs={70}>

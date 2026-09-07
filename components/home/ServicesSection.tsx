@@ -37,7 +37,7 @@ export function ServicesSection() {
   );
 
   return (
-    <section className="overflow-x-clip bg-background section-padding max-[767px]:!pb-0 max-[767px]:!pt-4 lg:pt-12 lg:pb-0">
+    <section className="overflow-x-clip bg-background section-padding max-[767px]:!pb-0 max-[767px]:!pt-4 lg:pb-0 lg:pt-6">
       <ServicesCarousel
         label={
           <EditableElement

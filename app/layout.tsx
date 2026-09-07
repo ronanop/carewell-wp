@@ -31,6 +31,11 @@ export const metadata: Metadata = {
   },
   description:
     "Cosmetic surgery, hair transplant, and dermatology clinic in Delhi — Care Well Medical Centre.",
+  icons: {
+    icon: [{ url: "/images/logo.png", type: "image/png" }],
+    apple: [{ url: "/images/logo.png", type: "image/png" }],
+    shortcut: "/images/logo.png",
+  },
   robots: {
     index: true,
     follow: true,

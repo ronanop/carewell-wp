@@ -1039,6 +1039,10 @@
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
+  /* Tighter vertical rhythm than global section-padding (4/5/6rem). */
+  --section-padding-y-mobile: 2rem;
+  --section-padding-y-tablet: 2.5rem;
+  --section-padding-y-desktop: 2.5rem;
 }
 
 /* -----------------------------------------------------------------------------
@@ -1106,13 +1110,6 @@
 .homepage-compact > footer {
   width: 100%;
   max-width: 100%;
-}
-
-/* Comfortable mobile section rhythm. */
-@media (max-width: 767px) {
-  .homepage-compact .section-padding {
-    padding-block: 3rem;
-  }
 }
 
 /* Hero: natural size — avoid transform scale (hurts LCP/CLS). */

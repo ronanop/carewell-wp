@@ -187,17 +187,17 @@ export function CTABanner() {
     >
       <Atmosphere />
 
-      <div className="container-content relative section-padding max-[767px]:!py-6">
+      <div className="container-content relative section-padding max-[767px]:!py-10 lg:py-20">
         <StaggerReveal
           stepMs={80}
-          className="mx-auto flex max-w-4xl flex-col items-center text-center lg:scale-[1.2]"
+          className="mx-auto flex max-w-4xl flex-col items-center text-center"
         >
           <EditableElement
             id="home.cta.heading"
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="font-heading text-[1.35rem] font-bold leading-tight tracking-tight text-white sm:text-[2.125rem] lg:text-[2.5rem]"
+            className="font-heading text-[1.5rem] font-bold leading-tight tracking-tight text-white sm:text-[2.25rem] lg:text-[2.75rem]"
           >
             {({ value }) => (
               <span id="home-cta-heading">{value || heading}</span>
@@ -209,12 +209,12 @@ export function CTABanner() {
             kind="paragraph"
             defaultValue={DEFAULT_SUBTITLE}
             as="p"
-            className="mt-2 max-w-[19rem] text-[0.75rem] leading-relaxed text-sky-100/70 sm:mt-4 sm:max-w-xl sm:text-base"
+            className="mt-3 max-w-[19rem] text-[0.8125rem] leading-relaxed text-sky-100/90 sm:mt-4 sm:max-w-xl sm:text-lg"
           >
             {({ value }) => value || subtitle}
           </EditableElement>
 
-          <div className="mt-5 flex w-full flex-col items-stretch justify-center gap-2 sm:mt-9 sm:w-auto sm:flex-row sm:items-center sm:gap-3.5">
+          <div className="mt-6 flex w-full flex-col items-stretch justify-center gap-2.5 sm:mt-8 sm:w-auto sm:flex-row sm:items-center sm:gap-3.5">
             <EditableElement
               id="home.cta.button"
               kind="button"
@@ -275,7 +275,7 @@ export function CTABanner() {
             </EditableElement>
           </div>
 
-          <p className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[0.75rem] text-sky-100/65 sm:mt-7 sm:text-[0.875rem]">
+          <p className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[0.75rem] text-sky-100/85 sm:mt-6 sm:text-[0.875rem]">
             <span>Or</span>
             <EditableElement
               id="home.cta.whatsapp"
@@ -294,7 +294,7 @@ export function CTABanner() {
                   href={String(fields.href ?? whatsappHref)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 font-medium text-sky-100/80 underline decoration-sky-200/50 underline-offset-4 transition-colors hover:text-white hover:decoration-white/70"
+                  className="inline-flex items-center gap-1.5 font-medium text-sky-100 underline decoration-sky-200/50 underline-offset-4 transition-colors hover:text-white hover:decoration-white/70"
                 >
                   <WhatsAppIcon className="size-4 shrink-0 text-[#25D366]" />
                   {String(fields.label ?? whatsappLabel)}
@@ -306,7 +306,7 @@ export function CTABanner() {
 
           <ul
             className={cn(
-              "mt-5 grid w-full max-w-3xl list-none grid-cols-2 overflow-hidden rounded-xl border border-white/10 bg-[#06182c]/55 backdrop-blur-[2px] sm:mt-12 sm:rounded-2xl",
+              "mt-8 grid w-full max-w-3xl list-none grid-cols-2 overflow-hidden rounded-xl border border-white/10 bg-[#06182c]/55 backdrop-blur-[2px] sm:mt-10 sm:rounded-2xl",
               "sm:grid-cols-2 lg:grid-cols-4",
             )}
           >
@@ -351,7 +351,7 @@ export function CTABanner() {
                       kind="caption"
                       defaultValue={item.subtitle}
                       as="p"
-                      className="mt-0.5 text-[0.7rem] leading-snug text-sky-100/55 sm:text-[0.8125rem]"
+                      className="mt-0.5 text-[0.7rem] leading-snug text-sky-100/80 sm:text-[0.8125rem]"
                     >
                       {({ value }) => value || valueSubtitle}
                     </EditableElement>

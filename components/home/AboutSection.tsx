@@ -362,7 +362,7 @@ export function AboutSection() {
 
   return (
     <section className="bg-white">
-      <div className="container-content section-padding max-[767px]:!pt-6 max-[767px]:!pb-0">
+      <div className="container-content section-padding max-[767px]:!pt-6 max-[767px]:!pb-0 lg:pb-8 lg:pt-8">
         <div className="grid min-w-0 w-full max-w-full items-start gap-5 sm:gap-8 lg:-ml-4 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] lg:gap-20 xl:gap-24">
           {/* Left column */}
           <StaggerReveal className="w-full min-w-0 max-w-full lg:pr-3" stepMs={75}>

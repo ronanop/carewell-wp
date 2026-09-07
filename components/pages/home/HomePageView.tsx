@@ -5,8 +5,6 @@
 import dynamic from "next/dynamic";
 
 import { HeroSection } from "@/components/home/HeroSection";
-import { ServicesSection } from "@/components/home/ServicesSection";
-import { TrustIndicators } from "@/components/home/TrustIndicators";
 import type { HomeBlogPost } from "@/components/home/BlogSection";
 import type { HomeYouTubeVideo } from "@/components/home/TestimonialsSection";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
@@ -19,8 +17,14 @@ import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 import type { ReactNode } from "react";
 
 /** Below-the-fold sections — split client bundles so first paint stays light. */
+const TrustIndicators = dynamic(() =>
+  import("@/components/home/TrustIndicators").then((m) => m.TrustIndicators),
+);
 const TreatmentJourney = dynamic(() =>
   import("@/components/home/TreatmentJourney").then((m) => m.TreatmentJourney),
+);
+const ServicesSection = dynamic(() =>
+  import("@/components/home/ServicesSection").then((m) => m.ServicesSection),
 );
 const AiSkinAnalysis = dynamic(() =>
   import("@/components/home/AiSkinAnalysis").then((m) => m.AiSkinAnalysis),

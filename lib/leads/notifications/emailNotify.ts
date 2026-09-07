@@ -14,8 +14,13 @@ function smtpConfigured(): boolean {
   );
 }
 
-/** Clinic inbox for new-lead alerts (Hostinger mailbox). */
-export const DEFAULT_LEAD_NOTIFY_TO = "queries@carewellmedicalcentre.com";
+/** Primary From mailbox when LEAD_NOTIFY_FROM / SMTP_USER are unset. */
+const DEFAULT_LEAD_NOTIFY_FROM_ADDRESS =
+  "queries@carewellmedicalcentre.com";
+
+/** Clinic inboxes for new-lead alerts (.com + .in). */
+export const DEFAULT_LEAD_NOTIFY_TO =
+  "queries@carewellmedicalcentre.com,queries@carewellmedicalcentre.in";
 
 function notifyRecipients(): string[] {
   const raw =
@@ -166,7 +171,7 @@ export async function notifyLeadCreated(leadId: string): Promise<boolean> {
       process.env.LEAD_NOTIFY_FROM?.trim() ||
       (process.env.SMTP_USER?.trim()
         ? `Care Well Medical Centre <${process.env.SMTP_USER.trim()}>`
-        : `Care Well Medical Centre <${DEFAULT_LEAD_NOTIFY_TO}>`);
+        : `Care Well Medical Centre <${DEFAULT_LEAD_NOTIFY_FROM_ADDRESS}>`);
 
     let sent = false;
 

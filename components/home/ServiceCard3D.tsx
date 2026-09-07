@@ -24,6 +24,10 @@ export type ServiceCard3DProps = {
   objectPosition?: string;
 };
 
+/**
+ * Service card with optional desktop tilt. Touch / mobile uses CSS hover only
+ * (no mousemove listeners) to keep TBT low on Lighthouse mobile.
+ */
 export function ServiceCard3D({
   title,
   description,
@@ -36,23 +40,29 @@ export function ServiceCard3D({
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
   const [hovered, setHovered] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [finePointer, setFinePointer] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReducedMotion(media.matches);
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const pointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const sync = () => {
+      setReducedMotion(motion.matches);
+      setFinePointer(pointer.matches);
+    };
     sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
+    motion.addEventListener("change", sync);
+    pointer.addEventListener("change", sync);
+    return () => {
+      motion.removeEventListener("change", sync);
+      pointer.removeEventListener("change", sync);
+    };
   }, []);
+
+  const tiltEnabled = finePointer && !reducedMotion;
 
   const handleMouseMove = useCallback(
     (event: MouseEvent<HTMLAnchorElement>) => {
-      if (
-        reducedMotion ||
-        !cardRef.current ||
-        !window.matchMedia("(min-width: 640px)").matches
-      )
-        return;
+      if (!tiltEnabled || !cardRef.current) return;
 
       const rect = cardRef.current.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width;
@@ -63,45 +73,46 @@ export function ServiceCard3D({
         rotateY: (x - 0.5) * MAX_TILT_DEG * 2,
       });
     },
-    [reducedMotion]
+    [tiltEnabled],
   );
 
   const handleMouseEnter = useCallback(() => {
-    if (!window.matchMedia("(min-width: 640px)").matches) return;
+    if (!tiltEnabled) return;
     setHovered(true);
-  }, []);
+  }, [tiltEnabled]);
 
   const handleMouseLeave = useCallback(() => {
     setHovered(false);
     setTilt({ rotateX: 0, rotateY: 0 });
   }, []);
 
-  const lift = hovered && !reducedMotion ? -8 : 0;
-  const rotateX = reducedMotion ? 0 : tilt.rotateX;
-  const rotateY = reducedMotion ? 0 : tilt.rotateY;
+  const lift = hovered && tiltEnabled ? -8 : 0;
+  const rotateX = tiltEnabled ? tilt.rotateX : 0;
+  const rotateY = tiltEnabled ? tilt.rotateY : 0;
 
   return (
     <Link
       ref={cardRef}
       href={href}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={tiltEnabled ? handleMouseEnter : undefined}
+      onMouseMove={tiltEnabled ? handleMouseMove : undefined}
+      onMouseLeave={tiltEnabled ? handleMouseLeave : undefined}
       className={cn(
         "group relative flex h-full flex-col overflow-hidden rounded-2xl border-[1.5px] border-[#0A2540] bg-surface shadow-md no-underline",
-        "transition-[transform,box-shadow] duration-300 ease-out will-change-transform",
+        "transition-[transform,box-shadow] duration-300 ease-out",
         hovered ? "shadow-xl" : "shadow-md",
-        reducedMotion && "sm:hover:-translate-y-1",
+        !tiltEnabled && "sm:hover:-translate-y-1 sm:hover:shadow-xl",
         "sm:hover:no-underline",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       )}
       style={
-        reducedMotion
-          ? undefined
-          : {
+        tiltEnabled
+          ? {
               transform: `perspective(1000px) translateY(${lift}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
               transformStyle: "preserve-3d",
+              willChange: "transform",
             }
+          : undefined
       }
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
@@ -112,7 +123,7 @@ export function ServiceCard3D({
           sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
           className={cn(
             "object-cover transition-transform duration-300 ease-out",
-            !reducedMotion && "sm:group-hover:scale-[1.03]"
+            "sm:group-hover:scale-[1.03]",
           )}
           style={{ objectPosition }}
         />

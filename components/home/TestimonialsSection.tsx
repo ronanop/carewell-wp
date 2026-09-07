@@ -171,7 +171,7 @@ export function TestimonialsSection({
   const marqueeDurationSec = Math.max(videos.length * 9, 28);
 
   return (
-    <section className="overflow-x-hidden bg-muted/30 section-padding max-[767px]:!py-6">
+    <section className="overflow-x-hidden bg-muted/30 section-padding max-[767px]:!py-6 lg:py-10">
       <style>{`
         @keyframes home-testimonials-marquee {
           from { transform: translate3d(0, 0, 0); }
@@ -358,7 +358,7 @@ export function TestimonialsSection({
           rel="noopener noreferrer"
           className={cn(
             buttonVariants({ variant: "secondary" }),
-            "h-10 text-[0.75rem] no-underline hover:no-underline sm:h-11 sm:text-[1.05rem]",
+            "h-10 border-[#FF0000] bg-transparent text-[0.75rem] font-bold text-[#FF0000] no-underline hover:bg-[#FF0000]/10 hover:text-[#FF0000] hover:no-underline sm:h-11 sm:text-[1.05rem]",
           )}
         >
           View more on YouTube

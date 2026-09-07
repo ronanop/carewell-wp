@@ -89,7 +89,7 @@ export function ConsultationSpecialties() {
 
   return (
     <section className="bg-muted/30">
-      <div className="container-content section-padding max-[767px]:!pt-4">
+      <div className="container-content section-padding max-[767px]:!pt-4 lg:pb-8 lg:pt-8">
         <StaggerReveal className="mx-auto max-w-3xl text-center lg:max-w-[64rem]" stepMs={70}>
           <EditableElement
             id="home.specialties.heading"

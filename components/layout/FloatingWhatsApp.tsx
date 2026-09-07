@@ -21,10 +21,17 @@ export function FloatingWhatsApp() {
       if (!cancelled) setReady(true);
     };
 
+    // Longer deferral on narrow viewports so mobile LCP/TBT stay clear.
+    const isNarrow =
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 767px)").matches;
+    const idleTimeout = isNarrow ? 4000 : 2500;
+    const fallbackMs = isNarrow ? 3200 : 1800;
+
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      idleId = window.requestIdleCallback(show, { timeout: 2500 });
+      idleId = window.requestIdleCallback(show, { timeout: idleTimeout });
     } else {
-      timeoutId = setTimeout(show, 1800);
+      timeoutId = setTimeout(show, fallbackMs);
     }
 
     return () => {

@@ -42,13 +42,13 @@ export function AiSkinAnalysisScan() {
 
       <div
         className={cn(
-          "pointer-events-none absolute inset-x-[6%] h-[2px] rounded-full",
+          "pointer-events-none absolute inset-x-[6%] top-0 h-[2px] rounded-full",
           "bg-[#7DC4DC]",
           "shadow-[0_0_10px_2px_rgb(125_196_220/0.85),0_0_22px_4px_rgb(125_196_220/0.45)]",
         )}
         style={
           reducedMotion
-            ? { top: "50%", transform: "translateY(-50%)" }
+            ? { transform: "translateY(calc(50% - 1px))" }
             : { animation: "cw-skin-scan 2.8s ease-in-out infinite" }
         }
       />
@@ -56,8 +56,8 @@ export function AiSkinAnalysisScan() {
       {!reducedMotion ? (
         <style>{`
           @keyframes cw-skin-scan {
-            0%, 100% { top: 8%; }
-            50% { top: 90%; }
+            0%, 100% { transform: translateY(8%); }
+            50% { transform: translateY(calc(90% - 2px)); }
           }
         `}</style>
       ) : null}

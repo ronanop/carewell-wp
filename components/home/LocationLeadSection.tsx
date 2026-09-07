@@ -196,7 +196,7 @@ export function LocationLeadSection() {
       className="overflow-x-hidden bg-[#F5F6F8]"
       aria-labelledby="location-lead-heading"
     >
-      <div className="container-content section-padding min-w-0 max-[767px]:!py-6">
+      <div className="container-content section-padding min-w-0 max-[767px]:!py-6 lg:pb-10 lg:pt-6">
         <StaggerReveal
           stepMs={80}
           className={cn(

@@ -67,7 +67,7 @@ export function PromoStrip() {
             type="button"
             onClick={() => setDismissed(true)}
             aria-label="Close promotions"
-            className="inline-flex size-7 items-center justify-center rounded-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            className="inline-flex size-7 items-center justify-center rounded-sm text-white/90 transition-colors hover:bg-white/10 hover:text-white"
           >
             <X className="size-4" aria-hidden />
           </button>

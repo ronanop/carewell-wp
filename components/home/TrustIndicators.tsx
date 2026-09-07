@@ -63,7 +63,7 @@ export function TrustIndicators() {
                   kind="label"
                   defaultValue={item.label}
                   as="p"
-                  className="mt-0.5 max-w-[9rem] text-[0.75rem] leading-[1.25] text-muted-foreground sm:mt-1.5 sm:max-w-none sm:text-[1.0278125rem]"
+                  className="mt-0.5 max-w-[9rem] text-[0.75rem] leading-[1.25] text-slate-600 sm:mt-1.5 sm:max-w-none sm:text-[1.0278125rem]"
                 >
                   {({ value: v }) => String(v || label)}
                 </EditableElement>

@@ -69,6 +69,7 @@ function StarRow({
   return (
     <div
       className="flex items-center gap-0.5"
+      role="img"
       aria-label={`${rating} out of 5 stars`}
     >
       {Array.from({ length: 5 }).map((_, index) => {
@@ -254,7 +255,7 @@ export function GoogleReviewsSection() {
       className="overflow-x-hidden bg-[#F5F6F8]"
       aria-labelledby={headingId}
     >
-      <div className="container-content section-padding max-[767px]:!py-6">
+      <div className="container-content section-padding max-[767px]:!py-6 lg:pb-6 lg:pt-10">
         <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
           <EditableElement
             id="home.reviews.heading"
@@ -318,7 +319,7 @@ export function GoogleReviewsSection() {
                 {({ value }) => (
                   <>
                     {value || ratingValue}
-                    <span className="text-[1.1rem] font-semibold text-slate-400 sm:text-[1.5rem]">
+                    <span className="text-[1.1rem] font-semibold text-slate-600 sm:text-[1.5rem]">
                       {" "}
                       / 5
                     </span>
@@ -436,15 +437,14 @@ export function GoogleReviewsSection() {
               {pageCount > 1 ? (
                 <div
                   className="mt-3 flex items-center justify-center gap-1.5 sm:mt-5"
-                  role="tablist"
+                  role="group"
                   aria-label="Review pages"
                 >
                   {Array.from({ length: pageCount }).map((_, index) => (
                     <button
                       key={index}
                       type="button"
-                      role="tab"
-                      aria-selected={index === page}
+                      aria-current={index === page ? "true" : undefined}
                       aria-label={`Show reviews page ${index + 1}`}
                       onClick={() => setPage(index)}
                       className={cn(

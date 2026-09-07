@@ -61,10 +61,15 @@ export function AnimatedStat({ value }: AnimatedStatProps) {
     }
 
     const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
+    // Skip count-up on touch / narrow viewports — saves main-thread work on
+    // Lighthouse mobile without changing desktop polish.
+    const preferStatic =
+      prefersReduced ||
+      window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
 
-    if (prefersReduced) {
+    if (preferStatic) {
       setDisplay(value);
       return;
     }
@@ -95,7 +100,7 @@ export function AnimatedStat({ value }: AnimatedStatProps) {
         observer.disconnect();
         frameId = requestAnimationFrame(animate);
       },
-      { threshold: 0.35 }
+      { threshold: 0.35 },
     );
 
     observer.observe(node);

@@ -272,7 +272,7 @@ export function WhyChooseUs() {
 
   return (
     <section className="bg-white">
-      <div className="container-content section-padding lg:pt-8">
+      <div className="container-content section-padding lg:pb-8 lg:pt-6">
         <StaggerReveal className="mx-auto max-w-3xl text-center" stepMs={70}>
           <EditableElement
             id="home.why.heading"

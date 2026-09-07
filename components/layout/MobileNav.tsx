@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/results", label: "Results" },
+  { href: "/hair-transplant-in-delhi/before-and-after/", label: "Results" },
   { href: "/blogs", label: "Blog" },
   { href: "/contact", label: "Contact" },
 ] as const;
@@ -120,11 +120,15 @@ export function MobileNav({
             )}
           >
             <div className="flex h-[4.75rem] shrink-0 items-center justify-between border-b border-border px-4 lg:hidden">
-              <SiteLogo className="max-w-[calc(100%_-_3rem)]" />
+              <SiteLogo
+                className="max-w-[calc(100%_-_3rem)]"
+                tabIndex={open ? undefined : -1}
+              />
               <button
                 type="button"
                 className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#1A2B48] transition-colors hover:bg-secondary hover:text-primary"
                 aria-label="Close menu"
+                tabIndex={open ? 0 : -1}
                 onClick={close}
               >
                 <X className="size-6" aria-hidden />

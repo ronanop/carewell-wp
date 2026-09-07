@@ -53,7 +53,7 @@ export function AiSkinAnalysis() {
 
   return (
     <section
-      className="bg-background lg:-mt-16"
+      className="bg-background lg:-mt-10"
       aria-labelledby="ai-skin-analysis-heading"
     >
       <style>{`
@@ -102,7 +102,7 @@ export function AiSkinAnalysis() {
           }
         }
       `}</style>
-      <div className="container-content section-padding max-[767px]:!pt-4 max-[767px]:!pb-0 lg:pt-[50px]">
+      <div className="container-content section-padding max-[767px]:!pt-4 max-[767px]:!pb-0 lg:pb-6 lg:pt-8">
         <StaggerReveal
           stepMs={80}
           className={cn(

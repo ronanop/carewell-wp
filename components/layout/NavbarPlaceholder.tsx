@@ -41,7 +41,7 @@ export async function NavbarPlaceholder() {
               </Link>
               <ServicesMegaMenuTrigger />
               <Link
-                href="/results"
+                href="/hair-transplant-in-delhi/before-and-after/"
                 className="text-base font-medium text-[#1A2B48] no-underline transition-colors hover:text-primary hover:no-underline"
               >
                 Results

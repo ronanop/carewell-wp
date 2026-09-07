@@ -69,7 +69,7 @@ export function BlogSection({
 
   return (
     <section className="bg-background">
-      <div className="container-content section-padding max-[767px]:!py-6">
+      <div className="container-content section-padding max-[767px]:!py-6 lg:py-10">
         <StaggerReveal stepMs={70}>
           <EditableElement
             id="home.blog.heading"
