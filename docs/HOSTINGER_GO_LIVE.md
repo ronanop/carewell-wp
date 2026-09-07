@@ -49,7 +49,7 @@ Use values from `.env.example`. Required:
 | `SANITY_API_TOKEN` | Project **Viewer** (draft/preview reads) |
 | `LEAD_NOTIFY_TO` / `LEAD_NOTIFY_FROM` | Clinic inbox |
 | `SMTP_HOST` / `PORT` / `SECURE` / `USER` / `PASS` | Hostinger mail (notify is fail-soft if unset) |
-| `NEXT_PUBLIC_GA_ID` | GA4 Measurement ID (`G-XXXXXXXX`) — optional |
+| `NEXT_PUBLIC_GA_ID` | `G-0YVNST47B8` (GA4) |
 | `STUDIO_BOOTSTRAP_EMAIL` | First `/admin/login` email (created only if missing) |
 | `STUDIO_BOOTSTRAP_PASSWORD` | First `/admin/login` password (≥8 chars) |
 
