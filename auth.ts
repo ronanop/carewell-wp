@@ -5,6 +5,7 @@ import { compare } from "bcryptjs";
 import { z } from "zod";
 
 import { authConfig } from "@/auth.config";
+import { syncProductionAuthUrl } from "@/lib/auth/syncAuthUrl";
 import { getPrisma } from "@/lib/db/prisma";
 
 const credentialsSchema = z.object({
@@ -16,6 +17,8 @@ const credentialsSchema = z.object({
  * Auth.js (credentials) — retained for lead admin Server Actions if re-enabled.
  * Public site does not require auth after Experience Studio removal.
  */
+syncProductionAuthUrl();
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [

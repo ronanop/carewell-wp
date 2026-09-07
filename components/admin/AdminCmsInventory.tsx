@@ -1,7 +1,7 @@
 "use client";
 
-import { useDeferredValue, useMemo, useState } from "react";
-import { ExternalLink, Pencil, Search } from "lucide-react";
+import { useDeferredValue, useMemo, useState, useTransition } from "react";
+import { Check, Copy, ExternalLink, Pencil, Search } from "lucide-react";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -21,6 +21,45 @@ type AdminCmsInventoryProps = {
   emptyLabel: string;
   searchPlaceholder?: string;
 };
+
+function CopyTextButton({
+  value,
+  label,
+}: {
+  value: string;
+  label: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  const [, startTransition] = useTransition();
+
+  if (!value) return null;
+
+  return (
+    <button
+      type="button"
+      title={copied ? "Copied" : label}
+      aria-label={copied ? "Copied" : label}
+      className={cn(
+        "inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-600 transition-colors hover:bg-slate-50 hover:text-primary",
+        copied && "border-emerald-200 bg-emerald-50 text-emerald-700",
+      )}
+      onClick={() => {
+        void navigator.clipboard.writeText(value).then(() => {
+          startTransition(() => {
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1500);
+          });
+        });
+      }}
+    >
+      {copied ? (
+        <Check className="size-3.5" aria-hidden />
+      ) : (
+        <Copy className="size-3.5" aria-hidden />
+      )}
+    </button>
+  );
+}
 
 export function AdminCmsInventory({
   rows,
@@ -73,10 +112,10 @@ export function AdminCmsInventory({
             <table className="w-full table-fixed text-left text-sm">
               <thead className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 text-[0.65rem] font-semibold uppercase tracking-wide text-slate-500">
                 <tr>
-                  <th className="w-[38%] px-3 py-2.5 font-semibold">Title</th>
-                  <th className="w-[22%] px-3 py-2.5 font-semibold">Slug</th>
-                  <th className="w-[28%] px-3 py-2.5 font-semibold">Path</th>
-                  <th className="w-[12%] px-3 py-2.5 font-semibold text-right">
+                  <th className="w-[34%] px-3 py-2.5 font-semibold">Title</th>
+                  <th className="w-[24%] px-3 py-2.5 font-semibold">Slug</th>
+                  <th className="w-[26%] px-3 py-2.5 font-semibold">Path</th>
+                  <th className="w-[16%] px-3 py-2.5 font-semibold text-right">
                     Actions
                   </th>
                 </tr>
@@ -103,29 +142,41 @@ export function AdminCmsInventory({
                         ) : null}
                       </td>
                       <td className="px-3 py-1.5">
-                        <code
-                          className="block truncate rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-700"
-                          title={row.slug || undefined}
-                        >
-                          {row.slug || "—"}
-                        </code>
+                        <div className="flex min-w-0 items-center gap-1.5">
+                          <code
+                            className="min-w-0 flex-1 truncate rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-700"
+                            title={row.slug || undefined}
+                          >
+                            {row.slug || "—"}
+                          </code>
+                          <CopyTextButton
+                            value={row.slug}
+                            label="Copy slug"
+                          />
+                        </div>
                       </td>
                       <td className="px-3 py-1.5">
-                        <Link
-                          href={row.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={path}
-                          className="flex min-w-0 items-center gap-1 text-primary no-underline hover:underline"
-                        >
-                          <span className="truncate font-mono text-xs">
-                            {path}
-                          </span>
-                          <ExternalLink
-                            className="size-3 shrink-0 opacity-60"
-                            aria-hidden
+                        <div className="flex min-w-0 items-center gap-1.5">
+                          <Link
+                            href={row.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={path}
+                            className="flex min-w-0 flex-1 items-center gap-1 text-primary no-underline hover:underline"
+                          >
+                            <span className="truncate font-mono text-xs">
+                              {path}
+                            </span>
+                            <ExternalLink
+                              className="size-3 shrink-0 opacity-60"
+                              aria-hidden
+                            />
+                          </Link>
+                          <CopyTextButton
+                            value={path}
+                            label="Copy path"
                           />
-                        </Link>
+                        </div>
                       </td>
                       <td className="px-3 py-1.5">
                         <div className="flex items-center justify-end gap-1">

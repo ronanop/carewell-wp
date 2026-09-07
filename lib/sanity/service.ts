@@ -1,5 +1,5 @@
 import type { SanityServiceDoc } from "@/components/service/sanityServiceTypes";
-import { getSanityClient } from "@/lib/sanity/client";
+import { getSanityClient, getSanityLiveClient } from "@/lib/sanity/client";
 import {
   SANITY_SERVICE_BY_SLUG,
   SANITY_SERVICE_BY_URI,
@@ -33,8 +33,13 @@ export function servicePublicPath(service: {
 }
 
 /** All Sanity service docs (title/uri/slug + light QA metadata). */
-export async function getSanityServicesList(): Promise<SanityServiceListItem[]> {
-  const client = await getSanityClient();
+export async function getSanityServicesList(options?: {
+  /** Skip API CDN — use for admin inventory refresh. */
+  live?: boolean;
+}): Promise<SanityServiceListItem[]> {
+  const client = options?.live
+    ? await getSanityLiveClient()
+    : await getSanityClient();
   return client.fetch<SanityServiceListItem[]>(SANITY_SERVICES_LIST);
 }
 

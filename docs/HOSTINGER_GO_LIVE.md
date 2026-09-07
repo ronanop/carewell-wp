@@ -41,7 +41,7 @@ Use values from `.env.example`. Required:
 | Variable | Notes |
 |----------|--------|
 | `NEXT_PUBLIC_SITE_URL` | `https://www.carewellmedicalcentre.com` |
-| `AUTH_URL` | Same as site URL |
+| `AUTH_URL` | Same as site URL (**not** `localhost`) |
 | `AUTH_SECRET` | Strong unique (`openssl rand -hex 32`) |
 | `AUTH_TRUST_HOST` | `true` |
 | `DATABASE_URL` | Neon **pooler** connection string |

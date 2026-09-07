@@ -21,10 +21,11 @@ const LINKS: {
 }[] = [
   {
     title: "Services",
-    description: "Service pages, sections, pricing, FAQs, page builder order.",
-    href: MANAGE,
-    external: true,
-    cta: "Open in Sanity →",
+    description:
+      "Inventory of all service pages with slug, URI, and copy buttons.",
+    href: "/admin/services",
+    external: false,
+    cta: "View services inventory →",
   },
   {
     title: "Blog posts",

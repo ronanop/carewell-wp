@@ -74,11 +74,17 @@ export default async function AdminLoginPage({
           }
 
           try {
-            await signIn("credentials", {
+            // redirect:false + Next redirect() keeps us on the request host
+            // (avoids Auth.js bouncing to a mis-set AUTH_URL like localhost:3000).
+            const result = await signIn("credentials", {
               email,
               password,
-              redirectTo: nextUrl,
+              redirect: false,
             });
+            if (result?.error) {
+              redirect(`/admin/login?error=${result.error}`);
+            }
+            redirect(nextUrl);
           } catch (error) {
             if (error instanceof AuthError) {
               redirect(`/admin/login?error=${error.type}`);

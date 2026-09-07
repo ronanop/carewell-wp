@@ -9,6 +9,7 @@ import {
   FileText,
   LayoutDashboard,
   Menu,
+  Stethoscope,
   Users,
   UserRoundSearch,
 } from "lucide-react";
@@ -33,6 +34,12 @@ const NAV = [
     label: "Services menu",
     exact: false,
     icon: Menu,
+  },
+  {
+    href: "/admin/services",
+    label: "Services",
+    exact: false,
+    icon: Stethoscope,
   },
   {
     href: "/admin/blogs",
