@@ -179,6 +179,7 @@ export async function notifyLeadCreated(leadId: string): Promise<boolean> {
         text: formatted.text,
       });
       sent = true;
+      console.info("[LeadNotify] SMTP sent", { leadId, to });
     } else if (process.env.RESEND_API_KEY?.trim()) {
       await sendViaResend({
         to,
@@ -188,6 +189,12 @@ export async function notifyLeadCreated(leadId: string): Promise<boolean> {
         text: formatted.text,
       });
       sent = true;
+      console.info("[LeadNotify] Resend sent", { leadId, to });
+    } else {
+      console.warn(
+        "[LeadNotify] no SMTP/Resend configured — lead saved but email not sent",
+        { leadId },
+      );
     }
 
     if (process.env.LEAD_NOTIFY_WEBHOOK_URL?.trim()) {
