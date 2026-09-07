@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache";
 
 import { requireAdminSession } from "@/lib/admin/requireSession";
 
-const ALLOWED = new Set(["/admin/blogs", "/admin/pages", "/admin"]);
+const ALLOWED = new Set([
+  "/admin/blogs",
+  "/admin/pages",
+  "/admin/services",
+  "/admin",
+]);
 
 /** Bust Next cache for an admin inventory route after Sanity publishes. */
 export async function refreshAdminCmsPathAction(path: string) {

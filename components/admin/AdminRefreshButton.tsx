@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type AdminRefreshButtonProps = {
-  path: "/admin/blogs" | "/admin/pages";
+  path: "/admin/blogs" | "/admin/pages" | "/admin/services";
 };
 
 export function AdminRefreshButton({ path }: AdminRefreshButtonProps) {
