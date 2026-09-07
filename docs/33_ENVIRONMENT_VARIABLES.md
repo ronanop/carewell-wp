@@ -35,8 +35,8 @@ Canonical deployment: **Vercel** (Next.js) + **Render** (Postgres) + **Hostinger
 | `SANITY_API_TOKEN` | Server only | Draft/preview reads (project Viewer or Editor) |
 | `SANITY_WRITE_TOKEN` | Server only | Mutations / backfill / imports (project Editor) |
 | `SANITY_DEPLOY_TOKEN` | Server only | `npm run sanity:deploy-schema` (org Deploy Studios) |
-| `LEAD_NOTIFY_TO` | Server only | Comma-separated clinic emails for new-lead alerts | `leads@clinic.com` |
-| `LEAD_NOTIFY_FROM` | Server only | From address (usually same as SMTP mailbox) | `Care Well <leads@yourdomain.com>` |
+| `LEAD_NOTIFY_TO` | Server only | Comma-separated clinic emails for new-lead alerts (defaults to queries@) | `queries@carewellmedicalcentre.com` |
+| `LEAD_NOTIFY_FROM` | Server only | From address (usually same as SMTP mailbox) | `Care Well Medical Centre <queries@carewellmedicalcentre.com>` |
 | `SMTP_HOST` | Server only | SMTP server hostname | `smtp.hostinger.com` |
 | `SMTP_PORT` | Server only | SMTP port (`465` SSL or `587` STARTTLS) | `465` |
 | `SMTP_SECURE` | Server only | `true` for 465, `false` for 587 | `true` |
