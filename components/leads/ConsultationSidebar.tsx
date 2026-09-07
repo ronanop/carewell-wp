@@ -16,6 +16,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { submitConsultationLeadAction } from "@/lib/leads/actions/leadActions";
 import { collectLeadAttribution } from "@/lib/leads/client/attribution";
+import { trackGaLeadSubmit } from "@/lib/analytics/ga";
 import { cn } from "@/lib/utils";
 import type { ResolvedConsultationChrome } from "@/types/page-chrome";
 
@@ -103,7 +104,7 @@ export function ConsultationSidebarCard({
       email: "",
       message: "",
       preferredContactMethod: "PHONE",
-      consent: true,
+      consent: false,
       website: "",
     }),
     [],
@@ -145,6 +146,10 @@ export function ConsultationSidebarCard({
         return;
       }
 
+      trackGaLeadSubmit({
+        form: "consultation_sidebar",
+        treatment: chrome.treatment,
+      });
       setSuccess(true);
       reset(defaultValues);
       onSuccess?.();
@@ -305,6 +310,23 @@ export function ConsultationSidebarCard({
               </p>
             ) : null}
 
+            <label className="flex cursor-pointer items-start gap-2.5 text-[0.6875rem] leading-snug text-[#0A2540]/70">
+              <input
+                type="checkbox"
+                className="mt-0.5 size-3.5 shrink-0 rounded border-[#0A2540]/30"
+                {...register("consent")}
+              />
+              <span>
+                I consent to Care Well Medical Centre contacting me using this
+                information.
+              </span>
+            </label>
+            {errors.consent?.message ? (
+              <p className="text-[0.75rem] text-destructive" role="alert">
+                {errors.consent.message}
+              </p>
+            ) : null}
+
             <Button
               type="submit"
               disabled={pending}
@@ -336,11 +358,6 @@ export function ConsultationSidebarCard({
                 <WhatsAppIcon className="size-4" />
               </a>
             </div>
-
-            <p className="text-center text-[0.625rem] leading-snug text-[#0A2540]/55">
-              By filling this form you consent to care well medical centre to
-              contact using this information
-            </p>
           </form>
         )}
       </div>

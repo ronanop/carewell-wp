@@ -1,12 +1,35 @@
-import fs from "node:fs";
 import { spawnSync } from "node:child_process";
 
-const env = { ...process.env };
-for (const line of fs.readFileSync(".env.local", "utf8").split(/\r?\n/)) {
-  const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
-  if (m) env[m[1]] = m[2].trim().replace(/^["']|["']$/g, "");
+import {
+  loadEnvFiles,
+  resolveSanityDeployToken,
+} from "./lib/sanityEnv.mjs";
+
+const env = loadEnvFiles();
+const deployToken = resolveSanityDeployToken(env);
+
+if (!deployToken) {
+  console.error(`Missing deploy token.
+
+Set one of these in .env (prefer dedicated deploy token):
+  SANITY_DEPLOY_TOKEN  ← org token with "Deploy Studios" (recommended)
+  SANITY_WRITE_TOKEN   ← project Editor (fallback)
+  SANITY_API_TOKEN     ← last resort
+
+Create at:
+  Organization → API → Deploy Studios
+  or Project ndeeiwkw → API → Tokens
+`);
+  process.exit(1);
 }
-env.SANITY_AUTH_TOKEN = env.SANITY_API_TOKEN;
+
+env.SANITY_AUTH_TOKEN = deployToken;
+
+console.log(
+  env.SANITY_DEPLOY_TOKEN
+    ? "Using SANITY_DEPLOY_TOKEN for schema deploy"
+    : "Using fallback token for schema deploy (set SANITY_DEPLOY_TOKEN to avoid mixing roles)",
+);
 
 const result = spawnSync("npx", ["sanity@latest", "schema", "deploy"], {
   stdio: "inherit",

@@ -5,15 +5,24 @@ import { revalidatePath } from "next/cache";
 
 import { auth } from "@/auth";
 import { createLeadService } from "@/lib/leads/services/leadService";
-import type { ActionResult, LeadRecord } from "@/lib/leads/types";
+import type {
+  ActionResult,
+  LeadDetail,
+  LeadRecord,
+} from "@/lib/leads/types";
 import { requireLeadPermission } from "@/lib/leads/rbac";
 import {
   addLeadNoteSchema,
   assignLeadSchema,
   createLeadInputSchema,
+  leadListQuerySchema,
   updateLeadPrioritySchema,
   updateLeadStatusSchema,
 } from "@/lib/leads/validators";
+import {
+  checkRateLimit,
+  clientIpFromHeaders,
+} from "@/lib/security/rateLimit";
 
 function getService() {
   return createLeadService();
@@ -21,7 +30,7 @@ function getService() {
 
 /**
  * Public consultation capture — no auth required.
- * Rate limiting / CAPTCHA can wrap this later without changing the contract.
+ * In-memory IP rate limit (single Node process on Hostinger).
  */
 export async function submitConsultationLeadAction(
   raw: unknown,
@@ -34,14 +43,17 @@ export async function submitConsultationLeadAction(
 
   try {
     const headerStore = await headers();
-    const forwarded = headerStore.get("x-forwarded-for");
-    const ip =
-      forwarded?.split(",")[0]?.trim() ??
-      headerStore.get("x-real-ip") ??
-      null;
+    const ip = clientIpFromHeaders(headerStore);
+    const limited = checkRateLimit(`lead-submit:${ip}`, 5, 60_000);
+    if (!limited.ok) {
+      return {
+        ok: false,
+        message: "Too many requests. Please wait a minute and try again.",
+      };
+    }
 
     const { lead } = await getService().submitConsultation(parsed.data, {
-      ip,
+      ip: ip === "unknown" ? null : ip,
     });
 
     return {
@@ -199,6 +211,99 @@ export async function addLeadNoteAction(
     return {
       ok: false,
       message: error instanceof Error ? error.message : "Could not add note",
+    };
+  }
+}
+
+export async function listLeadsAction(raw?: {
+  status?: string;
+  priority?: string;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<
+  ActionResult<{
+    items: LeadRecord[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }>
+> {
+  const session = await auth();
+  if (!session?.user?.role) {
+    return { ok: false, message: "Unauthorized" };
+  }
+
+  try {
+    requireLeadPermission(session.user.role, "leads:read");
+  } catch {
+    return { ok: false, message: "Forbidden" };
+  }
+
+  const parsed = leadListQuerySchema.safeParse({
+    status: raw?.status || undefined,
+    priority: raw?.priority || undefined,
+    search: raw?.search || undefined,
+    page: raw?.page ?? 1,
+    pageSize: raw?.pageSize ?? 20,
+  });
+
+  if (!parsed.success) {
+    return {
+      ok: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid filters",
+    };
+  }
+
+  try {
+    const { page, pageSize, status, priority, search, ...rest } = parsed.data;
+    const result = await getService().listLeads(
+      {
+        ...rest,
+        ...(status ? { status } : {}),
+        ...(priority ? { priority } : {}),
+        ...(search ? { search } : {}),
+      },
+      page,
+      pageSize,
+    );
+    return { ok: true, data: result, message: "OK" };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Could not list leads",
+    };
+  }
+}
+
+export async function getLeadDetailAction(
+  leadId: string,
+): Promise<ActionResult<LeadDetail>> {
+  const session = await auth();
+  if (!session?.user?.role) {
+    return { ok: false, message: "Unauthorized" };
+  }
+
+  try {
+    requireLeadPermission(session.user.role, "leads:read");
+  } catch {
+    return { ok: false, message: "Forbidden" };
+  }
+
+  if (!leadId?.trim()) {
+    return { ok: false, message: "Lead id required" };
+  }
+
+  try {
+    const detail = await getService().getLeadDetail(leadId);
+    if (!detail) {
+      return { ok: false, message: "Lead not found" };
+    }
+    return { ok: true, data: detail, message: "OK" };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Could not load lead",
     };
   }
 }

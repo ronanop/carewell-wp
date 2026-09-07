@@ -19,22 +19,40 @@ export const sanityClient = createClient({
   useCdn: true,
 });
 
-/** Token client for draft/preview reads. */
+/** Non-CDN client for admin inventory refresh (fresh published docs). */
+export const sanityLiveClient = createClient({
+  projectId,
+  dataset,
+  apiVersion: "2025-01-01",
+  useCdn: false,
+});
+
+/** Token client for draft/preview reads. Prefers Viewer; Write token also works. */
 export const sanityPreviewClient = createClient({
   projectId,
   dataset,
   apiVersion: "2025-01-01",
   useCdn: false,
-  token: process.env.SANITY_API_TOKEN,
+  token:
+    process.env.SANITY_API_TOKEN ||
+    process.env.SANITY_WRITE_TOKEN ||
+    undefined,
   perspective: "previewDrafts",
 });
 
 export async function getSanityClient() {
   const { isEnabled } = await draftMode();
-  if (isEnabled && process.env.SANITY_API_TOKEN) {
+  const readToken =
+    process.env.SANITY_API_TOKEN || process.env.SANITY_WRITE_TOKEN;
+  if (isEnabled && readToken) {
     return sanityPreviewClient;
   }
   return sanityClient;
+}
+
+/** Prefer for admin lists — skips API CDN so refreshes pick up new docs. */
+export async function getSanityLiveClient() {
+  return sanityLiveClient;
 }
 
 const builder = imageUrlBuilder({ projectId, dataset });

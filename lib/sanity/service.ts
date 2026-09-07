@@ -1,4 +1,4 @@
-import type { SanityServiceDoc } from "@/components/service/SanityServiceTemplate";
+import type { SanityServiceDoc } from "@/components/service/sanityServiceTypes";
 import { getSanityClient } from "@/lib/sanity/client";
 import {
   SANITY_SERVICE_BY_SLUG,

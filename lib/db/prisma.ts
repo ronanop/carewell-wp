@@ -27,10 +27,19 @@ function createPrismaClient(): PrismaClient {
 
 /**
  * Returns the shared Prisma client (lazy).
+ * Recreates the singleton if a mid-session `prisma generate` added models
+ * the old instance does not expose (common in Next.js HMR).
  */
 export function getPrisma(): PrismaClient {
   if (!globalForPrisma.appPrisma) {
     globalForPrisma.appPrisma = createPrismaClient();
+  } else if (
+    typeof (globalForPrisma.appPrisma as { sitePageView?: unknown })
+      .sitePageView === "undefined"
+  ) {
+    const stale = globalForPrisma.appPrisma;
+    globalForPrisma.appPrisma = createPrismaClient();
+    void stale.$disconnect().catch(() => undefined);
   }
   return globalForPrisma.appPrisma;
 }

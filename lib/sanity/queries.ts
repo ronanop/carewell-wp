@@ -31,11 +31,13 @@ export const SANITY_PAGE_BY_SLUG = `*[_type == "page" && slug.current == $slug][
   }
 }`;
 
-export const SANITY_PAGES_LIST = `*[_type == "page" && defined(slug.current)] | order(title asc)[0...30]{
+export const SANITY_PAGES_LIST = `*[_type == "page" && defined(slug.current)] | order(title asc){
   _id,
   title,
   "slug": slug.current,
-  uri
+  uri,
+  publishedAt,
+  "updatedAt": coalesce(_updatedAt, modifiedAt)
 }`;
 
 /** Match page by original URI (with/without trailing slash) or slug. */
@@ -91,6 +93,11 @@ const SANITY_SERVICE_PROJECTION = `{
   category,
   excerpt,
   legacyId,
+  pageBuilder[]{
+    _key,
+    _type,
+    section
+  },
   seo{
     title,
     description,
@@ -445,6 +452,11 @@ const SANITY_POST_FULL = `{
   readTimeMinutes,
   authorName,
   authorRole,
+  pageBuilder[]{
+    _key,
+    _type,
+    section
+  },
   authorImage${SANITY_POST_IMAGE},
   mainImage${SANITY_POST_IMAGE},
   midArticleCta{

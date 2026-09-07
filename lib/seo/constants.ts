@@ -1,7 +1,7 @@
 export const SITE_NAME = "Care Well Medical Centre";
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.carewellmedical.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.carewellmedicalcentre.com";
 
 export const DEFAULT_OG_IMAGE = "/images/dr-sandeep-bhasin.jpg";
 

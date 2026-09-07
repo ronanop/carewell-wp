@@ -694,3 +694,21 @@ model LeadNote {
 
   @@index([leadId, createdAt])
 }
+
+// =============================================================================
+// Site analytics — first-party pageviews for admin dashboard (no PII).
+// =============================================================================
+
+model SitePageView {
+  id        String   @id @default(cuid())
+  path      String
+  visitorId String
+  sessionId String
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path, createdAt])
+  @@index([visitorId, createdAt])
+  @@index([sessionId, createdAt])
+}

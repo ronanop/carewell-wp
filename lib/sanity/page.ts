@@ -1,8 +1,18 @@
-import { getSanityClient } from "@/lib/sanity/client";
+import { getSanityClient, getSanityLiveClient } from "@/lib/sanity/client";
 import {
   SANITY_PAGE_BY_SLUG,
   SANITY_PAGE_BY_URI,
+  SANITY_PAGES_LIST,
 } from "@/lib/sanity/queries";
+
+export type SanityPageListItem = {
+  _id: string;
+  title: string;
+  slug: string;
+  uri?: string | null;
+  publishedAt?: string | null;
+  updatedAt?: string | null;
+};
 
 export type SanityPageDoc = {
   _id: string;
@@ -27,6 +37,31 @@ export type SanityPageDoc = {
   };
   body?: unknown[];
 };
+
+/** Public path for a CMS page — prefers stored `uri`, else `/{slug}/`. */
+export function pagePublicPath(page: {
+  uri?: string | null;
+  slug?: string | null;
+}): string {
+  const uri = page.uri?.trim();
+  if (uri) {
+    const path = uri.startsWith("/") ? uri : `/${uri}`;
+    return path.endsWith("/") ? path : `${path}/`;
+  }
+  const slug = page.slug?.trim();
+  if (!slug) return "/";
+  return `/${slug.replace(/^\/+|\/+$/g, "")}/`;
+}
+
+export async function getSanityPagesList(options?: {
+  /** Skip API CDN — use for admin inventory refresh. */
+  live?: boolean;
+}): Promise<SanityPageListItem[]> {
+  const client = options?.live
+    ? await getSanityLiveClient()
+    : await getSanityClient();
+  return client.fetch<SanityPageListItem[]>(SANITY_PAGES_LIST);
+}
 
 export async function getSanityPageBySlug(
   slug: string,

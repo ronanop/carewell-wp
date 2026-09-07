@@ -1,6 +1,7 @@
 import "server-only";
 
 import { publishLeadEvent } from "@/lib/leads/events/publisher";
+import { registerLeadNotificationSubscribers } from "@/lib/leads/notifications/register";
 import {
   createLeadRepository,
   createNoteRepository,
@@ -18,6 +19,8 @@ import type {
   LeadStatus,
 } from "@/lib/leads/types";
 import type { CreateLeadInput } from "@/lib/leads/validators";
+
+registerLeadNotificationSubscribers();
 
 function scoreLead(input: CreateLeadInput): number {
   let score = 10;

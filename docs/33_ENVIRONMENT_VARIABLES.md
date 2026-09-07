@@ -32,7 +32,21 @@ Canonical deployment: **Vercel** (Next.js) + **Render** (Postgres) + **Hostinger
 | `STUDIO_BOOTSTRAP_PASSWORD` | Server only | Seed script only | — |
 | `NEXT_PUBLIC_GA_ID` | Client | Google Analytics 4 | `G-XXXXXXXXXX` |
 | `NEXT_PUBLIC_SITE_NAME` | Client | Site name fallback | `Care Well Medical Centre` |
-| `NEXT_PUBLIC_WORDPRESS_URL` | Client | WP origin for admin media browser (if used) | `https://cms.example.com` |
+| `SANITY_API_TOKEN` | Server only | Draft/preview reads (project Viewer or Editor) |
+| `SANITY_WRITE_TOKEN` | Server only | Mutations / backfill / imports (project Editor) |
+| `SANITY_DEPLOY_TOKEN` | Server only | `npm run sanity:deploy-schema` (org Deploy Studios) |
+| `LEAD_NOTIFY_TO` | Server only | Comma-separated clinic emails for new-lead alerts | `leads@clinic.com` |
+| `LEAD_NOTIFY_FROM` | Server only | From address (usually same as SMTP mailbox) | `Care Well <leads@yourdomain.com>` |
+| `SMTP_HOST` | Server only | SMTP server hostname | `smtp.hostinger.com` |
+| `SMTP_PORT` | Server only | SMTP port (`465` SSL or `587` STARTTLS) | `465` |
+| `SMTP_SECURE` | Server only | `true` for 465, `false` for 587 | `true` |
+| `SMTP_USER` | Server only | SMTP username (full email) | `leads@yourdomain.com` |
+| `SMTP_PASS` | Server only | SMTP password / app password | — |
+| `RESEND_API_KEY` | Server only | Optional alternative to SMTP | `re_…` |
+| `LEAD_NOTIFY_WEBHOOK_URL` | Server only | Optional Zapier/Make/Sheets webhook | `https://hooks.zapier.com/…` |
+
+Prefer three separate tokens so you never swap a single value. Scripts pick the right one automatically.
+
 
 ---
 

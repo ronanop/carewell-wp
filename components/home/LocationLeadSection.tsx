@@ -1,12 +1,15 @@
 "use client";
 
-import { Lock } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { Lock, Loader2 } from "lucide-react";
+import { useState, useTransition, type FormEvent } from "react";
 
 import { EditableElement } from "@/components/pages/EditableElement";
 import { useStaticEditContext } from "@/components/pages/StaticEditProvider";
 import { Button } from "@/components/ui/button";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
+import { submitConsultationLeadAction } from "@/lib/leads/actions/leadActions";
+import { collectLeadAttribution } from "@/lib/leads/client/attribution";
+import { trackGaLeadSubmit } from "@/lib/analytics/ga";
 import {
   resolveElementField,
   resolveElementText,
@@ -52,9 +55,7 @@ function buildMapEmbedUrl(query: string, zoom: number | string) {
 }
 
 /**
- * Location + lead capture section.
- * Form is UI-only for now — WordPress / forms plugin wiring comes later.
- * Map embed uses a place-name query; replace with exact lat/lng when available.
+ * Location + lead capture section — submits via Lead Engine.
  */
 export function LocationLeadSection() {
   const { config } = useStaticEditContext();
@@ -62,8 +63,11 @@ export function LocationLeadSection() {
   const [mobile, setMobile] = useState("");
   const [treatment, setTreatment] =
     useState<(typeof TREATMENT_OPTIONS)[number]>("General consultation");
+  const [consent, setConsent] = useState(false);
+  const [website, setWebsite] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   const heading = resolveElementText(
     config,
@@ -88,11 +92,9 @@ export function LocationLeadSection() {
     DEFAULT_MAP_ZOOM,
   );
   const mapSrc = buildMapEmbedUrl(String(mapQuery), mapZoom as number | string);
-
-  const nameLabel = resolveElementField(
+  const nameLabel = resolveElementText(
     config,
     "home.location.form.nameLabel",
-    "text",
     DEFAULT_NAME_LABEL,
   );
   const namePlaceholder = resolveElementField(
@@ -101,10 +103,9 @@ export function LocationLeadSection() {
     "placeholder",
     DEFAULT_NAME_PLACEHOLDER,
   );
-  const mobileLabel = resolveElementField(
+  const mobileLabel = resolveElementText(
     config,
     "home.location.form.mobileLabel",
-    "text",
     DEFAULT_MOBILE_LABEL,
   );
   const mobilePlaceholder = resolveElementField(
@@ -152,9 +153,42 @@ export function LocationLeadSection() {
       return;
     }
 
+    if (!consent) {
+      setError("Please confirm consent to be contacted.");
+      return;
+    }
+
     setError(null);
-    setSuccess(true);
-    // TODO: Submit to WordPress / forms endpoint when wired.
+    startTransition(async () => {
+      const attribution = collectLeadAttribution({
+        pageTitle: "Home",
+        pageSlug: "home",
+        pageUri: "/",
+        treatment,
+      });
+
+      const result = await submitConsultationLeadAction({
+        name: trimmedName,
+        phone: digits,
+        preferredContactMethod: "PHONE",
+        treatment,
+        consent,
+        website,
+        ...attribution,
+      });
+
+      if (!result.ok) {
+        setError(result.message);
+        return;
+      }
+
+      trackGaLeadSubmit({ form: "home_location_lead", treatment });
+      setSuccess(true);
+      setName("");
+      setMobile("");
+      setConsent(false);
+      setWebsite("");
+    });
   }
 
   return (
@@ -228,7 +262,22 @@ export function LocationLeadSection() {
                 "shadow-[0_8px_30px_rgb(10_37_64/0.08)] sm:rounded-2xl sm:p-8",
               )}
             >
-              <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                className="relative space-y-3 sm:space-y-5"
+              >
+                <input
+                  type="text"
+                  name="website"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="absolute left-[-9999px] h-0 w-0 opacity-0"
+                  aria-hidden
+                />
+
                 <div>
                   <EditableElement
                     id="home.location.form.nameLabel"
@@ -262,6 +311,7 @@ export function LocationLeadSection() {
                           aria-describedby={
                             error ? "lead-form-error" : undefined
                           }
+                          disabled={pending}
                         />
                       </>
                     )}
@@ -305,6 +355,7 @@ export function LocationLeadSection() {
                           aria-describedby={
                             error ? "lead-form-error" : undefined
                           }
+                          disabled={pending}
                         />
                       </>
                     )}
@@ -332,11 +383,13 @@ export function LocationLeadSection() {
                           value={treatment}
                           onChange={(e) => {
                             setTreatment(
-                              e.target.value as (typeof TREATMENT_OPTIONS)[number],
+                              e.target
+                                .value as (typeof TREATMENT_OPTIONS)[number],
                             );
                             setSuccess(false);
                           }}
                           className={fieldClassName}
+                          disabled={pending}
                         >
                           {TREATMENT_OPTIONS.map((option) => (
                             <option key={option} value={option}>
@@ -348,6 +401,23 @@ export function LocationLeadSection() {
                     )}
                   </EditableElement>
                 </div>
+
+                <label className="flex items-start gap-2 text-[0.7rem] text-muted-foreground sm:text-small">
+                  <input
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => {
+                      setConsent(e.target.checked);
+                      setSuccess(false);
+                    }}
+                    className="mt-0.5 size-4 shrink-0 rounded border-border"
+                    disabled={pending}
+                  />
+                  <span>
+                    I consent to Care Well Medical Centre contacting me about
+                    this enquiry.
+                  </span>
+                </label>
 
                 {error ? (
                   <p
@@ -384,9 +454,20 @@ export function LocationLeadSection() {
                     <Button
                       type="submit"
                       size="lg"
+                      disabled={pending}
                       className="h-10 w-full rounded-lg bg-[#0A2540] text-[0.75rem] text-white hover:bg-[#0A2540]/90 sm:h-11 sm:text-base"
                     >
-                      {String(fields.label ?? buttonLabel)}
+                      {pending ? (
+                        <>
+                          <Loader2
+                            className="size-4 animate-spin"
+                            aria-hidden
+                          />
+                          Submitting…
+                        </>
+                      ) : (
+                        String(fields.label ?? buttonLabel)
+                      )}
                     </Button>
                   )}
                 </EditableElement>

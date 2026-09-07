@@ -1,22 +1,65 @@
 import { draftMode } from "next/headers";
 import { NextResponse } from "next/server";
+import { validatePreviewUrl } from "@sanity/preview-url-secret";
+import { createClient } from "@sanity/client";
+
+import { sanityProjectId, sanityDataset } from "@/lib/sanity/client";
 
 /**
  * Enables Next.js Draft Mode for Sanity Presentation / preview.
- * Studio Presentation Tool calls this with a redirect back to the preview URL.
+ * Requires a valid Sanity preview-url secret (not merely a token existing in env).
  */
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const redirectTo = searchParams.get("redirect") || "/hair-transplant-in-delhi/";
-
-  // Sanity Presentation may send a secret; accept token presence for local preview.
   const token = process.env.SANITY_API_TOKEN;
   if (!token) {
-    return new NextResponse("Missing SANITY_API_TOKEN", { status: 401 });
+    return new NextResponse("Missing SANITY_API_TOKEN (Viewer) for preview", {
+      status: 401,
+    });
   }
 
+  const client = createClient({
+    projectId: sanityProjectId,
+    dataset: sanityDataset,
+    apiVersion: "2025-01-01",
+    useCdn: false,
+    token,
+  });
+
+  let isValid = false;
+  let redirectTo: string | null = null;
+  try {
+    const result = await validatePreviewUrl(client, request.url);
+    isValid = result.isValid;
+    redirectTo = result.redirectTo ?? null;
+  } catch (error) {
+    console.error("[draft-mode/enable] validatePreviewUrl failed", error);
+    return new NextResponse("Invalid preview request", { status: 401 });
+  }
+
+  if (!isValid) {
+    return new NextResponse("Invalid or expired preview secret", {
+      status: 401,
+    });
+  }
+
+  const safePath = sanitizeRedirectPath(redirectTo);
   const draft = await draftMode();
   draft.enable();
 
-  return NextResponse.redirect(new URL(redirectTo, request.url));
+  return NextResponse.redirect(new URL(safePath, request.url));
+}
+
+/** Same-origin relative path only — blocks open redirects. */
+function sanitizeRedirectPath(raw: string | null | undefined): string {
+  if (!raw || typeof raw !== "string") return "/";
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith("/") || trimmed.startsWith("//")) return "/";
+  if (trimmed.includes("://") || trimmed.includes("\\")) return "/";
+  try {
+    const parsed = new URL(trimmed, "http://localhost");
+    if (parsed.origin !== "http://localhost") return "/";
+    return `${parsed.pathname}${parsed.search}${parsed.hash}` || "/";
+  } catch {
+    return "/";
+  }
 }

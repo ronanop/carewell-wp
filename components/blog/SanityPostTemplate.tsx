@@ -1,34 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
 
-import { BlogDoctorCard } from "@/components/blog/BlogDoctorCard";
+import {
+  BlogPageBuilderBelowArticle,
+  BlogPageBuilderMainColumn,
+} from "@/components/blog/BlogPageBuilderSections";
 import { BlogFaqAccordion } from "@/components/blog/BlogFaqAccordion";
-import { BlogNextPosts } from "@/components/blog/BlogNextPosts";
 import { BlogSidebar } from "@/components/blog/BlogSidebar";
-import { BlogTableOfContents } from "@/components/blog/BlogTableOfContents";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
-import { SanityPortableText } from "@/components/sanity/SanityPortableText";
-import { buttonVariants } from "@/components/ui/button";
-import { transformBlogHtmlEmbeds } from "@/lib/blog/youtubeEmbed";
-import {
-  stripInlineFaqFromHtml,
-  stripInlineFaqFromPortableText,
-} from "@/lib/blog/stripInlineFaqs";
 import { urlFor } from "@/lib/sanity/client";
 import {
   postPublicPath,
   type SanityPostCard,
   type SanityPostDoc,
 } from "@/lib/sanity/post";
-import {
-  extractPortableTextToc,
-  tocHeadingIdMap,
-} from "@/lib/sanity/portableTextToc";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo/constants";
-import { cn } from "@/lib/utils";
 
 function formatDate(iso?: string | null) {
   if (!iso) return null;
@@ -51,46 +39,6 @@ export function buildSanityPostMetadata(post: SanityPostDoc): Metadata {
     title,
     description,
     robots: post.seo?.noIndex ? { index: false, follow: false } : undefined,
-  };
-}
-
-/** Prefer splitting before a section heading near the midpoint. */
-function splitBodyAtSection(
-  body: unknown[],
-): { before: unknown[]; after: unknown[] } {
-  if (body.length < 6) {
-    return { before: body, after: [] };
-  }
-
-  const mid = Math.floor(body.length / 2);
-  const isHeading = (node: unknown) => {
-    const block = node as { _type?: string; style?: string };
-    return (
-      block._type === "block" &&
-      (block.style === "h2" || block.style === "h3")
-    );
-  };
-
-  let splitAt = -1;
-  for (let i = mid; i < body.length - 1; i++) {
-    if (isHeading(body[i])) {
-      splitAt = i;
-      break;
-    }
-  }
-  if (splitAt < 0) {
-    for (let i = mid; i >= Math.floor(body.length * 0.25); i--) {
-      if (isHeading(body[i])) {
-        splitAt = i;
-        break;
-      }
-    }
-  }
-  if (splitAt < 0) splitAt = mid;
-
-  return {
-    before: body.slice(0, splitAt),
-    after: body.slice(splitAt),
   };
 }
 
@@ -207,35 +155,6 @@ export function SanityBlogListing({
   );
 }
 
-function MidArticleCta({
-  headline,
-  buttonLabel,
-}: {
-  headline: string;
-  buttonLabel: string;
-}) {
-  return (
-    <aside className="my-12 overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/[0.07] via-surface to-accent/10 px-5 py-7 sm:px-8 sm:py-8">
-      <p className="text-label uppercase tracking-wide text-primary">
-        Free consultation
-      </p>
-      <p className="mt-2 max-w-xl font-heading text-lg font-semibold leading-snug text-[#0A2540] sm:text-xl">
-        {headline}
-      </p>
-      <Link
-        href="/contact/"
-        className={cn(
-          buttonVariants({ variant: "default" }),
-          "mt-5 inline-flex h-11 items-center gap-2 no-underline hover:no-underline",
-        )}
-      >
-        {buttonLabel}
-        <ArrowRight className="size-4" aria-hidden />
-      </Link>
-    </aside>
-  );
-}
-
 export function SanityPostTemplate({
   post,
   nextPosts = [],
@@ -245,15 +164,10 @@ export function SanityPostTemplate({
   nextPosts?: SanityPostCard[];
 }) {
   const path = postPublicPath(post);
-  const published = formatDate(post.publishedAt);
   const hero = post.mainImage?.asset
     ? urlFor(post.mainImage).width(1400).height(700).fit("crop").url()
     : null;
-  const category = post.categories?.[0];
-  const cta = post.midArticleCta;
-  const showCta = cta?.enabled !== false;
   const authorName = post.authorName || "Dr. Sandeep Bhasin";
-  const authorRole = post.authorRole || "Cosmetic & Plastic Surgeon";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -277,14 +191,6 @@ export function SanityPostTemplate({
       "@id": `${SITE_URL}${path}`,
     },
   };
-
-  const body = stripInlineFaqFromPortableText(
-    Array.isArray(post.body) ? post.body : [],
-  );
-  const tocItems = extractPortableTextToc(body);
-  const headingIds = tocHeadingIdMap(tocItems);
-  const { before: firstHalf, after: secondHalf } = splitBodyAtSection(body);
-  const showMidCta = showCta && secondHalf.length > 0;
 
   return (
     <>
@@ -335,124 +241,10 @@ export function SanityPostTemplate({
 
             <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(240px,280px)] lg:gap-12 xl:grid-cols-[minmax(0,48rem)_minmax(260px,300px)] xl:justify-between">
               <div className="min-w-0">
-                <header>
-                  {hero ? (
-                    <div className="overflow-hidden rounded-sm border border-border/40 bg-muted">
-                      <Image
-                        src={hero}
-                        alt={post.mainImage?.alt || post.title}
-                        width={1400}
-                        height={700}
-                        className="h-auto w-full object-cover"
-                        priority
-                        sizes="(max-width: 1024px) 100vw, 768px"
-                      />
-                    </div>
-                  ) : null}
-
-                  {category ? (
-                    <p
-                      className={cn(
-                        "text-[0.8125rem] font-medium tracking-wide text-muted-foreground",
-                        hero ? "mt-5 sm:mt-6" : "mt-0",
-                      )}
-                    >
-                      {category}
-                    </p>
-                  ) : null}
-
-                  <h1
-                    className={cn(
-                      "font-heading text-[1.75rem] font-bold leading-[1.2] tracking-tight text-[#1a1a1a] text-balance sm:text-[2.125rem] sm:leading-[1.18]",
-                      category ? "mt-2" : hero ? "mt-5 sm:mt-6" : "mt-0",
-                    )}
-                  >
-                    {post.title}
-                  </h1>
-
-                  <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-muted-foreground">
-                    <span className="font-medium text-foreground/80">
-                      {authorName}
-                    </span>
-                    {published ? (
-                      <>
-                        <span aria-hidden className="text-border">
-                          ·
-                        </span>
-                        <time dateTime={post.publishedAt || undefined}>
-                          {published}
-                        </time>
-                      </>
-                    ) : null}
-                    {post.readTimeMinutes ? (
-                      <>
-                        <span aria-hidden className="text-border">
-                          ·
-                        </span>
-                        <span>{post.readTimeMinutes} min read</span>
-                      </>
-                    ) : null}
-                  </div>
-                </header>
-
-                <div className="mt-8 sm:mt-10">
-                  <BlogTableOfContents items={tocItems} />
-
-                  {body.length > 0 ? (
-                    <>
-                      {firstHalf.length > 0 ? (
-                        <SanityPortableText
-                          value={firstHalf}
-                          headingIds={headingIds}
-                          variant="blog"
-                        />
-                      ) : null}
-                      {showMidCta ? (
-                        <MidArticleCta
-                          headline={
-                            cta?.headline ||
-                            "Have questions? Book a free 15-min consultation"
-                          }
-                          buttonLabel={
-                            cta?.buttonLabel || "Book free consultation"
-                          }
-                        />
-                      ) : null}
-                      {secondHalf.length > 0 ? (
-                        <SanityPortableText
-                          value={secondHalf}
-                          headingIds={headingIds}
-                          variant="blog"
-                        />
-                      ) : null}
-                    </>
-                  ) : post.rawHtml ? (
-                    <div
-                      className="blog-prose"
-                      dangerouslySetInnerHTML={{
-                        __html: transformBlogHtmlEmbeds(
-                          stripInlineFaqFromHtml(post.rawHtml),
-                        ),
-                      }}
-                    />
-                  ) : (
-                    <p className="text-muted-foreground">
-                      No article content yet.
-                    </p>
-                  )}
-
-                  {showCta ? (
-                    <MidArticleCta
-                      headline="Ready to discuss your treatment options?"
-                      buttonLabel="Book free consultation"
-                    />
-                  ) : null}
-
-                  <BlogDoctorCard
-                    authorName={authorName}
-                    authorRole={authorRole}
-                  />
-                </div>
+                <BlogPageBuilderMainColumn
+                  post={post}
+                  nextPosts={nextPosts}
+                />
               </div>
 
               <BlogSidebar className="max-lg:border-t max-lg:border-border max-lg:pt-8" />
@@ -460,8 +252,7 @@ export function SanityPostTemplate({
           </div>
         </article>
 
-        <BlogFaqAccordion />
-        <BlogNextPosts posts={nextPosts} />
+        <BlogPageBuilderBelowArticle post={post} nextPosts={nextPosts} />
       </main>
       <FooterPlaceholder />
     </>

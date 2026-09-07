@@ -33,6 +33,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -51,4 +52,6 @@ next-env.d.ts
 # Sanity local runtime
 .sanity/
 **/__pycache__/
+/dist/
 
+.neon

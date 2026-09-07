@@ -1231,6 +1231,21 @@
   }
 }
 
+/* Admin sidebar navigation progress */
+@keyframes admin-nav-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+.admin-nav-progress-bar {
+  width: 40%;
+  animation: admin-nav-progress 0.48s ease-out forwards;
+}
+
 .promo-marquee {
   overflow: hidden;
   mask-image: linear-gradient(

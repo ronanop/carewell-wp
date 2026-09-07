@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { blogPageBuilderField } from "./blogPageBuilder";
 import { imageWithAlt, portableBodyOf } from "./shared";
 
 export const page = defineType({
@@ -41,12 +42,14 @@ export const post = defineType({
   title: "Blog Post",
   type: "document",
   groups: [
-    { name: "content", title: "Content", default: true },
+    { name: "builder", title: "Page builder", default: true },
+    { name: "content", title: "Content" },
     { name: "listing", title: "Listing & author" },
     { name: "seo", title: "SEO" },
     { name: "legacy", title: "Legacy" },
   ],
   fields: [
+    blogPageBuilderField,
     defineField({
       name: "title",
       title: "Title",
@@ -143,6 +146,8 @@ export const post = defineType({
           type: "boolean",
           title: "Show mid-article CTA",
           initialValue: true,
+          description:
+            "Also add/remove the Mid-article CTA and End CTA rows in Page builder to control placement.",
         }),
         defineField({
           name: "headline",

@@ -74,8 +74,9 @@ Once these are filled from Sanity, every service page can share one layout.
 ## Assembly order (default service page)
 
 ```text
-HeroBanner (+ QuickFacts)
-[sidebar] BookingFormSection + ContactCard
+HeroBanner (+ QuickFacts)          ← fixed chrome (not in page builder)
+[sidebar] BookingFormSection       ← fixed chrome
+── pageBuilder main column ───────
 OverviewSection (+ InsightCallout)
 HowItWorksSection (+ Youtube)
 BeforeAfterSection
@@ -88,9 +89,26 @@ DoctorProfileSection
 TestimonialsSection
 FaqAccordionSection
 RelatedServicesSection
-LocationSection (optional)
-FinalCtaStrip
+RelatedBlogsSection
+── end page builder ──────────────
+LocationSection (optional)         ← fixed chrome
+FinalCtaStrip                      ← fixed chrome
 ```
+
+### Page builder (live)
+
+Editors control **which** main-column sections appear and **in which order** via Sanity field `pageBuilder` (Studio tab **Page builder**).
+
+- Add a row → pick section type (Comparison, Myth vs fact, FAQ, …)
+- Drag to reorder
+- Remove a row to hide that section even if content fields are filled
+- Fill content in the matching field groups (Content / Results / Pricing tabs)
+- Leave `pageBuilder` unset → site uses the default order above (existing pages keep working)
+- Empty `pageBuilder` array `[]` → no main-column sections (intentional)
+
+Code: `lib/service/pageBuilder.ts`, `schemaTypes/servicePageBuilder.ts`, `components/service/ServicePageBuilderSections.tsx`
+
+Backfill existing docs: `npm run sanity:backfill-page-builder`
 
 ---
 

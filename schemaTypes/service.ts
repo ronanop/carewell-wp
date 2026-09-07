@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { imageWithAlt, portableBodyOf } from "./shared";
+import { servicePageBuilderField } from "./servicePageBuilder";
 
 const SERVICE_CATEGORIES = [
   { title: "Hair", value: "hair" },
@@ -16,7 +17,8 @@ export const service = defineType({
   title: "Service",
   type: "document",
   groups: [
-    { name: "hero", title: "Hero", default: true },
+    { name: "builder", title: "Page builder", default: true },
+    { name: "hero", title: "Hero" },
     { name: "content", title: "Content" },
     { name: "social", title: "Results & Proof" },
     { name: "convert", title: "Pricing & FAQ" },
@@ -24,6 +26,7 @@ export const service = defineType({
     { name: "legacy", title: "Legacy" },
   ],
   fields: [
+    servicePageBuilderField,
     defineField({
       name: "title",
       title: "Page title (H1)",

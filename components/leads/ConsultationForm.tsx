@@ -12,6 +12,7 @@ import {
   collectLeadAttribution,
   type PageAttributionInput,
 } from "@/lib/leads/client/attribution";
+import { trackGaLeadSubmit } from "@/lib/analytics/ga";
 import { cn } from "@/lib/utils";
 
 const TREATMENTS = [
@@ -141,6 +142,10 @@ export function ConsultationForm({
         return;
       }
 
+      trackGaLeadSubmit({
+        form: "consultation_form",
+        treatment: values.treatment || undefined,
+      });
       setSuccess(true);
       reset(defaultValues);
       onSuccess?.();

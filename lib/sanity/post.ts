@@ -1,5 +1,6 @@
 import type { HomeBlogPost } from "@/components/home/BlogSection";
-import { getSanityClient } from "@/lib/sanity/client";
+import type { PageBuilderSlot } from "@/lib/blog/pageBuilder";
+import { getSanityClient, getSanityLiveClient } from "@/lib/sanity/client";
 import {
   SANITY_POST_BY_SLUG,
   SANITY_POST_BY_URI,
@@ -38,6 +39,8 @@ export type SanityPostCard = {
 };
 
 export type SanityPostDoc = SanityPostCard & {
+  /** Editor-controlled section order. Unset → default layout. */
+  pageBuilder?: PageBuilderSlot[] | null;
   authorImage?: SanityPostImage | null;
   midArticleCta?: {
     enabled?: boolean;
@@ -72,8 +75,13 @@ export function postPublicPath(post: {
   return `/${slug.replace(/^\/+|\/+$/g, "")}/`;
 }
 
-export async function getSanityPostsList(): Promise<SanityPostCard[]> {
-  const client = await getSanityClient();
+export async function getSanityPostsList(options?: {
+  /** Skip API CDN — use for admin inventory refresh. */
+  live?: boolean;
+}): Promise<SanityPostCard[]> {
+  const client = options?.live
+    ? await getSanityLiveClient()
+    : await getSanityClient();
   return client.fetch<SanityPostCard[]>(SANITY_POSTS_LIST);
 }
 

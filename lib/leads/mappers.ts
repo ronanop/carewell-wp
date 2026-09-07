@@ -162,6 +162,10 @@ export function buildLeadWhere(
         { email: { contains: q, mode: "insensitive" } },
         { treatment: { contains: q, mode: "insensitive" } },
         { pageTitle: { contains: q, mode: "insensitive" } },
+        { uuid: { contains: q, mode: "insensitive" } },
+        { id: { contains: q, mode: "insensitive" } },
+        { pageUri: { contains: q, mode: "insensitive" } },
+        { message: { contains: q, mode: "insensitive" } },
       ],
     });
   }

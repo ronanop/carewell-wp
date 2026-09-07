@@ -7,12 +7,14 @@ const LOGO_IMAGE_SRC = "/images/logo.png";
 
 type SiteLogoProps = {
   className?: string;
+  /** Defaults to public home `/`. Use `/admin` in the staff shell. */
+  href?: string;
 };
 
-export function SiteLogo({ className }: SiteLogoProps) {
+export function SiteLogo({ className, href = "/" }: SiteLogoProps) {
   return (
     <Link
-      href="/"
+      href={href}
       className={cn(
         "inline-flex min-w-0 items-center gap-2 leading-none no-underline hover:no-underline sm:gap-2.5",
         className

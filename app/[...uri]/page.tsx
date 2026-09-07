@@ -118,7 +118,7 @@ export default async function CatchAllPage({ params }: CatchAllPageProps) {
   const { uri } = await params;
   const normalizedUri = normalizeUri(uri);
 
-  if (normalizedUri === "/blog/" || normalizedUri === "/blogs/") {
+  if (normalizedUri === "/blog/") {
     permanentRedirect("/blogs/");
   }
 

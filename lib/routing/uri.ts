@@ -17,6 +17,8 @@ const HANDCRAFTED_PATHS = new Set<string>([
   "/terms/",
   "/thank-you/",
   "/404/",
+  "/blogs/",
+  "/blog/",
   "/design/",
   "/gallery/",
   "/doctors/",

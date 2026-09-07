@@ -9,6 +9,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { submitConsultationLeadAction } from "@/lib/leads/actions/leadActions";
 import { collectLeadAttribution } from "@/lib/leads/client/attribution";
+import { trackGaLeadSubmit } from "@/lib/analytics/ga";
 import { cn } from "@/lib/utils";
 import type { SectionBaseProps } from "./types";
 
@@ -52,6 +53,7 @@ const formSchema = z.object({
       const digits = value.replace(/\D/g, "");
       return digits.length >= 10 && digits.length <= 15;
     }, "Enter a valid 10–15 digit mobile number"),
+  consent: z.boolean().refine((v) => v, "Consent is required"),
   website: z.string().optional(),
 });
 
@@ -101,7 +103,7 @@ export function BookingFormSection({
   const [pending, startTransition] = useTransition();
 
   const defaultValues = useMemo<FormValues>(
-    () => ({ name: "", phone: "", website: "" }),
+    () => ({ name: "", phone: "", consent: false, website: "" }),
     [],
   );
 
@@ -138,7 +140,7 @@ export function BookingFormSection({
         name: values.name,
         phone: values.phone,
         preferredContactMethod: "PHONE",
-        consent: true,
+        consent: values.consent,
         website: values.website ?? "",
         treatment,
         ...attribution,
@@ -149,6 +151,7 @@ export function BookingFormSection({
         return;
       }
 
+      trackGaLeadSubmit({ form: "booking_form_section", treatment });
       setSuccess(true);
       reset(defaultValues);
     });
@@ -278,6 +281,23 @@ export function BookingFormSection({
                 </p>
               ) : null}
             </div>
+
+            <label className="flex cursor-pointer items-start gap-2.5 text-[0.6875rem] leading-snug text-slate-600">
+              <input
+                type="checkbox"
+                className="mt-0.5 size-3.5 shrink-0 rounded border-slate-300"
+                {...register("consent")}
+              />
+              <span>
+                I consent to Care Well Medical Centre contacting me about this
+                request.
+              </span>
+            </label>
+            {errors.consent?.message ? (
+              <p className="text-[0.75rem] text-destructive" role="alert">
+                {errors.consent.message}
+              </p>
+            ) : null}
 
             {serverError ? (
               <p
