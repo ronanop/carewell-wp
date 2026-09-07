@@ -484,6 +484,8 @@ const SANITY_POST_FULL = `{
     ogTitle,
     ogDescription
   },
+  faqHeading,
+  faqs[]{ question, answer },
   body[]{
     ...,
     _type == "bodyImage" => {

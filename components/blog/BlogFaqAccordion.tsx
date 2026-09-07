@@ -25,7 +25,18 @@ const DEFAULT_BLOG_FAQS = [
   },
 ] as const;
 
-export function BlogFaqAccordion() {
+export function BlogFaqAccordion({
+  faqs,
+  heading = "Frequently Asked Questions",
+}: {
+  faqs?: ReadonlyArray<{ question: string; answer: string }>;
+  heading?: string;
+}) {
+  const items =
+    faqs && faqs.length > 0
+      ? faqs
+      : DEFAULT_BLOG_FAQS;
+
   return (
     <section
       id="blog-faqs"
@@ -41,18 +52,18 @@ export function BlogFaqAccordion() {
             id="blog-faqs-heading"
             className="mt-3 font-heading text-[1.8rem] font-bold leading-tight tracking-tight text-[#0A2540] sm:text-[2.7rem]"
           >
-            Frequently Asked Questions
+            {heading}
           </h2>
         </header>
 
         <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_12px_40px_-16px_rgba(10,46,82,0.22)] sm:mt-10">
-          {DEFAULT_BLOG_FAQS.map((faq, index) => (
+          {items.map((faq, index) => (
             <details
               key={faq.question}
               open={index === 0}
               className={cn(
                 "group border-slate-100",
-                index < DEFAULT_BLOG_FAQS.length - 1 && "border-b",
+                index < items.length - 1 && "border-b",
               )}
             >
               <summary className="flex cursor-pointer list-none items-start gap-4 px-5 py-4 marker:content-none [&::-webkit-details-marker]:hidden hover:bg-[#F3F7FC]/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1557A0]/35 sm:px-6 sm:py-5">

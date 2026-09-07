@@ -41,6 +41,8 @@ export function ServiceCard3D({
   const [hovered, setHovered] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [finePointer, setFinePointer] = useState(false);
+  // Pointer media queries differ from the server. Keep the first paint identical.
+  const [tiltReady, setTiltReady] = useState(false);
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -49,6 +51,7 @@ export function ServiceCard3D({
       setReducedMotion(motion.matches);
       setFinePointer(pointer.matches);
     };
+    setTiltReady(true);
     sync();
     motion.addEventListener("change", sync);
     pointer.addEventListener("change", sync);
@@ -58,7 +61,7 @@ export function ServiceCard3D({
     };
   }, []);
 
-  const tiltEnabled = finePointer && !reducedMotion;
+  const tiltEnabled = tiltReady && finePointer && !reducedMotion;
 
   const handleMouseMove = useCallback(
     (event: MouseEvent<HTMLAnchorElement>) => {
@@ -125,7 +128,7 @@ export function ServiceCard3D({
             "object-cover transition-transform duration-300 ease-out",
             "sm:group-hover:scale-[1.03]",
           )}
-          style={{ objectPosition }}
+          style={{ objectPosition: objectPosition || "center" }}
         />
       </div>
 

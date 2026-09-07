@@ -149,11 +149,11 @@ function FeatureCard({ category }: { category: MegaServiceCategory }) {
       <div className="flex flex-1 flex-col bg-[#E8F4F8] px-4 py-4">
         <Link
           href={category.href}
-          className="text-base font-semibold text-[#0A2540] no-underline transition-colors hover:text-primary hover:underline"
+          className="text-lg font-bold text-[#0A2540] no-underline transition-colors hover:text-primary hover:underline"
         >
           {category.title}
         </Link>
-        <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-[#4B5563]">
+        <p className="mt-1.5 text-sm font-medium leading-relaxed text-[#1E293B]">
           {category.description}
         </p>
       </div>
@@ -181,7 +181,7 @@ function ServiceColumn({
     >
       <Link
         href={category.href}
-        className="block border-b border-border/70 pb-2 text-base font-semibold text-[#0A2540] no-underline hover:text-primary hover:no-underline"
+        className="block border-b border-border/70 pb-2 text-lg font-bold text-[#0A2540] no-underline hover:text-primary hover:no-underline"
         onFocus={onActivate}
       >
         {category.title}
@@ -192,26 +192,26 @@ function ServiceColumn({
             {group.title && group.href ? (
               <Link
                 href={group.href}
-                className="mb-1.5 block text-[0.75rem] font-semibold text-[#475569] no-underline transition-colors hover:text-primary hover:underline"
+                className="mb-2 block text-sm font-bold text-[#0A2540] no-underline transition-colors hover:text-primary hover:underline"
                 onFocus={onActivate}
               >
                 {group.title}
               </Link>
             ) : group.title ? (
-              <p className="mb-1.5 text-[0.75rem] font-semibold text-[#475569]">
+              <p className="mb-2 text-sm font-bold text-[#0A2540]">
                 {group.title}
               </p>
             ) : null}
-            <ul className="space-y-1">
+            <ul className="space-y-1.5">
               {group.links.map((item) => (
                 <li key={item.href + item.label}>
                   <Link
                     href={item.href}
-                    className="group/link inline-flex items-start gap-1.5 text-[0.8125rem] leading-snug text-[#334155] no-underline transition-colors hover:text-primary hover:no-underline"
+                    className="group/link inline-flex items-start gap-1.5 text-[0.9375rem] font-semibold leading-snug text-[#0A2540] no-underline transition-colors hover:text-primary hover:no-underline"
                     onFocus={onActivate}
                   >
                     <ChevronRight
-                      className="mt-0.5 size-3.5 shrink-0 text-[#7DD3E8] transition-colors group-hover/link:text-primary"
+                      className="mt-0.5 size-4 shrink-0 text-[#0A2540]/70 transition-colors group-hover/link:text-primary"
                       aria-hidden
                     />
                     <span>{item.label}</span>
@@ -278,7 +278,7 @@ export function ServicesMegaMenuPanel() {
       role="region"
       aria-label="Services menu"
       className={cn(
-        "absolute inset-x-0 top-full z-dropdown border-b border-border bg-background/98 shadow-lg backdrop-blur-sm transition-all duration-200",
+        "absolute inset-x-0 top-full z-dropdown border-b border-border bg-white shadow-lg transition-all duration-200",
         open
           ? "pointer-events-auto visible translate-y-0 opacity-100"
           : "pointer-events-none invisible -translate-y-1 opacity-0"
@@ -304,7 +304,7 @@ export function ServicesMegaMenuPanel() {
         <div className="mt-6 flex justify-end border-t border-border pt-4">
           <Link
             href="/services"
-            className="text-small font-medium text-primary no-underline hover:underline"
+            className="text-base font-bold text-primary no-underline hover:underline"
             onClick={() => setOpen(false)}
           >
             View all services

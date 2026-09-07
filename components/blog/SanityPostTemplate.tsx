@@ -192,6 +192,29 @@ export function SanityPostTemplate({
     },
   };
 
+  const faqItems = (post.faqs ?? [])
+    .map((faq) => ({
+      question: faq.question?.trim() || "",
+      answer: faq.answer?.trim() || "",
+    }))
+    .filter((faq) => faq.question && faq.answer);
+
+  const faqJsonLd =
+    faqItems.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }
+      : null;
+
   return (
     <>
       <NavbarPlaceholder />
@@ -200,6 +223,12 @@ export function SanityPostTemplate({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {faqJsonLd ? (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+          />
+        ) : null}
 
         <article>
           <div className="container-content pt-6 pb-10 sm:pt-8 sm:pb-12">

@@ -56,6 +56,8 @@ export type SanityPostDoc = SanityPostCard & {
     ogTitle?: string;
     ogDescription?: string;
   } | null;
+  faqHeading?: string | null;
+  faqs?: Array<{ question?: string | null; answer?: string | null }> | null;
   body?: unknown[];
   rawHtml?: string | null;
 };

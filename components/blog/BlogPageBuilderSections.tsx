@@ -297,8 +297,21 @@ function renderBlogSection(
           authorRole={authorRole}
         />
       );
-    case "faq":
-      return <BlogFaqAccordion key={key} />;
+    case "faq": {
+      const faqs = (post.faqs ?? [])
+        .map((faq) => ({
+          question: faq.question?.trim() || "",
+          answer: faq.answer?.trim() || "",
+        }))
+        .filter((faq) => faq.question && faq.answer);
+      return (
+        <BlogFaqAccordion
+          key={key}
+          faqs={faqs}
+          heading={post.faqHeading?.trim() || undefined}
+        />
+      );
+    }
     case "nextPosts":
       return <BlogNextPosts key={key} posts={nextPosts} />;
     default:

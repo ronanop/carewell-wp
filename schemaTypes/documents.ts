@@ -173,6 +173,45 @@ export const post = defineType({
     }),
     defineField({ name: "seo", title: "SEO", type: "seo", group: "seo" }),
     defineField({
+      name: "faqHeading",
+      title: "FAQ heading",
+      type: "string",
+      group: "content",
+      description:
+        "Accordion title. Leave blank to use “Frequently Asked Questions”.",
+    }),
+    defineField({
+      name: "faqs",
+      title: "FAQs",
+      type: "array",
+      group: "content",
+      description:
+        "Q&A pairs for the accordion below the article. Empty list uses the default blog FAQs.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          fields: [
+            defineField({
+              name: "question",
+              type: "string",
+              title: "Question",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "answer",
+              type: "text",
+              title: "Answer",
+              rows: 4,
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: { title: "question", subtitle: "answer" },
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: "body",
       title: "Body",
       type: "array",
