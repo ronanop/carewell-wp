@@ -112,7 +112,8 @@ const SANITY_SERVICE_PROJECTION = `{
     secondaryCtaLabel,
     quickFacts[]{ label, value },
     quickFactsNote,
-    image${imageProjection}
+    image${imageProjection},
+    imageMobile${imageProjection}
   },
   overview{
     eyebrow,
@@ -403,7 +404,7 @@ export const SANITY_SERVICES_LIST = `*[_type == "service"]{
   uri,
   category,
   "faqCount": count(faqs),
-  "hasHero": defined(hero.heading) || defined(hero.image)
+  "hasHero": defined(hero.heading) || defined(hero.image) || defined(hero.imageMobile)
 } | order(uri asc)`;
 
 export const SANITY_REDIRECTS = `*[_type == "redirect" && isEnabled == true]{

@@ -4,13 +4,14 @@ import { defineField } from "sanity";
 export function imageWithAlt(
   name: string,
   title: string,
-  options?: { required?: boolean },
+  options?: { required?: boolean; description?: string },
 ) {
   const requireImage = options?.required ?? false;
   return defineField({
     name,
     title,
     type: "image",
+    description: options?.description,
     options: { hotspot: true },
     fields: [
       defineField({

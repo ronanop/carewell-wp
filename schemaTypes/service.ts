@@ -96,7 +96,14 @@ export const service = defineType({
           description:
             "Optional subtitle under the H1. Leave blank to hide — does not fall back to excerpt.",
         }),
-        imageWithAlt("image", "Hero image"),
+        imageWithAlt("image", "Desktop hero image", {
+          description:
+            "Shown on large screens (lg+). Recommended size: 1920 × 900 px (min 1600 × 750). Landscape / wide crop. Use hotspot to set the focal point.",
+        }),
+        imageWithAlt("imageMobile", "Mobile hero image", {
+          description:
+            "Shown on phones & tablets (below lg). Recommended size: 1080 × 1350 px (min 750 × 940). Portrait / taller crop. Falls back to the desktop image if empty.",
+        }),
         defineField({
           name: "primaryCtaLabel",
           title: "Primary CTA label",

@@ -199,10 +199,11 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
             src={backgroundSrc}
             alt=""
             fill
-            priority
             aria-hidden
             className="object-cover object-center opacity-90"
             sizes="100vw"
+            quality={60}
+            fetchPriority="low"
           />
         )}
       </EditableElement>
@@ -367,6 +368,8 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                   alt={imageAlt}
                   fill
                   priority
+                  fetchPriority="high"
+                  quality={75}
                   className={cn(
                     "object-bottom",
                     objectFit === "cover"
@@ -375,7 +378,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                         ? "object-fill"
                         : "object-contain",
                   )}
-                  sizes="(max-width: 1024px) 100vw, 42vw"
+                  sizes="(max-width: 1024px) 90vw, 42vw"
                 />
                 <div
                   className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#EDE7DE] via-[#EDE7DE]/70 to-transparent lg:hidden"

@@ -110,6 +110,7 @@ export function SanityServiceTemplate({
           category={service.category}
           uri={service.uri}
           image={service.hero?.image}
+          imageMobile={service.hero?.imageMobile}
           primaryCtaLabel={service.hero?.primaryCtaLabel}
           secondaryCtaLabel={service.hero?.secondaryCtaLabel}
           quickFacts={service.hero?.quickFacts}

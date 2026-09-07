@@ -26,7 +26,8 @@ export function SiteLogo({ className, href = "/" }: SiteLogoProps) {
         width={40}
         height={40}
         className="size-9 shrink-0 object-contain sm:size-10"
-        priority
+        sizes="40px"
+        quality={70}
       />
       <span className="min-w-0 flex flex-col">
         <span className="truncate whitespace-nowrap text-[clamp(0.95rem,5.2vw,1.1875rem)] font-semibold tracking-[-0.01em] text-[#0A2540]">

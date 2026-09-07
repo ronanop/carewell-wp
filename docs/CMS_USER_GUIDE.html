@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Care Well CMS User Guide</title>
+  <style>
+    :root {
+      --ink: #0a2540;
+      --muted: #475569;
+      --line: #dbe3ee;
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --accent: #1557a0;
+      --ok: #0b7b6b;
+      --warn: #b45309;
+      --danger: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    html { font-size: 11.5pt; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.55;
+      background: white;
+    }
+    .page {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 28px 36px 48px;
+    }
+    h1, h2, h3, h4 { line-height: 1.25; color: var(--ink); }
+    h1 { font-size: 1.9rem; margin: 0 0 0.4rem; }
+    h2 {
+      font-size: 1.35rem;
+      margin: 2.2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid var(--accent);
+      break-after: avoid;
+    }
+    h3 { font-size: 1.1rem; margin: 1.4rem 0 0.5rem; break-after: avoid; }
+    h4 { font-size: 1rem; margin: 1rem 0 0.4rem; }
+    p { margin: 0.45rem 0 0.7rem; color: var(--ink); }
+    .muted { color: var(--muted); }
+    ul, ol { margin: 0.4rem 0 0.9rem; padding-left: 1.3rem; }
+    li { margin: 0.25rem 0; }
+    a { color: var(--accent); }
+    code, .mono {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.92em;
+      background: #eef3f9;
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.7rem 0 1.1rem;
+      font-size: 0.95em;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.45rem 0.55rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #eef4fb; }
+    .cover {
+      min-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem 0 3rem;
+      break-after: page;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: #e8f1fb;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    .cover h1 { font-size: 2.4rem; }
+    .cover .lead { font-size: 1.15rem; color: var(--muted); max-width: 36rem; }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      max-width: 28rem;
+    }
+    .meta-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      background: var(--bg);
+    }
+    .meta-card strong { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+    .toc { break-after: page; }
+    .toc ol { columns: 1; }
+    .toc li { margin: 0.35rem 0; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: #f0f6fc;
+      padding: 0.75rem 0.95rem;
+      margin: 0.9rem 0;
+      border-radius: 0 8px 8px 0;
+      break-inside: avoid;
+    }
+    .callout.warn { border-color: var(--warn); background: #fff8eb; }
+    .callout.ok { border-color: var(--ok); background: #ecf8f5; }
+    .callout.danger { border-color: var(--danger); background: #fef2f2; }
+    .callout strong { display: block; margin-bottom: 0.2rem; }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0.9rem 0 1.1rem;
+      break-inside: avoid;
+    }
+    .flow .step {
+      background: var(--card);
+      border: 1.5px solid var(--accent);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 0.55rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.92rem;
+      min-width: 7.5rem;
+      text-align: center;
+      box-shadow: 0 1px 0 rgba(10,37,64,0.04);
+    }
+    .flow .step small {
+      display: block;
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-top: 0.15rem;
+    }
+    .flow .arrow {
+      color: var(--accent);
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .diagram {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      background: linear-gradient(180deg, #fbfdff 0%, #f3f7fc 100%);
+      margin: 0.8rem 0 1.2rem;
+      break-inside: avoid;
+    }
+    .diagram h4 { margin-top: 0; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.75rem 0.85rem;
+      background: white;
+    }
+    .box h4 { margin: 0 0 0.4rem; color: var(--accent); }
+    .checklist li { list-style: none; margin-left: -0.4rem; }
+    .checklist li::before { content: "☐ "; color: var(--accent); font-weight: 700; }
+    .page-break { break-before: page; }
+    footer.doc-foot {
+      margin-top: 2.5rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    @media print {
+      .page { max-width: none; padding: 0; }
+      a { text-decoration: none; color: inherit; }
+      .cover { min-height: auto; padding-top: 4rem; }
+      h2 { page-break-after: avoid; }
+      .flow, .diagram, .callout, table { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- COVER -->
+    <section class="cover">
+      <div class="cover-badge">Care Well Medical Centre · Internal training</div>
+      <h1>CMS User Guide</h1>
+      <p class="lead">
+        How to use <strong>Sanity Studio</strong> to create and edit services, blog posts,
+        pages, images, and redirects — from login to publish — with troubleshooting.
+      </p>
+      <div class="meta-grid">
+        <div class="meta-card">
+          <strong>Studio URL</strong>
+          carewellcms.sanity.studio
+        </div>
+        <div class="meta-card">
+          <strong>Public website</strong>
+          www.carewellmedicalcentre.com
+        </div>
+        <div class="meta-card">
+          <strong>Audience</strong>
+          Editors, clinic staff, SEO
+        </div>
+        <div class="meta-card">
+          <strong>Version</strong>
+          2026 · Sanity + Next.js
+        </div>
+      </div>
+      <p class="muted" style="margin-top:2rem;">
+        Tip: After schema updates, hard-refresh Studio (<span class="mono">Ctrl+Shift+R</span>)
+        so new fields (e.g. Desktop / Mobile hero images) appear.
+      </p>
+    </section>
+
+    <!-- TOC -->
+    <section class="toc">
+      <h2>Contents</h2>
+      <ol>
+        <li>How the system works</li>
+        <li>Sign in &amp; Studio layout</li>
+        <li>Roles &amp; permissions</li>
+        <li>Editing a service page (step by step)</li>
+        <li>Hero images — desktop vs mobile</li>
+        <li>Creating a new service</li>
+        <li>Blog posts</li>
+        <li>Generic pages</li>
+        <li>Uploading images (best practices)</li>
+        <li>Publishing, drafts &amp; preview</li>
+        <li>Redirects (old URL → new URL)</li>
+        <li>Website admin panel (leads &amp; menu)</li>
+        <li>What appears live — and when</li>
+        <li>Troubleshooting</li>
+        <li>Quick checklists</li>
+      </ol>
+    </section>
+
+    <!-- 1 -->
+    <h2>1. How the system works</h2>
+    <p>
+      Care Well’s public website is <strong>not</strong> edited in WordPress anymore.
+      Content lives in <strong>Sanity CMS</strong>. The Next.js website reads that content and displays it.
+    </p>
+
+    <div class="diagram">
+      <h4>End-to-end flow</h4>
+      <div class="flow">
+        <div class="step">You edit in Studio<small>carewellcms.sanity.studio</small></div>
+        <div class="arrow">→</div>
+        <div class="step">Publish<small>saves to Sanity cloud</small></div>
+        <div class="arrow">→</div>
+        <div class="step">Website reads CMS<small>Next.js on Hostinger</small></div>
+        <div class="arrow">→</div>
+        <div class="step">Visitors see pages<small>carewellmedicalcentre.com</small></div>
+      </div>
+      <p class="muted" style="margin:0;">
+        Leads (contact forms) go to a separate admin at <span class="mono">/admin</span> on the website — not inside Sanity.
+      </p>
+    </div>
+
+    <div class="callout">
+      <strong>Two “admins” — don’t mix them up</strong>
+      <ul>
+        <li><strong>Sanity Studio</strong> = content (services, blogs, images, SEO).</li>
+        <li><strong>Website /admin</strong> = leads inbox, staff users, Services mega-menu links.</li>
+      </ul>
+    </div>
+
+    <!-- 2 -->
+    <h2 class="page-break">2. Sign in &amp; Studio layout</h2>
+    <ol>
+      <li>Open <a href="https://carewellcms.sanity.studio">https://carewellcms.sanity.studio</a></li>
+      <li>Sign in with the Google / email account invited by your project admin.</li>
+      <li>If you see an empty screen, ask an Administrator to invite you in
+        <a href="https://www.sanity.io/manage/project/ndeeiwkw/members">Sanity Manage → Members</a>.</li>
+    </ol>
+
+    <div class="diagram">
+      <h4>Left sidebar (Care Well CMS)</h4>
+      <div class="two-col">
+        <div class="box">
+          <h4>Main content</h4>
+          <ul>
+            <li><strong>Services</strong> — treatment pages (hero, FAQs, pricing…)</li>
+            <li><strong>Blog posts</strong> — articles</li>
+            <li><strong>Pages</strong> — generic CMS pages</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h4>Supporting</h4>
+          <ul>
+            <li><strong>Gallery</strong> / <strong>Testimonials</strong></li>
+            <li><strong>Navigation</strong> / <strong>Site settings</strong></li>
+            <li><strong>Redirects</strong> — URL moves</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>Document editor basics</h3>
+    <ul>
+      <li>Click a document in the list to open the form.</li>
+      <li>Fields are grouped in tabs (e.g. Hero, Content, SEO) on service pages.</li>
+      <li>Bottom / top bar: <strong>Publish</strong>, Discard changes, Review changes.</li>
+      <li>Unsaved work shows as a draft — always <strong>Publish</strong> when ready for the live site.</li>
+    </ul>
+
+    <!-- 3 -->
+    <h2>3. Roles &amp; permissions</h2>
+    <table>
+      <thead>
+        <tr><th>Role</th><th>Typical use</th><th>Can do</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Administrator</td>
+          <td>Clinic lead / tech</td>
+          <td>Everything, invite users, project settings</td>
+        </tr>
+        <tr>
+          <td>Editor</td>
+          <td>Content team</td>
+          <td>Create / edit / publish services, posts, pages, media</td>
+        </tr>
+        <tr>
+          <td>Viewer</td>
+          <td>Stakeholder</td>
+          <td>Read only — cannot publish</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 4 -->
+    <h2 class="page-break">4. Editing a service page (step by step)</h2>
+    <p>Service pages power treatment URLs such as <span class="mono">/hair-transplant-in-delhi/</span>.</p>
+
+    <div class="flow">
+      <div class="step">1. Services</div>
+      <div class="arrow">→</div>
+      <div class="step">2. Open document</div>
+      <div class="arrow">→</div>
+      <div class="step">3. Edit fields</div>
+      <div class="arrow">→</div>
+      <div class="step">4. Publish</div>
+      <div class="arrow">→</div>
+      <div class="step">5. Check live URL</div>
+    </div>
+
+    <h3>Critical fields</h3>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>What it does</th><th>Tips</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Page title</strong></td>
+          <td>Main H1 on the website</td>
+          <td>Write the real patient-facing headline</td>
+        </tr>
+        <tr>
+          <td><strong>Slug</strong></td>
+          <td>Internal ID / fallback path</td>
+          <td>Generate from title; don’t change casually</td>
+        </tr>
+        <tr>
+          <td><strong>URI Path</strong></td>
+          <td>Public URL path</td>
+          <td>Must match live URL, e.g. <span class="mono">/hair-transplant-in-delhi/</span> (leading &amp; trailing slash)</td>
+        </tr>
+        <tr>
+          <td><strong>Category</strong></td>
+          <td>Grouping / filters</td>
+          <td>hair, skin, surgical, wellness, etc.</td>
+        </tr>
+        <tr>
+          <td><strong>SEO</strong> group</td>
+          <td>Title &amp; description for Google</td>
+          <td>Keep title ~50–60 chars; description ~150–160</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Hero tab — what visitors see first</h3>
+    <ol>
+      <li><strong>Tagline</strong> — optional subtitle under the H1. Leave blank to hide.</li>
+      <li><strong>Desktop hero image</strong> — wide image for large screens.</li>
+      <li><strong>Mobile hero image</strong> — taller crop for phones (optional; falls back to desktop).</li>
+      <li><strong>Alt text</strong> — required on each image for SEO/accessibility (expand the image field).</li>
+      <li><strong>Primary / Secondary CTA labels</strong> — button text (e.g. Book Free Consultation / WhatsApp).</li>
+      <li><strong>Quick facts</strong> — short label/value pairs under the hero.</li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>If you still see a single field named “Hero image”</strong>
+      Schema was updated to “Desktop hero image” + “Mobile hero image”. Hard-refresh Studio
+      (<span class="mono">Ctrl+Shift+R</span>) or sign out/in. Confirm schema deploy already ran
+      (<span class="mono">npm run sanity:deploy-schema</span>).
+    </div>
+
+    <h3>Other important groups (fill as needed)</h3>
+    <ul>
+      <li><strong>Overview / How it works / Before &amp; after / Candidacy</strong> — medical content sections.</li>
+      <li><strong>Pricing / Booking / Doctor / FAQs / Related</strong> — conversion &amp; trust.</li>
+      <li><strong>Page builder</strong> (if enabled) — section order for the main column.</li>
+      <li>Empty sections usually <strong>hide automatically</strong> on the website — leave unused fields blank.</li>
+    </ul>
+
+    <!-- 5 -->
+    <h2 class="page-break">5. Hero images — desktop vs mobile</h2>
+    <p>
+      Upload <strong>two different crops</strong> when possible so faces and text stay in frame on both phone and desktop.
+    </p>
+
+    <div class="diagram">
+      <h4>Which image appears where?</h4>
+      <div class="flow">
+        <div class="step">Visitor device</div>
+        <div class="arrow">→</div>
+        <div class="step">Width ≥ 1024px?<small>laptop / desktop</small></div>
+        <div class="arrow">→</div>
+        <div class="step">Desktop hero image<small>1920 × 900 px</small></div>
+      </div>
+      <div class="flow">
+        <div class="step">Visitor device</div>
+        <div class="arrow">→</div>
+        <div class="step">Width &lt; 1024px?<small>phone / tablet</small></div>
+        <div class="arrow">→</div>
+        <div class="step">Mobile hero image<small>1080 × 1350 px</small></div>
+      </div>
+      <p class="muted" style="margin:0;">If Mobile is empty → website uses Desktop image on all devices.</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Field in Studio</th><th>Recommended size (px)</th><th>Minimum</th><th>Shape</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Desktop hero image</td>
+          <td><strong>1920 × 900</strong></td>
+          <td>1600 × 750</td>
+          <td>Landscape / wide</td>
+        </tr>
+        <tr>
+          <td>Mobile hero image</td>
+          <td><strong>1080 × 1350</strong></td>
+          <td>750 × 940</td>
+          <td>Portrait / taller</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout ok">
+      <strong>Upload workflow</strong>
+      <ol style="margin-bottom:0;">
+        <li>Click <strong>Upload</strong> (or drag into the dashed box).</li>
+        <li>Wait until the thumbnail appears.</li>
+        <li>Open the image field → set <strong>Alt text</strong> (describe the photo, not “image1”).</li>
+        <li>Adjust <strong>Hotspot</strong> if available so the face stays centered when cropped.</li>
+        <li>Publish the document.</li>
+      </ol>
+    </div>
+
+    <!-- 6 -->
+    <h2>6. Creating a new service</h2>
+    <div class="flow">
+      <div class="step">Services → +</div>
+      <div class="arrow">→</div>
+      <div class="step">Page title</div>
+      <div class="arrow">→</div>
+      <div class="step">Generate slug</div>
+      <div class="arrow">→</div>
+      <div class="step">Set URI Path</div>
+      <div class="arrow">→</div>
+      <div class="step">Hero + content</div>
+      <div class="arrow">→</div>
+      <div class="step">Publish</div>
+    </div>
+    <ol>
+      <li>Left sidebar → <strong>Services</strong> → create new.</li>
+      <li>Enter <strong>Page title</strong> (this becomes the H1).</li>
+      <li>Click <strong>Generate</strong> on Slug.</li>
+      <li>Set <strong>URI Path</strong> carefully — this is the public address. Example:
+        <span class="mono">/laser-hair-removal-in-delhi/</span></li>
+      <li>Fill Hero (images + CTAs), then other sections you need.</li>
+      <li>Add SEO title/description.</li>
+      <li><strong>Publish</strong>.</li>
+      <li>Open the live URI on the website. If you changed an old URL, add a <strong>Redirect</strong>.</li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>URI mistakes break Google rankings</strong>
+      Prefer keeping the same URI as the old WordPress page. If you must change it, create a Redirect
+      (old path → new path) before or right after publish.
+    </div>
+
+    <!-- 7 -->
+    <h2 class="page-break">7. Blog posts</h2>
+    <ol>
+      <li>Sidebar → <strong>Blog posts</strong> → create or open.</li>
+      <li>Set <strong>Title</strong>, generate <strong>Slug</strong>, set <strong>URI</strong> if used.</li>
+      <li>Add <strong>excerpt</strong>, <strong>main image</strong> (+ alt), categories/tags as available.</li>
+      <li>Write the <strong>Body</strong> with headings (H2/H3), lists, images, embeds.</li>
+      <li>Fill <strong>SEO</strong>.</li>
+      <li>Publish → check under <span class="mono">/blogs/</span> and the post URL.</li>
+    </ol>
+    <div class="callout">
+      <strong>Body tips</strong>
+      Use real headings for structure (helps SEO). Compress large photos before upload.
+      Don’t paste huge Word tables as screenshots when a simple list will do.
+    </div>
+
+    <!-- 8 -->
+    <h2>8. Generic pages</h2>
+    <p>
+      <strong>Pages</strong> in Studio are generic documents. Many marketing pages
+      (Home, About, Contact, Privacy) are <strong>handcrafted in the website code</strong>
+      and may not be fully driven by these Page documents. Prefer editing
+      <strong>Services</strong> and <strong>Blog posts</strong> for day-to-day content.
+    </p>
+    <p class="muted">
+      Ask the development team before creating a new top-level marketing page in Studio
+      if you expect a brand-new public route.
+    </p>
+
+    <!-- 9 -->
+    <h2>9. Uploading images (best practices)</h2>
+    <table>
+      <thead>
+        <tr><th>Use case</th><th>Recommended size</th><th>Format</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Service hero — desktop</td><td>1920 × 900 px</td><td>JPG / WebP</td></tr>
+        <tr><td>Service hero — mobile</td><td>1080 × 1350 px</td><td>JPG / WebP</td></tr>
+        <tr><td>Blog featured image</td><td>1200 × 630 px</td><td>JPG / WebP</td></tr>
+        <tr><td>Before / after pair</td><td>800 × 1000 px each (similar crop)</td><td>JPG</td></tr>
+        <tr><td>Doctor / team photo</td><td>800 × 1000 px</td><td>JPG</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>Always add <strong>Alt text</strong>.</li>
+      <li>Prefer under ~500 KB when possible (export quality ~70–80%).</li>
+      <li>Don’t upload screenshots of text — use real text fields for SEO.</li>
+      <li>Patient photos: ensure consent; use the consent notice fields where provided.</li>
+    </ul>
+
+    <div class="diagram">
+      <h4>Image upload path</h4>
+      <div class="flow">
+        <div class="step">Prepare file<small>correct px size</small></div>
+        <div class="arrow">→</div>
+        <div class="step">Upload / Select</div>
+        <div class="arrow">→</div>
+        <div class="step">Alt text</div>
+        <div class="arrow">→</div>
+        <div class="step">Hotspot (optional)</div>
+        <div class="arrow">→</div>
+        <div class="step">Publish doc</div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <h2 class="page-break">10. Publishing, drafts &amp; preview</h2>
+    <ul>
+      <li><strong>Draft</strong> = saved but not live.</li>
+      <li><strong>Publish</strong> = live for the website (after cache refresh — see §13).</li>
+      <li><strong>Unpublish</strong> removes from the public API — use carefully on important URLs.</li>
+      <li>Use <strong>Review changes</strong> before publishing large edits.</li>
+    </ul>
+    <div class="callout">
+      <strong>Preview</strong>
+      If Presentation / preview is configured, you can open a draft preview of the website.
+      Preview requires a valid signed link — random “draft mode” URLs without a secret will fail (by design).
+    </div>
+
+    <!-- 11 -->
+    <h2>11. Redirects (old URL → new URL)</h2>
+    <ol>
+      <li>Sidebar → <strong>Redirects</strong> → create.</li>
+      <li><strong>From</strong>: old path, e.g. <span class="mono">/old-page/</span></li>
+      <li><strong>To</strong>: new path or full URL, e.g. <span class="mono">/new-page/</span></li>
+      <li>Mark as permanent (301) when the move is final.</li>
+      <li>Publish.</li>
+    </ol>
+    <p class="muted">Redirects are applied by the website middleware. Test in a private browser window.</p>
+
+    <!-- 12 -->
+    <h2>12. Website admin panel (leads &amp; menu)</h2>
+    <p>Separate from Sanity. Sign in at <span class="mono">https://www.carewellmedicalcentre.com/admin/login/</span></p>
+    <table>
+      <thead>
+        <tr><th>Section</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Leads</td><td>Patient form submissions, status, notes, export</td></tr>
+        <tr><td>Services menu</td><td>Edit navbar mega-menu link URLs (persisted in database)</td></tr>
+        <tr><td>Blogs / Pages</td><td>Inventory + deep links into Sanity</td></tr>
+        <tr><td>Users</td><td>Staff logins for this admin (Admin role)</td></tr>
+        <tr><td>Website content</td><td>Shortcuts to edit in Studio</td></tr>
+      </tbody>
+    </table>
+
+    <div class="diagram">
+      <h4>When to use which tool</h4>
+      <div class="two-col">
+        <div class="box">
+          <h4>Use Sanity Studio</h4>
+          <ul>
+            <li>Service copy &amp; FAQs</li>
+            <li>Hero photos</li>
+            <li>Blog articles</li>
+            <li>SEO fields</li>
+            <li>URL redirects</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h4>Use /admin</h4>
+          <ul>
+            <li>New leads / call-backs</li>
+            <li>Navbar Services links</li>
+            <li>Staff accounts</li>
+            <li>Lead email issues (ops)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <h2 class="page-break">13. What appears live — and when</h2>
+    <div class="flow">
+      <div class="step">Publish in Studio</div>
+      <div class="arrow">→</div>
+      <div class="step">Sanity CDN updates<small>usually seconds</small></div>
+      <div class="arrow">→</div>
+      <div class="step">Site cache (ISR)<small>often ≤ ~1 hour</small></div>
+      <div class="arrow">→</div>
+      <div class="step">Visible to all visitors</div>
+    </div>
+    <ul>
+      <li>If you don’t see a change: hard-refresh the page, try an Incognito window, wait for ISR, or ask tech to redeploy / purge cache.</li>
+      <li>Wrong URL? Check <strong>URI Path</strong> and Redirects.</li>
+    </ul>
+
+    <!-- 14 -->
+    <h2>14. Troubleshooting</h2>
+    <table>
+      <thead>
+        <tr><th>Problem</th><th>Likely cause</th><th>What to do</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Can’t sign in to Studio</td>
+          <td>Not invited / wrong account</td>
+          <td>Ask Admin to invite your email in Sanity Manage</td>
+        </tr>
+        <tr>
+          <td>New fields missing (e.g. Mobile hero)</td>
+          <td>Browser cache / old Studio bundle</td>
+          <td>Hard refresh; confirm schema deploy; sign out/in</td>
+        </tr>
+        <tr>
+          <td>Published but site unchanged</td>
+          <td>ISR cache / wrong URI</td>
+          <td>Wait / hard refresh; verify URI Path; check draft vs published</td>
+        </tr>
+        <tr>
+          <td>Image won’t upload</td>
+          <td>Huge file / network / permissions</td>
+          <td>Compress under ~2–5 MB; retry; check Editor role</td>
+        </tr>
+        <tr>
+          <td>Can’t publish — validation error</td>
+          <td>Missing required field (often Alt text)</td>
+          <td>Read the red error; fill Alt text / required fields</td>
+        </tr>
+        <tr>
+          <td>404 on service URL</td>
+          <td>URI mismatch or unpublished</td>
+          <td>Match URI to address bar; publish; add Redirect if moved</td>
+        </tr>
+        <tr>
+          <td>Mobile shows wrong crop</td>
+          <td>No mobile image / hotspot</td>
+          <td>Upload Mobile hero image at 1080×1350; set hotspot</td>
+        </tr>
+        <tr>
+          <td>Form leads not in Sanity</td>
+          <td>Expected — leads aren’t CMS content</td>
+          <td>Check website <span class="mono">/admin/leads</span> and email/SMTP</td>
+        </tr>
+        <tr>
+          <td>Mega menu wrong links</td>
+          <td>Not edited in Studio Navigation alone</td>
+          <td>Edit <span class="mono">/admin/menu</span> → Save menu</td>
+        </tr>
+        <tr>
+          <td>Preview / draft link fails</td>
+          <td>Missing preview secret</td>
+          <td>Open preview from Studio Presentation only</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 15 -->
+    <h2>15. Quick checklists</h2>
+    <div class="two-col">
+      <div class="box">
+        <h4>Before publishing a service</h4>
+        <ul class="checklist">
+          <li>Page title is correct H1</li>
+          <li>URI Path matches final URL</li>
+          <li>Desktop hero uploaded (1920×900)</li>
+          <li>Mobile hero uploaded (1080×1350) if needed</li>
+          <li>Alt text on images</li>
+          <li>SEO title + description</li>
+          <li>FAQs / CTAs reviewed</li>
+          <li>Publish clicked</li>
+          <li>Live URL checked (Incognito)</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Before publishing a blog post</h4>
+        <ul class="checklist">
+          <li>Title &amp; slug set</li>
+          <li>Featured image + alt</li>
+          <li>Excerpt filled</li>
+          <li>Body headings structured</li>
+          <li>SEO fields filled</li>
+          <li>Publish + check /blogs/</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout ok" style="margin-top:1.2rem;">
+      <strong>Need help?</strong>
+      Content questions → clinic editor lead.<br />
+      Access / Studio invite → Sanity project Administrator.<br />
+      Website bugs / deploy / leads email → development team (Hostinger + Neon + SMTP).
+    </div>
+
+    <footer class="doc-foot">
+      Care Well Medical Centre — CMS User Guide · Studio: carewellcms.sanity.studio ·
+      Generated for staff training. Do not share login credentials in this document.
+    </footer>
+  </div>
+</body>
+</html>

@@ -30,6 +30,8 @@ export type SanityServiceDoc = {
     heading?: string;
     tagline?: string;
     image?: SanityImage;
+    /** Optional mobile-specific hero (falls back to `image`). */
+    imageMobile?: SanityImage;
     primaryCtaLabel?: string;
     secondaryCtaLabel?: string;
     quickFacts?: QuickFact[];

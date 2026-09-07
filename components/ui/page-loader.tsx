@@ -1,21 +1,17 @@
-import Image from "next/image";
-
+/**
+ * Lightweight route fallback — no GIF (protects LCP / bandwidth).
+ */
 export function PageLoader() {
   return (
     <div
-      className="flex min-h-screen items-center justify-center bg-background"
+      className="flex min-h-[40vh] flex-1 items-center justify-center bg-background"
       role="status"
       aria-live="polite"
       aria-busy="true"
     >
-      <Image
-        src="/page-loading-animation.gif"
-        alt=""
-        width={200}
-        height={200}
-        unoptimized
-        priority
-        aria-hidden="true"
+      <span
+        className="size-9 animate-spin rounded-full border-2 border-[#0A2540]/15 border-t-[#0A2540]"
+        aria-hidden
       />
       <span className="sr-only">Loading page</span>
     </div>

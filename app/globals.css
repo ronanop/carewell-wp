@@ -1095,120 +1095,38 @@
 
 @media (min-width: 1024px) {
   .homepage-compact {
-    zoom: 0.836;
-    width: 119.6172%; /* 100 / 0.836 */
-    max-width: none;
-    margin-inline: -9.8086%; /* center the oversized box */
+    /* Intentionally no CSS zoom/scale — those inflate CLS and hurt CWV. */
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
   }
 }
 
-@supports not (zoom: 1) {
-  .homepage-compact {
-    transform: none;
-  }
-
-  @media (min-width: 1024px) {
-    .homepage-compact {
-      transform: scale(0.836);
-      transform-origin: top center;
-      width: 119.6172%; /* 100 / 0.836 */
-      max-width: none;
-      margin-inline: -9.8086%; /* center the oversized box */
-    }
-  }
-}
-
-/* Homepage footer only: +10% vs surrounding .homepage-compact — desktop only. */
+/* Homepage footer: full width (no compensatory zoom). */
 .homepage-compact > footer {
   width: 100%;
   max-width: 100%;
 }
 
-@media (min-width: 1024px) {
-  .homepage-compact > footer {
-    zoom: 1.1;
-    width: 90.9091%; /* 100 / 1.1 */
-    max-width: none;
-    margin-inline: 4.54545%; /* center the scaled box */
-  }
-}
-
-@supports not (zoom: 1) {
-  .homepage-compact > footer {
-    transform: none;
-  }
-
-  @media (min-width: 1024px) {
-    .homepage-compact > footer {
-      transform: scale(1.1);
-      transform-origin: top center;
-      width: 90.9091%; /* 100 / 1.1 */
-      max-width: none;
-      margin-inline: 4.54545%; /* center the scaled box */
-    }
-  }
-}
-
-/* Comfortable mobile section rhythm once zoom is off (desktop/tablet tokens unchanged). */
+/* Comfortable mobile section rhythm. */
 @media (max-width: 767px) {
   .homepage-compact .section-padding {
-    padding-block: 3rem; /* 48px — between cramped and the 64px token */
+    padding-block: 3rem;
   }
 }
 
-/* Hero: slight visual shrink on desktop only — mobile keeps true 1× for touch UX.
-   Transform bounds are reported consistently by element inspection tools. */
+/* Hero: natural size — avoid transform scale (hurts LCP/CLS). */
 .hero-compact {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
 }
 
-@media (min-width: 1024px) {
-  .hero-compact {
-    transform: scale(0.9);
-    transform-origin: top center;
-    width: 111.1111%; /* 100 / 0.9 */
-    max-width: none;
-    margin-inline: -5.5556%; /* center the oversized box */
-  }
-}
-
-@supports not (zoom: 1) {
-  .hero-compact {
-    transform: none;
-  }
-
-  @media (min-width: 1024px) {
-    .hero-compact {
-      transform: scale(0.9);
-      transform-origin: top center;
-      width: 111.1111%; /* 100 / 0.9 */
-      max-width: none;
-      margin-inline: -5.5556%; /* center the oversized box */
-    }
-  }
-}
-
-/* Navbar: light visual shrink — keep sticky chrome compact without undersizing type. */
+/* Navbar: natural size — avoid transform scale (hurts CLS). */
 .navbar-compact {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
-  transform: scale(0.96);
-  transform-origin: top center;
-  width: 104.1667%; /* 100 / 0.96 */
-  max-width: none;
-  margin-inline: -2.0833%; /* center the oversized box */
-}
-
-@supports not (zoom: 1) {
-  .navbar-compact {
-    transform: none;
-    width: 100%;
-    max-width: 100%;
-    margin-inline: 0;
-  }
 }
 
 /* Desktop promo strip marquee (PromoStrip) */

@@ -39,7 +39,8 @@ export function StaggerReveal({
   stepMs = 70,
 }: StaggerRevealProps) {
   const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
+  // Above-the-fold: visible on first paint so LCP text/images are not opacity:0.
+  const [visible, setVisible] = useState(immediate);
   const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
@@ -56,10 +57,8 @@ export function StaggerReveal({
       return;
     }
 
-    if (immediate) {
-      const id = window.requestAnimationFrame(() => setVisible(true));
-      return () => window.cancelAnimationFrame(id);
-    }
+    // Already painted for above-the-fold; skip observer.
+    if (immediate) return;
 
     const node = ref.current;
     if (!node) return;

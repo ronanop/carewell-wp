@@ -55,30 +55,46 @@ async function main(): Promise<void> {
 
   const email = process.env.STUDIO_BOOTSTRAP_EMAIL?.toLowerCase();
   const password = process.env.STUDIO_BOOTSTRAP_PASSWORD;
+  const forceBootstrap =
+    process.env.STUDIO_BOOTSTRAP_FORCE === "1" ||
+    process.env.STUDIO_BOOTSTRAP_FORCE === "true";
 
   if (email && password && password.length >= 8) {
     const adminRole = await prisma.role.findUniqueOrThrow({
       where: { name: "ADMIN" },
     });
-    const passwordHash = await hash(password, 12);
-    await prisma.user.upsert({
-      where: { email },
-      create: {
-        email,
-        name: "Studio Admin",
-        passwordHash,
-        roleId: adminRole.id,
-      },
-      update: {
-        passwordHash,
-        roleId: adminRole.id,
-        active: true,
-      },
-    });
-    console.log(`[seed] Admin user ready: ${email}`);
+    const existing = await prisma.user.findUnique({ where: { email } });
+
+    if (!existing) {
+      const passwordHash = await hash(password, 12);
+      await prisma.user.create({
+        data: {
+          email,
+          name: "Leads Admin",
+          passwordHash,
+          roleId: adminRole.id,
+        },
+      });
+      console.log(`[seed] Created admin user: ${email}`);
+    } else if (forceBootstrap) {
+      const passwordHash = await hash(password, 12);
+      await prisma.user.update({
+        where: { email },
+        data: {
+          passwordHash,
+          roleId: adminRole.id,
+          active: true,
+        },
+      });
+      console.log(`[seed] Reset admin password (STUDIO_BOOTSTRAP_FORCE): ${email}`);
+    } else {
+      console.log(
+        `[seed] Admin already exists (${email}) — password unchanged. Set STUDIO_BOOTSTRAP_FORCE=true to reset.`,
+      );
+    }
   } else {
     console.log(
-      "[seed] Roles ready. Set STUDIO_BOOTSTRAP_EMAIL / STUDIO_BOOTSTRAP_PASSWORD to create an admin.",
+      "[seed] Roles ready. Set STUDIO_BOOTSTRAP_EMAIL / STUDIO_BOOTSTRAP_PASSWORD to create an admin on first deploy.",
     );
   }
 

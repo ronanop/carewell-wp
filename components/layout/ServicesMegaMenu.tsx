@@ -36,6 +36,7 @@ type MegaMenuContextValue = {
   activeId: string;
   setActiveId: (id: string) => void;
   activeCategory: MegaServiceCategory;
+  categories: MegaServiceCategory[];
   panelId: string;
 };
 
@@ -49,9 +50,17 @@ function useMegaMenu() {
   return context;
 }
 
-export function MegaMenuProvider({ children }: { children: ReactNode }) {
+export function MegaMenuProvider({
+  children,
+  categories = MEGA_SERVICE_CATEGORIES,
+}: {
+  children: ReactNode;
+  categories?: MegaServiceCategory[];
+}) {
+  const menuCategories =
+    categories.length > 0 ? categories : MEGA_SERVICE_CATEGORIES;
   const [open, setOpen] = useState(false);
-  const [activeId, setActiveId] = useState(MEGA_SERVICE_CATEGORIES[0].id);
+  const [activeId, setActiveId] = useState(menuCategories[0].id);
   const panelId = useId();
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -73,8 +82,8 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
   }, [clearCloseTimer]);
 
   const activeCategory =
-    MEGA_SERVICE_CATEGORIES.find((category) => category.id === activeId) ??
-    MEGA_SERVICE_CATEGORIES[0];
+    menuCategories.find((category) => category.id === activeId) ??
+    menuCategories[0];
 
   useEffect(() => {
     if (!open) return;
@@ -89,6 +98,12 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => () => clearCloseTimer(), [clearCloseTimer]);
 
+  useEffect(() => {
+    if (!menuCategories.some((c) => c.id === activeId)) {
+      setActiveId(menuCategories[0].id);
+    }
+  }, [menuCategories, activeId]);
+
   const value = useMemo(
     () => ({
       open,
@@ -98,6 +113,7 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
       activeId,
       setActiveId,
       activeCategory,
+      categories: menuCategories,
       panelId,
     }),
     [
@@ -106,8 +122,9 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
       scheduleClose,
       activeId,
       activeCategory,
+      menuCategories,
       panelId,
-    ]
+    ],
   );
 
   return (
@@ -251,6 +268,7 @@ export function ServicesMegaMenuPanel() {
     activeId,
     setActiveId,
     activeCategory,
+    categories,
     panelId,
   } = useMegaMenu();
 
@@ -271,7 +289,7 @@ export function ServicesMegaMenuPanel() {
       <div className="container-content py-6 md:py-8">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_15.5rem] lg:items-start">
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4 xl:gap-8">
-            {MEGA_SERVICE_CATEGORIES.map((category) => (
+            {categories.map((category) => (
               <ServiceColumn
                 key={category.id}
                 category={category}

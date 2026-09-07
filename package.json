@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "node scripts/dev-clean.mjs",
     "dev:clean": "node scripts/dev-clean.mjs",
-    "build": "prisma generate && next build",
-    "start": "next start",
+    "build": "node scripts/hostinger-build.mjs",
+    "build:next": "prisma generate && next build",
+    "start": "node server.js",
     "lint": "eslint",
     "structure:wp-backup": "node scripts/structure-wordpress-backup.mjs",
     "import:sanity": "node scripts/import-wordpress-to-sanity.mjs",
@@ -17,6 +18,7 @@
     "populate:service": "node scripts/populate-service-from-backup.mjs",
     "populate:service-list": "node scripts/generate-service-pages-list.mjs",
     "sanity:deploy-schema": "node scripts/_deploy-sanity-schema.mjs",
+    "sanity:deploy-studio": "node scripts/_deploy-sanity-studio.mjs",
     "sanity:backfill-page-builder": "node scripts/backfill-service-page-builder.mjs",
     "sanity:backfill-blog-page-builder": "node scripts/backfill-blog-page-builder.mjs",
     "postinstall": "prisma generate",
@@ -24,6 +26,9 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"

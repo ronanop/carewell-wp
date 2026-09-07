@@ -9,14 +9,18 @@ import "./globals.css";
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
-/** Monospace — Gutenberg code blocks only */
+/** Monospace — rarely used; do not compete with LCP font preload. */
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
@@ -27,6 +31,17 @@ export const metadata: Metadata = {
   },
   description:
     "Cosmetic surgery, hair transplant, and dermatology clinic in Delhi — Care Well Medical Centre.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -45,6 +60,11 @@ export default function RootLayout({
       lang="en"
       className={`${plusJakartaSans.variable} ${geistMono.variable} h-full`}
     >
+      <head>
+        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      </head>
       <body className="flex min-h-full flex-col">
         {children}
         <FloatingWhatsApp />

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { TreatmentHeroBookingCard } from "@/components/service/TreatmentHeroBookingCard";
@@ -85,7 +84,10 @@ export type HeroBannerProps = SectionBaseProps & {
   uri?: string;
   /** Optional override; defaults to `buildUriBreadcrumbs(uri)`. */
   breadcrumbs?: HeroBreadcrumb[];
+  /** Desktop / large screens (lg+). */
   image?: SanityImage;
+  /** Phones & tablets; falls back to `image` when omitted. */
+  imageMobile?: SanityImage;
   /** Falls back to shared service hero photo when omitted. */
   backgroundSrc?: string;
   primaryCtaLabel?: string;
@@ -110,6 +112,7 @@ export function HeroBanner({
   uri = "",
   breadcrumbs,
   image,
+  imageMobile,
   backgroundSrc,
   primaryCtaLabel = "Book Free Consultation",
   secondaryCtaLabel = "WhatsApp",
@@ -119,8 +122,13 @@ export function HeroBanner({
   showBookingCard = true,
   className,
 }: HeroBannerProps) {
-  const sanitySrc = sectionImageUrl(image, 1920);
-  const bgSrc = sanitySrc || backgroundSrc || DEFAULT_HERO_BG;
+  const desktopSrc =
+    sectionImageUrl(image, 1920) || backgroundSrc || DEFAULT_HERO_BG;
+  const mobileSrc =
+    sectionImageUrl(imageMobile, 1080) ||
+    sectionImageUrl(image, 1080) ||
+    backgroundSrc ||
+    DEFAULT_HERO_BG;
   const whatsappHref =
     secondaryCtaHref || `https://wa.me/${whatsappNumber.replace(/\D/g, "")}`;
   const normalizedUri = uri
@@ -148,14 +156,19 @@ export function HeroBanner({
   return (
     <header id={id} className={cn("relative overflow-hidden", className)}>
       <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <Image
-          src={bgSrc}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[center_22%] max-lg:scale-[1.08] lg:object-[center_30%]"
-        />
+        {/* Art direction: browser fetches only the matching source */}
+        <picture className="absolute inset-0 block h-full w-full">
+          <source media="(min-width: 1024px)" srcSet={desktopSrc} />
+          <img
+            src={mobileSrc}
+            alt=""
+            width={1080}
+            height={1350}
+            fetchPriority="high"
+            decoding="async"
+            className="h-full w-full object-cover object-[center_22%] max-lg:scale-[1.08] lg:object-[center_30%]"
+          />
+        </picture>
         <div
           className="absolute inset-0 hidden lg:block"
           style={{

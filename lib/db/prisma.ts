@@ -34,8 +34,8 @@ export function getPrisma(): PrismaClient {
   if (!globalForPrisma.appPrisma) {
     globalForPrisma.appPrisma = createPrismaClient();
   } else if (
-    typeof (globalForPrisma.appPrisma as { sitePageView?: unknown })
-      .sitePageView === "undefined"
+    typeof (globalForPrisma.appPrisma as { siteMegaMenu?: unknown })
+      .siteMegaMenu === "undefined"
   ) {
     const stale = globalForPrisma.appPrisma;
     globalForPrisma.appPrisma = createPrismaClient();

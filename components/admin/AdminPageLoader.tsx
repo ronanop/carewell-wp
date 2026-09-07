@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 /** Compact loader for admin route transitions (not full-viewport). */
 export function AdminPageLoader() {
   return (
@@ -11,14 +9,9 @@ export function AdminPageLoader() {
       aria-live="polite"
       aria-busy="true"
     >
-      <Image
-        src="/page-loading-animation.gif"
-        alt=""
-        width={120}
-        height={120}
-        unoptimized
-        priority
-        aria-hidden="true"
+      <span
+        className="size-8 animate-spin rounded-full border-2 border-slate-200 border-t-[#0A2540]"
+        aria-hidden
       />
       <p className="text-sm text-slate-500">Loading…</p>
       <span className="sr-only">Loading page</span>

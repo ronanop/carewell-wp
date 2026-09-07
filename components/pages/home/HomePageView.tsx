@@ -2,26 +2,13 @@
  * Homepage — single React tree for public site and Static Experience Studio (ADR-015/016).
  */
 
-import { AboutSection } from "@/components/home/AboutSection";
-import { AiSkinAnalysis } from "@/components/home/AiSkinAnalysis";
-import {
-  BlogSection,
-  type HomeBlogPost,
-} from "@/components/home/BlogSection";
-import { ConsultationSpecialties } from "@/components/home/ConsultationSpecialties";
-import { CTABanner } from "@/components/home/CTABanner";
-import { DoctorsSection } from "@/components/home/DoctorsSection";
-import { GoogleReviewsSection } from "@/components/home/GoogleReviewsSection";
+import dynamic from "next/dynamic";
+
 import { HeroSection } from "@/components/home/HeroSection";
-import { LocationLeadSection } from "@/components/home/LocationLeadSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
-import {
-  TestimonialsSection,
-  type HomeYouTubeVideo,
-} from "@/components/home/TestimonialsSection";
-import { TreatmentJourney } from "@/components/home/TreatmentJourney";
 import { TrustIndicators } from "@/components/home/TrustIndicators";
-import { WhyChooseUs } from "@/components/home/WhyChooseUs";
+import type { HomeBlogPost } from "@/components/home/BlogSection";
+import type { HomeYouTubeVideo } from "@/components/home/TestimonialsSection";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticEditProvider } from "@/components/pages/StaticEditProvider";
@@ -30,6 +17,49 @@ import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { isSectionEnabled } from "@/lib/static-pages/applyOverrides";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 import type { ReactNode } from "react";
+
+/** Below-the-fold sections — split client bundles so first paint stays light. */
+const TreatmentJourney = dynamic(() =>
+  import("@/components/home/TreatmentJourney").then((m) => m.TreatmentJourney),
+);
+const AiSkinAnalysis = dynamic(() =>
+  import("@/components/home/AiSkinAnalysis").then((m) => m.AiSkinAnalysis),
+);
+const DoctorsSection = dynamic(() =>
+  import("@/components/home/DoctorsSection").then((m) => m.DoctorsSection),
+);
+const AboutSection = dynamic(() =>
+  import("@/components/home/AboutSection").then((m) => m.AboutSection),
+);
+const ConsultationSpecialties = dynamic(() =>
+  import("@/components/home/ConsultationSpecialties").then(
+    (m) => m.ConsultationSpecialties,
+  ),
+);
+const WhyChooseUs = dynamic(() =>
+  import("@/components/home/WhyChooseUs").then((m) => m.WhyChooseUs),
+);
+const TestimonialsSection = dynamic(() =>
+  import("@/components/home/TestimonialsSection").then(
+    (m) => m.TestimonialsSection,
+  ),
+);
+const BlogSection = dynamic(() =>
+  import("@/components/home/BlogSection").then((m) => m.BlogSection),
+);
+const GoogleReviewsSection = dynamic(() =>
+  import("@/components/home/GoogleReviewsSection").then(
+    (m) => m.GoogleReviewsSection,
+  ),
+);
+const LocationLeadSection = dynamic(() =>
+  import("@/components/home/LocationLeadSection").then(
+    (m) => m.LocationLeadSection,
+  ),
+);
+const CTABanner = dynamic(() =>
+  import("@/components/home/CTABanner").then((m) => m.CTABanner),
+);
 
 export type HomePageViewProps = StaticPageViewProps & {
   /** Latest posts for BlogSection (optional — empty until Sanity blogs wire up). */
@@ -47,11 +77,7 @@ function HomeSectionEnter({
   immediate?: boolean;
 }) {
   return (
-    <StaggerReveal
-      immediate={immediate}
-      stepMs={0}
-      className="w-full"
-    >
+    <StaggerReveal immediate={immediate} stepMs={0} className="w-full">
       {children}
     </StaggerReveal>
   );

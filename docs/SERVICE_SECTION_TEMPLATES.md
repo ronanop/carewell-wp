@@ -24,7 +24,7 @@ Once these are filled from Sanity, every service page can share one layout.
 
 | # | Component | Sanity path | Key props |
 |---|-----------|-------------|-----------|
-| 1 | `HeroBanner` | `hero.*`, `title`, `category`, `uri` | `heading`, `tagline`, `image`, CTAs, `quickFacts` |
+| 1 | `HeroBanner` | `hero.*`, `title`, `category`, `uri` | `heading`, `tagline`, `image` (desktop 1920×900), `imageMobile` (1080×1350), CTAs, `quickFacts` |
 | 2 | `QuickFactsCard` | `hero.quickFacts`, `hero.quickFactsNote` | `facts[]` {label,value}, `note` |
 | 3 | `BookingFormSection` | `booking.*` + `title` | All form copy from CMS; empty `booking.title` hides section |
 | 4 | `OverviewSection` | `overview.*` | `eyebrow`, `heading`, PT `body`, `illustration`, insights* |

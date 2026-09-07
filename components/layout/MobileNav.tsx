@@ -6,7 +6,10 @@ import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { SiteLogo } from "@/components/brand/SiteLogo";
-import { MEGA_SERVICE_CATEGORIES } from "@/lib/navigation/services-mega-menu";
+import {
+  MEGA_SERVICE_CATEGORIES,
+  type MegaServiceCategory,
+} from "@/lib/navigation/services-mega-menu";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -17,7 +20,13 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
-export function MobileNav() {
+export function MobileNav({
+  categories = MEGA_SERVICE_CATEGORIES,
+}: {
+  categories?: MegaServiceCategory[];
+}) {
+  const menuCategories =
+    categories.length > 0 ? categories : MEGA_SERVICE_CATEGORIES;
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -164,7 +173,7 @@ export function MobileNav() {
                   >
                     <div className="min-h-0 overflow-hidden">
                       <ul className="ml-3 space-y-3 border-l border-border/70 py-2 pl-3">
-                        {MEGA_SERVICE_CATEGORIES.map((category) => (
+                        {menuCategories.map((category) => (
                           <li key={category.id}>
                             <Link
                               href={category.href}

@@ -9,10 +9,13 @@ import {
   ServicesMegaMenuPanel,
   ServicesMegaMenuTrigger,
 } from "@/components/layout/ServicesMegaMenu";
+import { getMegaMenuCategories } from "@/lib/navigation/getMegaMenu";
 
-export function NavbarPlaceholder() {
+export async function NavbarPlaceholder() {
+  const categories = await getMegaMenuCategories();
+
   return (
-    <MegaMenuProvider>
+    <MegaMenuProvider categories={categories}>
       {/* Sticky chrome: desktop promo + navbar stick together at top */}
       <div className="sticky top-0 z-sticky">
         <PromoStrip />
@@ -58,7 +61,7 @@ export function NavbarPlaceholder() {
             </nav>
 
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-              <MobileNav />
+              <MobileNav categories={categories} />
               <NavbarCtaButton />
             </div>
           </div>
