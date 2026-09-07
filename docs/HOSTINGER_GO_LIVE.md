@@ -8,12 +8,15 @@ Canonical domain: `https://www.carewellmedicalcentre.com`
 
 On every GitHub push, Hostinger runs **`npm run build`**, which does:
 
-1. `prisma generate`
-2. `prisma db push` (Neon schema, incl. leads + SitePageView)
-3. `prisma db seed` (roles + first `/admin` user if missing)
-4. `next build`
+1. Fail fast if `DATABASE_URL` or `AUTH_SECRET` missing
+2. `prisma generate`
+3. `prisma db push` (Neon schema, incl. leads + `SitePageView` + `SiteMegaMenu`)
+4. `prisma db seed` (roles + first `/admin` user if missing)
+5. `next build`
 
 Then Hostinger starts **`node server.js`** (entry file), which runs Next on the platform `PORT`.
+
+**Important:** Build tools (`prisma`, `tsx`, `typescript`, `tailwindcss`, `@types/*`) live in **`dependencies`** so Hostinger production installs (which often omit `devDependencies`) still succeed.
 
 ### hPanel → Deployments → Deployment settings
 

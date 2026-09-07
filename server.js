@@ -5,6 +5,7 @@
  * Set "Entry file" in hPanel Deployments to: server.js
  */
 const { spawn } = require("node:child_process");
+const fs = require("node:fs");
 const path = require("node:path");
 
 const port = process.env.PORT || "3000";
@@ -16,6 +17,15 @@ const nextBin = path.join(
   "bin",
   "next",
 );
+
+if (!fs.existsSync(nextBin)) {
+  console.error(
+    "[server] next binary missing at",
+    nextBin,
+    "- ensure npm install and npm run build completed successfully.",
+  );
+  process.exit(1);
+}
 
 const child = spawn(
   process.execPath,
