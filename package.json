@@ -11,6 +11,7 @@
     "lint": "eslint",
     "structure:wp-backup": "node scripts/structure-wordpress-backup.mjs",
     "import:sanity": "node scripts/import-wordpress-to-sanity.mjs",
+    "import:redirects": "node scripts/import-wp-redirects.mjs",
     "import:posts-graphql": "node scripts/import-posts-from-graphql.mjs",
     "pilot:sanity-service": "node scripts/pilot-service-from-page.mjs",
     "populate:hair-transplant": "node scripts/populate-hair-transplant-service.mjs",

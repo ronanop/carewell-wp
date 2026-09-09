@@ -52,7 +52,13 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
-          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          // Studio preview embeds the public site. frame-ancestors replaces
+          // X-Frame-Options so carewellcms.sanity.studio can show the real page.
+          {
+            key: "Content-Security-Policy",
+            value:
+              "frame-ancestors 'self' https://www.sanity.io https://*.sanity.studio http://localhost:3333",
+          },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {

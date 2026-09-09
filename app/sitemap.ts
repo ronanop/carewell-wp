@@ -18,10 +18,23 @@ const STATIC_PATHS = [
   "/terms/",
 ] as const;
 
+function toPath(path: string): string {
+  const trimmed = path.trim();
+  if (/^https?:\/\//i.test(trimmed)) {
+    try {
+      const url = new URL(trimmed);
+      const pathname = url.pathname || "/";
+      return pathname.endsWith("/") ? pathname : `${pathname}/`;
+    } catch {
+      return "/";
+    }
+  }
+  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+}
+
 function absoluteUrl(path: string): string {
   const base = SITE_URL.replace(/\/$/, "");
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  return `${base}${normalized}`;
+  return `${base}${toPath(path)}`;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

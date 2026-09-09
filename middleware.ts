@@ -19,6 +19,39 @@ const BLOCKED_PREFIXES = [
   "/sanity/service",
 ] as const;
 
+const CANONICAL_ORIGIN = "https://www.carewellmedicalcentre.com";
+
+function isLocalHost(host: string): boolean {
+  const name = host.split(":")[0]?.replace(/^\[|\]$/g, "").toLowerCase() ?? "";
+  return name === "localhost" || name === "127.0.0.1" || name === "::1";
+}
+
+/**
+ * Behind Hostinger the Node process sees itself as localhost:3000.
+ * Never send public visitors there.
+ */
+function publicOrigin(req: {
+  nextUrl: URL;
+  headers: Headers;
+}): string {
+  const forwardedHost = req.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  const host = forwardedHost || req.headers.get("host")?.trim() || "";
+  const forwardedProto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  const proto = forwardedProto === "http" || forwardedProto === "https" ? forwardedProto : "https";
+
+  if (host && !isLocalHost(host)) {
+    return `${proto}://${host}`;
+  }
+
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "");
+  if (configured && !isLocalHost(configured)) {
+    return configured;
+  }
+
+  if (process.env.NODE_ENV === "production") return CANONICAL_ORIGIN;
+  return req.nextUrl.origin;
+}
+
 function normalizePath(pathname: string): string {
   if (!pathname.startsWith("/")) return `/${pathname}`;
   if (pathname.length > 1 && pathname.endsWith("/")) return pathname;
@@ -77,9 +110,9 @@ export default auth(async (req) => {
           ? hit.to
           : new URL(
               hit.to.startsWith("/") ? hit.to : `/${hit.to}`,
-              req.nextUrl.origin,
+              publicOrigin(req),
             ).toString();
-        return NextResponse.redirect(target, hit.permanent ? 308 : 307);
+        return NextResponse.redirect(target, hit.permanent ? 301 : 302);
       }
     } catch {
       // Fail open — never block the site if Sanity redirects fail

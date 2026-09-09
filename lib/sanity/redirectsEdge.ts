@@ -24,7 +24,8 @@ const edgeClient = createClient({
   projectId,
   dataset,
   apiVersion: "2025-01-01",
-  useCdn: true,
+  // Bypass the CDN so Studio edits show up within the middleware cache window.
+  useCdn: false,
 });
 
 export async function fetchSanityRedirectsEdge(): Promise<SanityRedirect[]> {

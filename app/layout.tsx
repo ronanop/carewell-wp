@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
+import { DraftPreviewBar } from "@/components/layout/DraftPreviewBar";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import "./globals.css";
@@ -23,7 +25,7 @@ const geistMono = Geist_Mono({
   adjustFontFallback: true,
 });
 
-export const metadata: Metadata = {
+const metadataBaseConfig: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {
     google: "fY6UpMdyowNLXucOjBTc7Pwapc6h3E19iOJNZVBWf-Q",
@@ -58,6 +60,15 @@ export const metadata: Metadata = {
   },
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  const { isEnabled } = await draftMode();
+  if (!isEnabled) return metadataBaseConfig;
+  return {
+    ...metadataBaseConfig,
+    robots: { index: false, follow: false },
+  };
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -74,6 +85,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
       </head>
       <body className="flex min-h-full flex-col">
+        <DraftPreviewBar />
         {children}
         <FloatingWhatsApp />
         <GoogleAnalytics />

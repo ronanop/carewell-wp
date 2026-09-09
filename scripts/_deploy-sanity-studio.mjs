@@ -30,7 +30,7 @@ console.log(
 
 const result = spawnSync(
   "npx",
-  ["sanity@latest", "deploy", "--yes"],
+  ["--yes", "sanity@latest", "deploy", "--yes"],
   {
     stdio: "inherit",
     env,

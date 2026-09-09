@@ -1,7 +1,14 @@
 export const SITE_NAME = "Care Well Medical Centre";
 
+export const CANONICAL_SITE_URL = "https://www.carewellmedicalcentre.com";
+
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+/** Public origin for SEO. Never emit localhost (local `.env` uses that for dev). */
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.carewellmedicalcentre.com";
+  configuredSiteUrl && !/localhost|127\.0\.0\.1/i.test(configuredSiteUrl)
+    ? configuredSiteUrl
+    : CANONICAL_SITE_URL;
 
 export const DEFAULT_OG_IMAGE = "/images/dr-sandeep-bhasin.jpg";
 

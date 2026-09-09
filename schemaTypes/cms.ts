@@ -176,6 +176,8 @@ export const redirect = defineType({
   name: "redirect",
   title: "Redirect",
   type: "document",
+  description:
+    "Old URL → new URL. Enabled rules go live on the public site within about 5 minutes.",
   fields: [
     defineField({
       name: "from",

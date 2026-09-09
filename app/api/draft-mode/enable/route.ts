@@ -9,12 +9,20 @@ import { sanityProjectId, sanityDataset } from "@/lib/sanity/client";
  * Enables Next.js Draft Mode for Sanity Presentation / preview.
  * Requires a valid Sanity preview-url secret (not merely a token existing in env).
  */
+function previewReadToken(): string | undefined {
+  const token =
+    process.env.SANITY_API_TOKEN?.trim() ||
+    process.env.SANITY_WRITE_TOKEN?.trim();
+  return token || undefined;
+}
+
 export async function GET(request: Request) {
-  const token = process.env.SANITY_API_TOKEN;
+  const token = previewReadToken();
   if (!token) {
-    return new NextResponse("Missing SANITY_API_TOKEN (Viewer) for preview", {
-      status: 401,
-    });
+    return new NextResponse(
+      "Missing SANITY_API_TOKEN or SANITY_WRITE_TOKEN for preview",
+      { status: 401 },
+    );
   }
 
   const client = createClient({
