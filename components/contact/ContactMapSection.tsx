@@ -1,6 +1,7 @@
+import { CLINIC_GOOGLE_MAPS_EMBED_URL } from "@/lib/maps/googleMapsEmbed";
+
 /**
- * Map section with Google Maps embed placeholder (no API key).
- * Update q= / lat,lng when exact clinic coordinates are provided.
+ * Map section with official Care Well Medical Centre Google Maps embed.
  */
 export function ContactMapSection() {
   return (
@@ -21,17 +22,13 @@ export function ContactMapSection() {
           </p>
         </div>
 
-        {/*
-          Placeholder Google Maps embed (no API key).
-          Update q= / lat,lng when exact clinic coordinates are provided.
-        */}
         <div className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-2xl border border-border/60 bg-[#E8EEF2] shadow-[0_8px_30px_rgb(10_37_64/0.06)] aspect-[16/9] min-h-[280px] sm:min-h-[360px]">
           <iframe
             title="Care Well Medical Centre Clinic — Chittaranjan Park, New Delhi"
-            src="https://maps.google.com/maps?q=Chittaranjan+Park,+New+Delhi,+Delhi&z=15&output=embed"
+            src={CLINIC_GOOGLE_MAPS_EMBED_URL}
             className="h-full min-h-[280px] w-full border-0 sm:min-h-[360px]"
             loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
         </div>

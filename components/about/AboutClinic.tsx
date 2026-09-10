@@ -2,6 +2,7 @@ import { Clock, MapPin, Phone } from "lucide-react";
 
 import { AboutReveal } from "@/components/about/AboutReveal";
 import { clinicDetails } from "@/components/about/content";
+import { CLINIC_GOOGLE_MAPS_EMBED_URL } from "@/lib/maps/googleMapsEmbed";
 
 export function AboutClinic() {
   return (
@@ -75,10 +76,10 @@ export function AboutClinic() {
             <div className="min-h-[280px] overflow-hidden rounded-2xl border border-border/60 bg-muted sm:min-h-[320px] aspect-[16/10] lg:aspect-auto lg:min-h-full">
               <iframe
                 title="Care Well Medical Centre — Chittaranjan Park, New Delhi"
-                src="https://maps.google.com/maps?q=House+No.+1,+NRI+Complex,+Chittaranjan+Park,+New+Delhi+110019&z=15&output=embed"
+                src={CLINIC_GOOGLE_MAPS_EMBED_URL}
                 className="h-full min-h-[280px] w-full border-0 sm:min-h-[320px]"
                 loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
             </div>

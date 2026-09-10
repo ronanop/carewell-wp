@@ -204,7 +204,7 @@ export const homepage = defineType({
       initialValue: [
         { label: "Contact Us", href: "/contact" },
         { label: "Blog", href: "/blogs" },
-        { label: "FAQs", href: "/faqs" },
+        { label: "FAQs", href: "/faq" },
         { label: "Privacy Policy", href: "/privacy-policy" },
         { label: "Disclaimer", href: "/disclaimer" },
       ],

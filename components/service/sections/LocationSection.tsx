@@ -4,6 +4,12 @@ import { resolveGoogleMapsEmbedUrl } from "@/lib/maps/googleMapsEmbed";
 import { cn } from "@/lib/utils";
 import type { SectionBaseProps } from "./types";
 
+/** Fixed clinic details — same on every service page (not CMS-overridable). */
+export const CLINIC_LOCATION_ADDRESS =
+  "Care Well Medical Centre, Chittaranjan Park, South Delhi 110019";
+export const CLINIC_LOCATION_PHONE = "+91 9667977499";
+export const CLINIC_LOCATION_HOURS = "Mon–Sun · 10:00 AM – 7:00 PM";
+
 export type LocationSectionProps = SectionBaseProps & {
   /** CMS: location.eyebrow */
   eyebrow?: string;
@@ -11,11 +17,20 @@ export type LocationSectionProps = SectionBaseProps & {
   heading?: string;
   /** @deprecated Prefer `heading` — kept for gallery / older call sites */
   title?: string;
-  /** CMS: location.address */
+  /**
+   * Ignored — address is fixed via `CLINIC_LOCATION_ADDRESS`.
+   * Kept so existing call sites / CMS props keep type-checking.
+   */
   address?: string;
-  /** CMS: location.hours */
+  /**
+   * Ignored — hours are fixed via `CLINIC_LOCATION_HOURS`.
+   * Kept so existing call sites / CMS props keep type-checking.
+   */
   hours?: string;
-  /** CMS: location.phone */
+  /**
+   * Ignored — phone is fixed via `CLINIC_LOCATION_PHONE`.
+   * Kept so existing call sites / CMS props keep type-checking.
+   */
   phone?: string;
   /** CMS: location.mapHref — “Open in Maps” link when embed is absent */
   mapHref?: string;
@@ -25,7 +40,7 @@ export type LocationSectionProps = SectionBaseProps & {
 
 /**
  * Clinic visit band — details + optional Google Map embed.
- * React owns layout; CMS owns copy and map URLs.
+ * Address, hours, and phone are fixed in React; CMS owns map URLs / headings.
  * Empty when no address/hours/phone and no map → null.
  */
 export function LocationSection({
@@ -33,18 +48,15 @@ export function LocationSection({
   eyebrow,
   heading,
   title,
-  address,
-  hours,
-  phone,
   mapHref,
   mapEmbedUrl,
   className,
 }: LocationSectionProps) {
   const resolvedEyebrow = eyebrow?.trim() || "";
   const resolvedHeading = (heading ?? title)?.trim() || "";
-  const resolvedAddress = address?.trim() || "";
-  const resolvedHours = hours?.trim() || "";
-  const resolvedPhone = phone?.trim() || "";
+  const resolvedAddress = CLINIC_LOCATION_ADDRESS;
+  const resolvedHours = CLINIC_LOCATION_HOURS;
+  const resolvedPhone = CLINIC_LOCATION_PHONE;
   const mapsLink = mapHref?.trim() || "";
   const embedSrc = resolveGoogleMapsEmbedUrl({
     mapEmbedUrl,

@@ -4,7 +4,7 @@ import { visionPoints } from "@/components/about/content";
 export function AboutVisionMission() {
   return (
     <section className="bg-background" aria-labelledby="vision-heading">
-      <div className="container-content section-padding">
+      <div className="container-content section-padding !pt-6 md:!pt-8 lg:!pt-8">
         <AboutReveal className="mx-auto max-w-2xl text-center">
           <p className="text-label uppercase tracking-[0.16em] text-accent-gold-600">
             Purpose

@@ -5,6 +5,7 @@ import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
 import { DraftPreviewBar } from "@/components/layout/DraftPreviewBar";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
+import { SmartBookingPopupLazy } from "@/components/leads/SmartBookingPopupLazy";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import "./globals.css";
 
@@ -88,6 +89,7 @@ export default function RootLayout({
         <DraftPreviewBar />
         {children}
         <FloatingWhatsApp />
+        <SmartBookingPopupLazy />
         <GoogleAnalytics />
         <SiteAnalytics />
       </body>

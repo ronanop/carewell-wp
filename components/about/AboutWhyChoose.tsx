@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export function AboutWhyChoose() {
   return (
     <section className="bg-background" aria-labelledby="why-choose-heading">
-      <div className="container-content section-padding">
+      <div className="container-content section-padding !pb-6 md:!pb-8 lg:!pb-8">
         <AboutReveal className="mx-auto max-w-2xl text-center">
           <p className="text-label uppercase tracking-[0.16em] text-accent-gold-600">
             Why Care Well
@@ -28,7 +28,7 @@ export function AboutWhyChoose() {
               <li
                 className={cn(
                   "grid gap-4 border-t border-border/70 py-8 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:gap-8 sm:py-10",
-                  index === whyChoosePillars.length - 1 && "border-b",
+                  index === whyChoosePillars.length - 1 && "border-b !pb-4 sm:!pb-5",
                 )}
               >
                 <span

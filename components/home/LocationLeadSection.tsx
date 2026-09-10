@@ -10,6 +10,7 @@ import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { submitConsultationLeadAction } from "@/lib/leads/actions/leadActions";
 import { collectLeadAttribution } from "@/lib/leads/client/attribution";
 import { trackGaLeadSubmit } from "@/lib/analytics/ga";
+import { CLINIC_GOOGLE_MAPS_EMBED_URL } from "@/lib/maps/googleMapsEmbed";
 import {
   resolveElementField,
   resolveElementText,
@@ -37,7 +38,7 @@ const fieldClassName = cn(
 const DEFAULT_HEADING = "Conveniently Located in South Delhi";
 const DEFAULT_ADDRESS =
   "Chittaranjan Park, near market area. Mon–Sun 10:00 AM to 7:00 PM.";
-const DEFAULT_MAP_QUERY = "Chittaranjan Park, New Delhi, Delhi";
+const DEFAULT_MAP_QUERY = "Care Well Medical Centre, Chittaranjan Park, New Delhi";
 const DEFAULT_MAP_ZOOM = 15;
 const DEFAULT_NAME_LABEL = "Name";
 const DEFAULT_NAME_PLACEHOLDER = "Your full name";
@@ -49,9 +50,17 @@ const DEFAULT_SUCCESS = "Thank you — we'll be in touch shortly.";
 const DEFAULT_PRIVACY = "100% Private | Response within 2 hours | No spam";
 
 function buildMapEmbedUrl(query: string, zoom: number | string) {
-  const q = encodeURIComponent(query);
+  const q = query.trim();
+  // Default / legacy area queries → official clinic place pin
+  if (
+    !q ||
+    q === DEFAULT_MAP_QUERY ||
+    q === "Chittaranjan Park, New Delhi, Delhi"
+  ) {
+    return CLINIC_GOOGLE_MAPS_EMBED_URL;
+  }
   const z = Number(zoom) || DEFAULT_MAP_ZOOM;
-  return `https://maps.google.com/maps?q=${q}&z=${z}&output=embed`;
+  return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=${z}&output=embed`;
 }
 
 /**
@@ -248,7 +257,7 @@ export function LocationLeadSection() {
                       src={src || mapSrc}
                       className="absolute inset-0 h-full w-full max-w-full border-0"
                       loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
+                      referrerPolicy="strict-origin-when-cross-origin"
                       allowFullScreen
                     />
                   );

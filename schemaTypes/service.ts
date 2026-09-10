@@ -1838,17 +1838,26 @@ export const service = defineType({
           type: "text",
           rows: 3,
           title: "Address",
+          description:
+            "Display is fixed in React (Chittaranjan Park, South Delhi 110019). Field kept for Studio reference only.",
+          initialValue:
+            "Care Well Medical Centre, Chittaranjan Park, South Delhi 110019",
         }),
         defineField({
           name: "hours",
           type: "string",
           title: "Hours",
-          description: 'e.g. "Mon–Sat · by appointment"',
+          description:
+            "Display is fixed in React (Mon–Sun · 10:00 AM – 7:00 PM). Field kept for Studio reference only.",
+          initialValue: "Mon–Sun · 10:00 AM – 7:00 PM",
         }),
         defineField({
           name: "phone",
           type: "string",
           title: "Phone",
+          description:
+            "Display is fixed in React (+91 9667977499). Field kept for Studio reference only.",
+          initialValue: "+91 9667977499",
         }),
         defineField({
           name: "mapHref",
@@ -1968,8 +1977,8 @@ export const service = defineType({
           name: "secondaryHref",
           type: "string",
           title: "Secondary button link",
-          initialValue: "tel:+919810153580",
-          description: 'e.g. "tel:+919810153580" or a full URL.',
+          initialValue: "tel:+919667977499",
+          description: 'e.g. "tel:+919667977499" or a full URL.',
         }),
       ],
     }),

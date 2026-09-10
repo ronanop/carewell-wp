@@ -30,7 +30,7 @@ export function FinalCtaStrip({
   primaryLabel,
   secondaryLabel,
   primaryHref = "#book",
-  secondaryHref = "tel:+919810153580",
+  secondaryHref = "tel:+919667977499",
   className,
 }: FinalCtaStripProps) {
   const title = headline?.trim() || "";

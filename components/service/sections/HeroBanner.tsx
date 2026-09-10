@@ -44,8 +44,8 @@ function buildHeroChrome(args: {
     subtitle: "",
     ctaLabel: "Book Free Appointment",
     badgeLabel: "Free",
-    phoneNumber: "+91 98101 53580",
-    whatsappNumber: args.whatsappNumber ?? "919810153580",
+    phoneNumber: "+91 9667977499",
+    whatsappNumber: args.whatsappNumber ?? "919667977499",
     emergencyNumber: "",
     successMessage: "Thank you — our team will contact you shortly.",
     showTrustBadges: true,
@@ -108,7 +108,7 @@ export function HeroBanner({
   secondaryCtaLabel = "WhatsApp",
   primaryCtaHref = "#treatment-hero-booking",
   secondaryCtaHref,
-  whatsappNumber = "919810153580",
+  whatsappNumber = "919667977499",
   showBookingCard = true,
   className,
 }: HeroBannerProps) {
@@ -175,7 +175,7 @@ export function HeroBanner({
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-6 sm:px-6 sm:pb-16 sm:pt-7 lg:px-8 lg:pb-20 lg:pt-8">
+      <div className="relative z-10 mx-auto w-full max-w-[90rem] px-4 pb-12 pt-6 sm:px-6 sm:pb-16 sm:pt-7 lg:px-8 lg:pb-20 lg:pt-8 xl:px-10">
         <nav aria-label="Breadcrumb" className="text-sm text-white/70">
           <ol className="flex flex-wrap items-center gap-1.5">
             {crumbItems.map((item, i) => {
@@ -199,7 +199,7 @@ export function HeroBanner({
           </ol>
         </nav>
 
-        <div className="mt-8 grid items-center gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)] lg:gap-12 xl:gap-16">
+        <div className="mt-8 grid items-center gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 xl:gap-16">
           <div className="min-w-0">
             <h1 className="mx-auto max-w-3xl text-center font-heading text-[clamp(2rem,4.2vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)] lg:mx-0 lg:text-left">
               {heading}
@@ -236,7 +236,7 @@ export function HeroBanner({
           </div>
 
           {showBookingCard ? (
-            <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:justify-self-end">
+            <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none">
               <TreatmentHeroBookingCard chrome={chrome} />
             </div>
           ) : null}

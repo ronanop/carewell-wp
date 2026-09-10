@@ -226,7 +226,7 @@ export const HOME_LOCATION_ELEMENTS: ElementDescriptor[] = [
     ],
     supports: { bind: true },
     defaultValues: {
-      query: "Chittaranjan Park, New Delhi, Delhi",
+      query: "Care Well Medical Centre, Chittaranjan Park, New Delhi",
       zoom: 15,
       height: 320,
     },
