@@ -1,6 +1,8 @@
 import { draftMode } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { resolvePublicOrigin } from "@/lib/seo/public-origin";
+
 function safePath(raw: string | null | undefined): string | null {
   if (!raw || typeof raw !== "string") return null;
   const trimmed = raw.trim();
@@ -19,6 +21,7 @@ export async function GET(request: Request) {
   const draft = await draftMode();
   draft.disable();
 
+  const origin = resolvePublicOrigin(request);
   const url = new URL(request.url);
   const fromQuery = safePath(url.searchParams.get("redirect"));
   const referer = request.headers.get("referer");
@@ -26,7 +29,7 @@ export async function GET(request: Request) {
   if (referer) {
     try {
       const parsed = new URL(referer);
-      if (parsed.origin === url.origin) {
+      if (parsed.origin === origin || parsed.origin === url.origin) {
         fromReferer = `${parsed.pathname}${parsed.search}` || "/";
       }
     } catch {
@@ -35,5 +38,5 @@ export async function GET(request: Request) {
   }
 
   const next = fromQuery || fromReferer || "/";
-  return NextResponse.redirect(new URL(next, request.url));
+  return NextResponse.redirect(new URL(next, origin));
 }

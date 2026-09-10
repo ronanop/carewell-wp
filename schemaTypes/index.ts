@@ -8,6 +8,7 @@ import {
   siteSettings,
   testimonial,
 } from "./cms";
+import { homepage } from "./homepage";
 
 export const schemaTypes = [
   // objects
@@ -23,6 +24,7 @@ export const schemaTypes = [
   galleryItem,
   testimonial,
   navigation,
+  homepage,
   siteSettings,
   redirect,
 ];

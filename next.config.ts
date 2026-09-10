@@ -62,8 +62,11 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
+            // Deny device/local probes so page scripts never trigger Chrome's
+            // "Access other apps and services on this device" prompt.
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            value:
+              "camera=(), microphone=(), geolocation=(), local-network-access=(), local-network=(), loopback-network=()",
           },
           {
             key: "Strict-Transport-Security",

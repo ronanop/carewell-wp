@@ -4,9 +4,10 @@ export const CANONICAL_SITE_URL = "https://www.carewellmedicalcentre.com";
 
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
-/** Public origin for SEO. Never emit localhost (local `.env` uses that for dev). */
+/** Public origin for SEO. Never emit localhost / bind-all (local `.env` uses that for dev). */
 export const SITE_URL =
-  configuredSiteUrl && !/localhost|127\.0\.0\.1/i.test(configuredSiteUrl)
+  configuredSiteUrl &&
+  !/localhost|127\.0\.0\.1|0\.0\.0\.0/i.test(configuredSiteUrl)
     ? configuredSiteUrl
     : CANONICAL_SITE_URL;
 

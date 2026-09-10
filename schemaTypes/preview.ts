@@ -54,6 +54,12 @@ export const presentationLocations = {
   service: locationsFor("Service"),
   page: locationsFor("Page"),
   post: locationsFor("Blog post"),
+  homepage: defineLocations({
+    select: { title: "title" },
+    resolve: () => ({
+      locations: [{ title: "Homepage", href: "/" }],
+    }),
+  }),
 };
 
 /** Opens the public page with unpublished drafts, without publishing. */

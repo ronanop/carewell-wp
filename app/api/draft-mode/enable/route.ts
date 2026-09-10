@@ -4,6 +4,7 @@ import { validatePreviewUrl } from "@sanity/preview-url-secret";
 import { createClient } from "@sanity/client";
 
 import { sanityProjectId, sanityDataset } from "@/lib/sanity/client";
+import { resolvePublicOrigin } from "@/lib/seo/public-origin";
 
 /**
  * Enables Next.js Draft Mode for Sanity Presentation / preview.
@@ -54,7 +55,8 @@ export async function GET(request: Request) {
   const draft = await draftMode();
   draft.enable();
 
-  return NextResponse.redirect(new URL(safePath, request.url));
+  // Use public origin — Hostinger Node sees 0.0.0.0:3000 on request.url
+  return NextResponse.redirect(new URL(safePath, resolvePublicOrigin(request)));
 }
 
 /** Same-origin relative path only — blocks open redirects. */

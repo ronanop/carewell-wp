@@ -2,15 +2,27 @@ import { NextResponse } from "next/server";
 import NextAuth from "next-auth";
 
 import { authConfig } from "@/auth.config";
-import { fetchSanityRedirectsEdge } from "@/lib/sanity/redirectsEdge";
+import {
+  fetchSanityRedirectByFromEdge,
+  fetchSanityRedirectsEdge,
+} from "@/lib/sanity/redirectsEdge";
+import { resolvePublicOrigin } from "@/lib/seo/public-origin";
 
 const { auth } = NextAuth(authConfig);
 
+type RedirectHit = { to: string; permanent: boolean };
+
 let redirectCache:
-  | { at: number; map: Map<string, { to: string; permanent: boolean }> }
+  | {
+      at: number;
+      map: Map<string, RedirectHit>;
+      /** Paths already confirmed to have no redirect (avoids Sanity spam on 404s). */
+      misses: Set<string>;
+    }
   | null = null;
 
-const REDIRECT_TTL_MS = 5 * 60 * 1000;
+/** Full redirect map refresh interval. */
+const REDIRECT_TTL_MS = 60 * 1000;
 
 const BLOCKED_PREFIXES = [
   "/dev",
@@ -19,44 +31,17 @@ const BLOCKED_PREFIXES = [
   "/sanity/service",
 ] as const;
 
-const CANONICAL_ORIGIN = "https://www.carewellmedicalcentre.com";
-
-function isLocalHost(host: string): boolean {
-  const name = host.split(":")[0]?.replace(/^\[|\]$/g, "").toLowerCase() ?? "";
-  return name === "localhost" || name === "127.0.0.1" || name === "::1";
-}
-
-/**
- * Behind Hostinger the Node process sees itself as localhost:3000.
- * Never send public visitors there.
- */
-function publicOrigin(req: {
-  nextUrl: URL;
-  headers: Headers;
-}): string {
-  const forwardedHost = req.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
-  const host = forwardedHost || req.headers.get("host")?.trim() || "";
-  const forwardedProto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim();
-  const proto = forwardedProto === "http" || forwardedProto === "https" ? forwardedProto : "https";
-
-  if (host && !isLocalHost(host)) {
-    return `${proto}://${host}`;
-  }
-
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "");
-  if (configured && !isLocalHost(configured)) {
-    return configured;
-  }
-
-  if (process.env.NODE_ENV === "production") return CANONICAL_ORIGIN;
-  return req.nextUrl.origin;
-}
-
 function normalizePath(pathname: string): string {
   if (!pathname.startsWith("/")) return `/${pathname}`;
   if (pathname.length > 1 && pathname.endsWith("/")) return pathname;
   if (pathname === "/") return pathname;
   return `${pathname}/`;
+}
+
+function pathLookupKeys(pathname: string): string[] {
+  const normalized = normalizePath(pathname);
+  const bare = pathname.replace(/\/$/, "") || "/";
+  return [...new Set([normalized, pathname, bare])];
 }
 
 function isBlockedInternalRoute(pathname: string): boolean {
@@ -67,14 +52,14 @@ function isBlockedInternalRoute(pathname: string): boolean {
   );
 }
 
-async function getRedirectMap() {
+async function getRedirectCache() {
   const now = Date.now();
   if (redirectCache && now - redirectCache.at < REDIRECT_TTL_MS) {
-    return redirectCache.map;
+    return redirectCache;
   }
 
   const rows = await fetchSanityRedirectsEdge();
-  const map = new Map<string, { to: string; permanent: boolean }>();
+  const map = new Map<string, RedirectHit>();
   for (const row of rows) {
     const from = normalizePath(row.from.trim());
     map.set(from, {
@@ -82,8 +67,46 @@ async function getRedirectMap() {
       permanent: row.permanent !== false,
     });
   }
-  redirectCache = { at: now, map };
-  return map;
+  redirectCache = { at: now, map, misses: new Set() };
+  return redirectCache;
+}
+
+function hitFromMap(
+  map: Map<string, RedirectHit>,
+  keys: string[],
+): RedirectHit | undefined {
+  for (const key of keys) {
+    const hit = map.get(key);
+    if (hit) return hit;
+  }
+  return undefined;
+}
+
+/**
+ * Resolve a CMS redirect. Uses the cached map first; on miss, does a live
+ * Sanity lookup so newly published Studio redirects work before the TTL refresh.
+ */
+async function resolveRedirect(pathname: string): Promise<RedirectHit | null> {
+  const cache = await getRedirectCache();
+  const keys = pathLookupKeys(pathname);
+  const cached = hitFromMap(cache.map, keys);
+  if (cached) return cached;
+
+  const missKey = normalizePath(pathname);
+  if (cache.misses.has(missKey)) return null;
+
+  const live = await fetchSanityRedirectByFromEdge(keys);
+  if (!live) {
+    cache.misses.add(missKey);
+    return null;
+  }
+
+  const hit: RedirectHit = {
+    to: live.to.trim(),
+    permanent: live.permanent !== false,
+  };
+  cache.map.set(normalizePath(live.from.trim()), hit);
+  return hit;
 }
 
 export default auth(async (req) => {
@@ -100,17 +123,13 @@ export default auth(async (req) => {
     !pathname.startsWith("/_next")
   ) {
     try {
-      const map = await getRedirectMap();
-      const hit =
-        map.get(normalizePath(pathname)) ||
-        map.get(pathname) ||
-        map.get(pathname.replace(/\/$/, "") || "/");
+      const hit = await resolveRedirect(pathname);
       if (hit) {
         const target = hit.to.startsWith("http")
           ? hit.to
           : new URL(
               hit.to.startsWith("/") ? hit.to : `/${hit.to}`,
-              publicOrigin(req),
+              resolvePublicOrigin(req),
             ).toString();
         return NextResponse.redirect(target, hit.permanent ? 301 : 302);
       }

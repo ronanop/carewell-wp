@@ -49,6 +49,14 @@ const LINKS: {
     cta: "Open in Sanity →",
   },
   {
+    title: "Homepage",
+    description:
+      "Hero & section images, homepage button links, service cards, footer links.",
+    href: MANAGE,
+    external: true,
+    cta: "Open in Sanity →",
+  },
+  {
     title: "Site settings",
     description: "Phone, WhatsApp, address, hours, hello bar, OG defaults.",
     href: MANAGE,

@@ -1,6 +1,9 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
-const quickLinks = [
+import { getHomepageFooter } from "@/lib/sanity/homepage";
+
+const DEFAULT_QUICK_LINKS = [
   { label: "Contact Us", href: "/contact" },
   { label: "Blog", href: "/blogs" },
   { label: "FAQs", href: "/faqs" },
@@ -8,7 +11,7 @@ const quickLinks = [
   { label: "Disclaimer", href: "/disclaimer" },
 ];
 
-const serviceLinks = [
+const DEFAULT_SERVICE_LINKS = [
   { label: "Cosmetic Treatments", href: "/services/cosmetic-treatments" },
   { label: "Plastic Surgery", href: "/services/plastic-surgery" },
   { label: "Hair Transplant", href: "/services/hair-transplant" },
@@ -28,10 +31,11 @@ const openingHours = [
   "Saturday",
 ] as const;
 
-const socialLinks = [
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/carewellmedicalcentre/",
+const SOCIAL_ICONS: Record<
+  string,
+  { brandClass: string; icon: ReactNode }
+> = {
+  Facebook: {
     brandClass: "text-[#1877F2]",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="size-5 sm:size-5 lg:size-6">
@@ -39,9 +43,7 @@ const socialLinks = [
       </svg>
     ),
   },
-  {
-    label: "LinkedIn",
-    href: "https://in.linkedin.com/company/care-well-medical-centre",
+  LinkedIn: {
     brandClass: "text-[#0A66C2]",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="size-5 sm:size-5 lg:size-6">
@@ -49,9 +51,7 @@ const socialLinks = [
       </svg>
     ),
   },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/carewellmedicalcentre/",
+  Instagram: {
     brandClass: "text-[#E4405F]",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="size-5 sm:size-5 lg:size-6">
@@ -59,15 +59,32 @@ const socialLinks = [
       </svg>
     ),
   },
-  {
-    label: "YouTube",
-    href: "https://www.youtube.com/@CareWellMedicalCentre",
+  YouTube: {
     brandClass: "text-[#FF0000]",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="size-5 sm:size-5 lg:size-6">
         <path d="M10 15l5.19-3L10 9zm11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3.07 2.49.1 3.59.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73" />
       </svg>
     ),
+  },
+};
+
+const DEFAULT_SOCIAL_LINKS = [
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/carewellmedicalcentre/",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://in.linkedin.com/company/care-well-medical-centre",
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/carewellmedicalcentre/",
+  },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/@CareWellMedicalCentre",
   },
 ] as const;
 
@@ -82,8 +99,44 @@ const aboutBodyClass = bodyClass;
 const linkClass =
   "text-[0.78rem] font-bold leading-[1.5] text-slate-700 no-underline transition-colors hover:text-primary hover:no-underline sm:text-[0.9375rem] lg:text-[1rem] lg:leading-normal";
 
-export function FooterPlaceholder() {
+function resolveSocial(
+  label: string,
+  href: string,
+): { label: string; href: string; brandClass: string; icon: ReactNode } | null {
+  const known = SOCIAL_ICONS[label];
+  if (known) {
+    return { label, href, ...known };
+  }
+  // Fallback: text-only circle using first letter
+  return {
+    label,
+    href,
+    brandClass: "text-[#0A2540]",
+    icon: (
+      <span className="text-xs font-bold" aria-hidden="true">
+        {label.slice(0, 1).toUpperCase()}
+      </span>
+    ),
+  };
+}
+
+export async function FooterPlaceholder() {
   const year = new Date().getFullYear();
+  const cmsFooter = await getHomepageFooter().catch(() => null);
+
+  const quickLinks =
+    cmsFooter?.quickLinks.length ? cmsFooter.quickLinks : DEFAULT_QUICK_LINKS;
+  const serviceLinks =
+    cmsFooter?.serviceLinks.length
+      ? cmsFooter.serviceLinks
+      : DEFAULT_SERVICE_LINKS;
+  const socialSource =
+    cmsFooter?.socialLinks.length
+      ? cmsFooter.socialLinks
+      : DEFAULT_SOCIAL_LINKS;
+  const socialLinks = socialSource
+    .map((s) => resolveSocial(s.label, s.href))
+    .filter((s): s is NonNullable<typeof s> => Boolean(s));
 
   return (
     <footer className="bg-secondary">
@@ -122,7 +175,7 @@ export function FooterPlaceholder() {
             <h2 className={headingClass}>Quick Links</h2>
             <ul className="mt-1.5 space-y-0 sm:mt-2 lg:mt-4 lg:space-y-2.5">
               {quickLinks.map((link) => (
-                <li key={link.href}>
+                <li key={`${link.label}-${link.href}`}>
                   <Link
                     href={link.href}
                     className={`${linkClass} inline-flex min-h-7 items-center sm:min-h-8 lg:min-h-10`}
@@ -139,7 +192,7 @@ export function FooterPlaceholder() {
             <h2 className={headingClass}>Services</h2>
             <ul className="mt-1.5 space-y-0 sm:mt-2 lg:mt-4 lg:space-y-2.5">
               {serviceLinks.map((link) => (
-                <li key={link.href}>
+                <li key={`${link.label}-${link.href}`}>
                   <Link
                     href={link.href}
                     className={`${linkClass} inline-flex min-h-7 items-center sm:min-h-8 lg:min-h-10`}

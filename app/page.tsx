@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { type HomeYouTubeVideo } from "@/components/home/TestimonialsSection";
 import { HomePageView } from "@/components/pages/home/HomePageView";
+import { getHomepagePresentationConfig } from "@/lib/sanity/homepage";
 import {
   getSanityLatestPosts,
   toHomeBlogPosts,
@@ -34,11 +35,13 @@ function toHomeYouTubeVideos(
 /**
  * Homepage — thin route. Single implementation lives in HomePageView (ADR-015).
  * Blog cards: latest Sanity posts. Testimonials: YouTube channel Atom RSS.
+ * Images / CTAs / service links: optional Sanity `homepage` singleton.
  */
 export default async function HomePage() {
-  const [youtubeVideos, latestPosts] = await Promise.all([
+  const [youtubeVideos, latestPosts, homepageConfig] = await Promise.all([
     listChannelVideos(HOME_YOUTUBE_LIMIT).catch(() => []),
     getSanityLatestPosts(HOME_BLOG_LIMIT).catch(() => []),
+    getHomepagePresentationConfig().catch(() => null),
   ]);
   const latestYouTubeVideos = toHomeYouTubeVideos(youtubeVideos);
   const latestBlogPosts = toHomeBlogPosts(latestPosts);
@@ -46,7 +49,7 @@ export default async function HomePage() {
   return (
     <HomePageView
       mode="public"
-      config={null}
+      config={homepageConfig}
       latestBlogPosts={latestBlogPosts}
       latestYouTubeVideos={latestYouTubeVideos}
     />

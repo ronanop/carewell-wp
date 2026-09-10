@@ -36,3 +36,27 @@ export async function fetchSanityRedirectsEdge(): Promise<SanityRedirect[]> {
     return [];
   }
 }
+
+/** Single-path lookup for redirects published after the middleware map was cached. */
+export async function fetchSanityRedirectByFromEdge(
+  fromCandidates: string[],
+): Promise<SanityRedirect | null> {
+  const candidates = [
+    ...new Set(fromCandidates.map((p) => p.trim()).filter(Boolean)),
+  ];
+  if (candidates.length === 0) return null;
+  try {
+    const row = await edgeClient.fetch<SanityRedirect | null>(
+      `*[_type == "redirect" && isEnabled == true && from in $fromCandidates][0]{
+        from,
+        to,
+        permanent
+      }`,
+      { fromCandidates: candidates },
+    );
+    if (!row?.from || !row?.to) return null;
+    return row;
+  } catch {
+    return null;
+  }
+}

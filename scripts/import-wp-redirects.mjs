@@ -2,7 +2,7 @@
  * Import WordPress Redirection plugin rules into Sanity `redirect` documents.
  *
  * Managed afterwards in Sanity Studio → Redirects. Middleware applies enabled
- * rules on the public site (cached ~5 minutes).
+ * rules on the public site (cached ~1 minute; live miss lookup for new paths).
  *
  * Usage:
  *   node scripts/import-wp-redirects.mjs
