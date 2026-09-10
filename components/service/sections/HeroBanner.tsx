@@ -10,15 +10,6 @@ import type { QuickFact, SanityImage, SectionBaseProps } from "./types";
 
 const DEFAULT_HERO_BG = "/images/service-hero-background.jpg";
 
-function formatCategoryLabel(category: string): string {
-  return category
-    .trim()
-    .split(/[-_]+/)
-    .filter(Boolean)
-    .map((word) => word[0]!.toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -108,7 +99,6 @@ export function HeroBanner({
   id = "hero",
   heading,
   tagline,
-  category,
   uri = "",
   breadcrumbs,
   image,
