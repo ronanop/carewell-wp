@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 
 import { drSandeepBhasin } from "@/components/doctors/content";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const PHOTO_SRC = "/images/dr-sandeep-bhasin-portrait.png";
 
 /**
- * Right-rail sidebar for blog posts — search + About me (WP-style).
+ * Right-rail sidebar for blog posts — search + author card.
  */
 export function BlogSidebar({
   className,
@@ -55,69 +56,81 @@ export function BlogSidebar({
         </button>
       </form>
 
-      <div className="mt-8">
-        <div className="flex items-center gap-3">
-          <h2 className="shrink-0 font-heading text-lg font-bold tracking-tight text-[#1a1a1a]">
-            About me
-          </h2>
-          <span
-            className="h-px min-w-[2rem] flex-1 bg-[#1a1a1a]/80"
+      <div
+        className="mt-8 overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-b from-surface via-surface to-surface-editorial"
+        aria-labelledby="blog-sidebar-about-heading"
+      >
+        <div className="relative h-20 bg-[linear-gradient(135deg,#0A2540_0%,#1557A0_55%,#2D7A7A_100%)]">
+          <div
+            className="absolute inset-0 opacity-[0.18]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 20% 30%, white 0, transparent 45%), radial-gradient(circle at 80% 70%, white 0, transparent 40%)",
+            }}
             aria-hidden
           />
         </div>
 
-        <p className="mt-4 text-[0.9375rem] leading-relaxed text-[#333]">
-          Hello, I am {doctor.name}
-        </p>
+        <div className="relative px-5 pb-5 pt-0 text-center">
+          <div className="-mt-11 mx-auto size-[5.5rem] overflow-hidden rounded-full border-[3px] border-white bg-muted shadow-[0_8px_24px_-10px_rgba(10,37,64,0.45)]">
+            <div className="relative size-full">
+              <Image
+                src={PHOTO_SRC}
+                alt={photoAlt}
+                fill
+                className="object-cover object-top"
+                sizes="88px"
+              />
+            </div>
+          </div>
 
-        <div className="relative mt-4 aspect-[4/5] w-full max-w-[220px] overflow-hidden bg-muted">
-          <Image
-            src={PHOTO_SRC}
-            alt={photoAlt}
-            fill
-            className="object-cover object-top"
-            sizes="220px"
-          />
+          <p className="mt-4 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-primary">
+            About the author
+          </p>
+          <h2
+            id="blog-sidebar-about-heading"
+            className="mt-1.5 font-heading text-lg font-semibold tracking-tight text-[#0A2540]"
+          >
+            {doctor.name}
+          </h2>
+          <p className="mt-1 text-[0.8125rem] font-medium leading-snug text-muted-foreground">
+            {doctor.title}
+          </p>
+
+          <p className="mt-3 text-[0.8125rem] leading-relaxed text-slate-600">
+            {doctor.heroSummary}
+          </p>
+
+          <dl className="mt-4 flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-surface px-3.5 py-2.5 text-left">
+              <dt className="text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                Experience
+              </dt>
+              <dd className="font-heading text-sm font-semibold text-[#0A2540]">
+                20+ years
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-surface px-3.5 py-2.5 text-left">
+              <dt className="text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                Role
+              </dt>
+              <dd className="text-right font-heading text-sm font-semibold text-[#0A2540]">
+                Sr. Cosmetic Surgeon
+              </dd>
+            </div>
+          </dl>
+
+          <Link
+            href="/about/dr-sandeep-bhasin/"
+            className={cn(
+              buttonVariants({ variant: "secondary", size: "sm" }),
+              "mt-4 h-10 w-full gap-1.5 no-underline hover:no-underline",
+            )}
+          >
+            View full profile
+            <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
         </div>
-
-        <p className="mt-4 text-[0.875rem] leading-[1.7] text-[#444]">
-          I am a cosmetic surgeon and founder of{" "}
-          <strong className="font-semibold text-[#1a1a1a]">
-            Care Well Medical Centre
-          </strong>{" "}
-          in Delhi. I completed my{" "}
-          <strong className="font-semibold text-[#1a1a1a]">MBBS</strong> and{" "}
-          <strong className="font-semibold text-[#1a1a1a]">
-            MS (General Surgery)
-          </strong>{" "}
-          from{" "}
-          <strong className="font-semibold text-[#1a1a1a]">
-            Aligarh Muslim University (AMU)
-          </strong>
-          , with further training at{" "}
-          <strong className="font-semibold text-[#1a1a1a]">
-            Walawalkar Hospital
-          </strong>
-          . My practice focuses on{" "}
-          <strong className="font-semibold text-[#1a1a1a]">facelifts</strong>,{" "}
-          <strong className="font-semibold text-[#1a1a1a]">rhinoplasty</strong>,{" "}
-          <strong className="font-semibold text-[#1a1a1a]">liposuction</strong>,{" "}
-          <strong className="font-semibold text-[#1a1a1a]">
-            breast augmentation
-          </strong>
-          , and{" "}
-          <strong className="font-semibold text-[#1a1a1a]">
-            hair transplants
-          </strong>
-          .
-        </p>
-
-        <Link
-          href="/about/dr-sandeep-bhasin/"
-          className="mt-4 inline-flex text-small font-medium text-primary no-underline hover:underline"
-        >
-          View full profile →
-        </Link>
       </div>
     </aside>
   );

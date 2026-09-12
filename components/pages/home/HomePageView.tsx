@@ -1,16 +1,13 @@
 /**
  * Homepage — single React tree for public site and Static Experience Studio (ADR-015/016).
- * Above-fold sections stay statically imported for LCP. Below-fold sections are
- * dynamically imported (ssr: true) to shrink the initial client JS graph.
+ * Hero stays statically imported for LCP. Everything below the fold is dynamically
+ * imported (ssr: true) so mobile phones download less JS before first paint.
  */
 
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 import { HeroSection } from "@/components/home/HeroSection";
-import { ServicesSection } from "@/components/home/ServicesSection";
-import { TreatmentJourney } from "@/components/home/TreatmentJourney";
-import { TrustIndicators } from "@/components/home/TrustIndicators";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticEditProvider } from "@/components/pages/StaticEditProvider";
@@ -19,10 +16,24 @@ import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { isSectionEnabled } from "@/lib/static-pages/applyOverrides";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
 
-const AboutSection = dynamic(
+const TrustIndicators = dynamic(
   () =>
-    import("@/components/home/AboutSection").then((m) => ({
-      default: m.AboutSection,
+    import("@/components/home/TrustIndicators").then((m) => ({
+      default: m.TrustIndicators,
+    })),
+  { ssr: true },
+);
+const TreatmentJourney = dynamic(
+  () =>
+    import("@/components/home/TreatmentJourney").then((m) => ({
+      default: m.TreatmentJourney,
+    })),
+  { ssr: true },
+);
+const ServicesSection = dynamic(
+  () =>
+    import("@/components/home/ServicesSection").then((m) => ({
+      default: m.ServicesSection,
     })),
   { ssr: true },
 );
@@ -113,9 +124,8 @@ export function HomePageView({
       <main className="flex-1">
         {enabled("home.hero") ? (
           <StaticSectionFrame id="home.hero" type="hero" mode={mode}>
-            <HomeSectionEnter immediate>
-              <HeroSection />
-            </HomeSectionEnter>
+            {/* No stagger wrapper — hero is the LCP candidate on mobile. */}
+            <HeroSection />
           </StaticSectionFrame>
         ) : null}
         <div className="homepage-compact">
@@ -155,13 +165,6 @@ export function HomePageView({
             <StaticSectionFrame id="home.doctors" type="doctor" mode={mode}>
               <HomeSectionEnter>
                 <DoctorsSection />
-              </HomeSectionEnter>
-            </StaticSectionFrame>
-          ) : null}
-          {enabled("home.about") ? (
-            <StaticSectionFrame id="home.about" type="content" mode={mode}>
-              <HomeSectionEnter>
-                <AboutSection />
               </HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}

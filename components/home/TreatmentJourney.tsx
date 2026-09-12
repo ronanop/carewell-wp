@@ -98,8 +98,9 @@ function formatJourneyHeading(text: string) {
 
   return (
     <>
-      <span className="block whitespace-nowrap sm:inline">Your Treatment Journey</span>{" "}
-      <span className="block whitespace-nowrap sm:inline">at</span>{" "}
+      <span className="block whitespace-nowrap sm:inline">
+        Your Treatment Journey at
+      </span>{" "}
       <span className="block whitespace-nowrap text-primary sm:inline">
         Care Well Medical Centre
       </span>

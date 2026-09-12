@@ -25,8 +25,8 @@ export function FloatingWhatsApp() {
     const isNarrow =
       typeof window !== "undefined" &&
       window.matchMedia("(max-width: 767px)").matches;
-    const idleTimeout = isNarrow ? 4000 : 2500;
-    const fallbackMs = isNarrow ? 3200 : 1800;
+    const idleTimeout = isNarrow ? 5500 : 2500;
+    const fallbackMs = isNarrow ? 4000 : 1800;
 
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       idleId = window.requestIdleCallback(show, { timeout: idleTimeout });

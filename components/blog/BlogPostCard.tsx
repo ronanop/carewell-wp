@@ -18,10 +18,10 @@ function formatDate(iso?: string | null) {
 
 export function BlogPostCard({
   post,
-  imageFit = "cover",
+  imageFit = "contain",
 }: {
   post: SanityPostCard;
-  /** `contain` shows the full image without cropping (service related articles). */
+  /** `contain` shows the full image without cropping (default for blog cards). */
   imageFit?: "cover" | "contain";
 }) {
   const href = postPublicPath(post);
@@ -42,33 +42,21 @@ export function BlogPostCard({
         className="flex h-full flex-col no-underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1557A0]/35 focus-visible:ring-offset-2"
       >
         {imageUrl ? (
-          <div
-            className={cn(
-              "relative overflow-hidden bg-slate-100",
-              imageFit === "contain"
-                ? "h-44 sm:h-48"
-                : "aspect-[16/10]",
-            )}
-          >
+          <div className="relative aspect-[16/10] overflow-hidden bg-slate-50">
             <Image
               src={imageUrl}
               alt={post.mainImage?.alt || post.title}
               fill
               className={cn(
                 imageFit === "contain"
-                  ? "object-contain"
+                  ? "object-contain p-1"
                   : "object-cover transition-transform duration-300 group-hover:scale-[1.02]",
               )}
               sizes="(max-width: 768px) 100vw, 33vw"
             />
           </div>
         ) : (
-          <div
-            className={cn(
-              "bg-gradient-to-br from-slate-100 via-white to-[#1557A0]/5",
-              imageFit === "contain" ? "h-44 sm:h-48" : "aspect-[16/10]",
-            )}
-          />
+          <div className="aspect-[16/10] bg-gradient-to-br from-slate-100 via-white to-[#1557A0]/5" />
         )}
         <div className="flex flex-1 flex-col p-4 sm:p-5">
           {post.categories?.[0] ? (

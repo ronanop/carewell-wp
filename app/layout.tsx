@@ -11,6 +11,7 @@ import "./globals.css";
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
   preload: true,
   adjustFontFallback: true,
@@ -75,7 +76,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body
+        className={`${plusJakartaSans.className} flex min-h-full flex-col antialiased`}
+      >
         <DraftPreviewBar />
         {children}
         <FloatingWhatsApp />

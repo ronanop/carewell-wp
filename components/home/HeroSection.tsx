@@ -3,7 +3,6 @@
 import {
   ArrowRight,
   CalendarDays,
-  MapPin,
   ShieldCheck,
   Star,
   UserRound,
@@ -93,11 +92,6 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
     "home.hero.heroImage",
     "objectFit",
     "contain",
-  );
-  const badge = resolveElementText(
-    config,
-    "home.hero.badge",
-    "Chittaranjan Park · South Delhi",
   );
   const rating = resolveElementField(config, "home.hero.rating", "value", "4.3");
   const experience = resolveElementText(
@@ -240,30 +234,9 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
           {/* Copy column — centered on mobile, left on desktop */}
           <StaggerReveal
             immediate
-            stepMs={80}
+            stepMs={0}
             className="mx-auto w-full max-w-[24.375rem] text-center lg:mx-0 lg:max-w-[34rem] lg:self-center lg:pb-12 lg:text-left"
           >
-            <EditableElement
-              id="home.hero.badge"
-              kind="badge"
-              defaultValue="Chittaranjan Park · South Delhi"
-              as="div"
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#0A2540]/06 bg-white/70 px-3 py-1.5 shadow-sm backdrop-blur-sm"
-            >
-              {({ value }) => (
-                <>
-                  <MapPin
-                    className="size-3.5 text-primary"
-                    strokeWidth={2}
-                    aria-hidden
-                  />
-                  <span className="text-[0.75625rem] font-semibold uppercase tracking-[0.06em] text-primary">
-                    {value || badge}
-                  </span>
-                </>
-              )}
-            </EditableElement>
-
             <EditableElement
               id="home.hero.heading"
               kind="heading"
@@ -369,7 +342,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                   fill
                   priority
                   fetchPriority="high"
-                  quality={75}
+                  quality={65}
                   className={cn(
                     "object-bottom",
                     objectFit === "cover"
@@ -378,7 +351,8 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
                         ? "object-fill"
                         : "object-contain",
                   )}
-                  sizes="(max-width: 1024px) 90vw, 42vw"
+                  // Match real mobile frame (~22rem) so phones don't download desktop-sized assets.
+                  sizes="(max-width: 640px) 352px, (max-width: 1024px) 448px, 42vw"
                 />
                 <div
                   className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#EDE7DE] via-[#EDE7DE]/70 to-transparent lg:hidden"
@@ -392,7 +366,7 @@ export function HeroSection(legacyProps: HeroSectionProps = {}) {
         {/* Trust strip — glued to image bottom via negative margin; mobile/tablet only */}
         <StaggerReveal
           immediate
-          stepMs={90}
+          stepMs={0}
           className="relative z-10 -mt-6 px-0 sm:-mt-8 lg:hidden"
         >
           <ul

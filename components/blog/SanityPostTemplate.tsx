@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -7,6 +6,7 @@ import {
   BlogPageBuilderMainColumn,
 } from "@/components/blog/BlogPageBuilderSections";
 import { BlogFaqAccordion } from "@/components/blog/BlogFaqAccordion";
+import { BlogPostCard } from "@/components/blog/BlogPostCard";
 import { BlogSidebar } from "@/components/blog/BlogSidebar";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
@@ -17,17 +17,6 @@ import {
   type SanityPostDoc,
 } from "@/lib/sanity/post";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo/constants";
-
-function formatDate(iso?: string | null) {
-  if (!iso) return null;
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
 
 export function buildSanityPostMetadata(post: SanityPostDoc): Metadata {
   const title = post.seo?.title || `${post.title} | ${SITE_NAME}`;
@@ -40,61 +29,6 @@ export function buildSanityPostMetadata(post: SanityPostDoc): Metadata {
     description,
     robots: post.seo?.noIndex ? { index: false, follow: false } : undefined,
   };
-}
-
-function PostCard({ post }: { post: SanityPostCard }) {
-  const href = postPublicPath(post);
-  const imageUrl = post.mainImage?.asset
-    ? urlFor(post.mainImage).width(1200).height(675).fit("crop").url()
-    : null;
-  const date = formatDate(post.publishedAt);
-  const excerpt =
-    post.excerpt?.trim() ||
-    `Doctor-led guidance on ${post.title}, including what to expect and what to discuss with your doctor.`;
-
-  return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-border/80 bg-surface transition-colors hover:border-primary/25">
-      <Link
-        href={href}
-        className="flex h-full flex-col no-underline hover:no-underline"
-      >
-        {imageUrl ? (
-          <div className="relative aspect-video overflow-hidden bg-muted">
-            <Image
-              src={imageUrl}
-              alt={post.mainImage?.alt || post.title}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-          </div>
-        ) : (
-          <div className="aspect-video bg-gradient-to-br from-secondary via-surface to-primary/5" />
-        )}
-        <div className="flex flex-1 flex-col p-4 sm:p-6">
-          {post.categories?.[0] ? (
-            <p className="text-label uppercase text-accent">
-              {post.categories[0]}
-            </p>
-          ) : null}
-          <h2 className="mt-2 font-heading text-[1.0625rem] font-semibold leading-snug text-[#0A2540] transition-colors group-hover:text-primary sm:text-h4">
-            {post.title}
-          </h2>
-          <p className="mt-2 min-h-[4.75rem] line-clamp-3 flex-1 text-[0.9375rem] leading-relaxed text-slate-600 sm:min-h-[5.25rem] sm:text-[1.05rem]">
-            {excerpt}
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-muted-foreground">
-            {date ? (
-              <time dateTime={post.publishedAt || undefined}>{date}</time>
-            ) : null}
-            {post.readTimeMinutes ? (
-              <span>{post.readTimeMinutes} min read</span>
-            ) : null}
-          </div>
-        </div>
-      </Link>
-    </article>
-  );
 }
 
 export function SanityBlogListing({
@@ -143,7 +77,7 @@ export function SanityBlogListing({
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => (
-                <PostCard key={post._id} post={post} />
+                <BlogPostCard key={post._id} post={post} />
               ))}
             </div>
           )}

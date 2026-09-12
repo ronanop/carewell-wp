@@ -85,6 +85,7 @@ export function StaggerReveal({
       className={cn(
         "stagger-reveal",
         visible && "is-revealed",
+        immediate && "stagger-reveal--immediate",
         reduceMotion && "stagger-reveal--reduced",
         className,
       )}

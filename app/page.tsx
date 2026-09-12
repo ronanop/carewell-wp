@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getImageProps } from "next/image";
 import { Suspense } from "react";
 
 import {
@@ -12,6 +13,7 @@ import {
   getSanityLatestPosts,
   toHomeBlogPosts,
 } from "@/lib/sanity/post";
+import { resolveElementField } from "@/lib/static-pages/elementOverrides";
 import { listChannelVideos } from "@/lib/youtube/channelVideos";
 
 /** Homepage ISR — refresh YouTube cards periodically. */
@@ -25,6 +27,7 @@ export const metadata: Metadata = {
 
 const HOME_YOUTUBE_LIMIT = 6;
 const HOME_BLOG_LIMIT = 3;
+const DEFAULT_HERO_IMAGE_SRC = "/images/hero-model.png";
 
 function toHomeYouTubeVideos(
   videos: Awaited<ReturnType<typeof listChannelVideos>>,
@@ -55,6 +58,28 @@ async function HomeBlogSlot() {
   return <BlogSection posts={posts} />;
 }
 
+function HomeHeroLcpPreload({ src }: { src: string }) {
+  const { props } = getImageProps({
+    src,
+    alt: "",
+    width: 704,
+    height: 880,
+    quality: 65,
+    sizes: "(max-width: 640px) 352px, (max-width: 1024px) 448px, 42vw",
+  });
+
+  return (
+    <link
+      rel="preload"
+      as="image"
+      href={props.src}
+      imageSrcSet={props.srcSet}
+      imageSizes={props.sizes}
+      fetchPriority="high"
+    />
+  );
+}
+
 /**
  * Homepage — thin route. Hero + config on the critical path; YouTube/blogs stream in.
  * Images / CTAs / service links: optional Sanity `homepage` singleton.
@@ -64,20 +89,30 @@ export default async function HomePage() {
     () => null,
   );
 
+  const heroSrc = resolveElementField(
+    homepageConfig,
+    "home.hero.heroImage",
+    "src",
+    DEFAULT_HERO_IMAGE_SRC,
+  );
+
   return (
-    <HomePageView
-      mode="public"
-      config={homepageConfig}
-      testimonialsSlot={
-        <Suspense fallback={<TestimonialsSection videos={[]} />}>
-          <HomeTestimonialsSlot />
-        </Suspense>
-      }
-      blogSlot={
-        <Suspense fallback={null}>
-          <HomeBlogSlot />
-        </Suspense>
-      }
-    />
+    <>
+      <HomeHeroLcpPreload src={heroSrc} />
+      <HomePageView
+        mode="public"
+        config={homepageConfig}
+        testimonialsSlot={
+          <Suspense fallback={<TestimonialsSection videos={[]} />}>
+            <HomeTestimonialsSlot />
+          </Suspense>
+        }
+        blogSlot={
+          <Suspense fallback={null}>
+            <HomeBlogSlot />
+          </Suspense>
+        }
+      />
+    </>
   );
 }

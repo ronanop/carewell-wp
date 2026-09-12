@@ -34,7 +34,7 @@ function buildHeroChrome(args: {
     widgetId: "consultation-sidebar",
     enabled: true,
     stickyOffsetPx: 96,
-    desktopWidthPx: 320,
+    desktopWidthPx: 360,
     minWidthPx: 280,
     maxWidthPx: 360,
     variant: "default",
@@ -92,8 +92,9 @@ export type HeroBannerProps = SectionBaseProps & {
 };
 
 /**
- * Service hero — full-bleed photo, left copy + CTAs, right booking card.
+ * Service hero — full-viewport photo plane, left copy + CTAs, right booking card.
  * Breadcrumbs match WordPress: humanized URI segments via `buildUriBreadcrumbs`.
+ * Height fills the viewport below sticky promo + navbar (~5.75rem).
  */
 export function HeroBanner({
   id = "hero",
@@ -144,7 +145,13 @@ export function HeroBanner({
   });
 
   return (
-    <header id={id} className={cn("relative overflow-hidden", className)}>
+    <header
+      id={id}
+      className={cn(
+        "relative flex min-h-[min(100svh,56rem)] flex-col overflow-hidden lg:min-h-[calc(100svh-5.75rem)]",
+        className,
+      )}
+    >
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         {/* Art direction: browser fetches only the matching source */}
         <picture className="absolute inset-0 block h-full w-full">
@@ -175,8 +182,8 @@ export function HeroBanner({
         />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-[90rem] px-4 pb-12 pt-6 sm:px-6 sm:pb-16 sm:pt-7 lg:px-8 lg:pb-20 lg:pt-8 xl:px-10">
-        <nav aria-label="Breadcrumb" className="text-sm text-white/70">
+      <div className="relative z-10 mx-auto flex w-full max-w-[90rem] flex-1 flex-col px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12 xl:px-10">
+        <nav aria-label="Breadcrumb" className="shrink-0 text-sm text-white/70">
           <ol className="flex flex-wrap items-center gap-1.5">
             {crumbItems.map((item, i) => {
               const last = i === crumbItems.length - 1;
@@ -199,7 +206,7 @@ export function HeroBanner({
           </ol>
         </nav>
 
-        <div className="mt-8 grid items-center gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 xl:gap-16">
+        <div className="mt-8 grid flex-1 items-center gap-10 lg:mt-0 lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] lg:gap-12 xl:gap-16">
           <div className="min-w-0">
             <h1 className="mx-auto max-w-3xl text-center font-heading text-[clamp(2rem,4.2vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)] lg:mx-0 lg:text-left">
               {heading}
@@ -210,7 +217,7 @@ export function HeroBanner({
               </p>
             ) : null}
 
-            <div className="mt-7 flex flex-nowrap items-center gap-2 sm:gap-3">
+            <div className="mt-7 flex flex-nowrap items-center justify-center gap-2 sm:gap-3 lg:justify-start">
               <a
                 href={primaryCtaHref}
                 className={cn(
@@ -236,7 +243,7 @@ export function HeroBanner({
           </div>
 
           {showBookingCard ? (
-            <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none">
+            <div className="mx-auto w-full max-w-[360px] lg:mx-0 lg:max-w-none">
               <TreatmentHeroBookingCard chrome={chrome} />
             </div>
           ) : null}

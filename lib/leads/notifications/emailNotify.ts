@@ -6,12 +6,25 @@ import { formatLeadCollectionEmail } from "@/lib/leads/notifications/formatLeadE
 import { createLeadRepository } from "@/lib/leads/repositories/leadRepository";
 import type { LeadRecord } from "@/lib/leads/types";
 
+/**
+ * Hostinger .env import often keeps surrounding quotes as part of the value.
+ * Unquoted `#` in dotenv also truncates passwords — we accept both forms.
+ */
+function env(name: string): string {
+  const raw = process.env[name];
+  if (raw == null) return "";
+  let v = raw.trim();
+  if (
+    (v.startsWith('"') && v.endsWith('"')) ||
+    (v.startsWith("'") && v.endsWith("'"))
+  ) {
+    v = v.slice(1, -1).trim();
+  }
+  return v;
+}
+
 function smtpConfigured(): boolean {
-  return Boolean(
-    process.env.SMTP_HOST?.trim() &&
-      process.env.SMTP_USER?.trim() &&
-      process.env.SMTP_PASS?.trim(),
-  );
+  return Boolean(env("SMTP_HOST") && env("SMTP_USER") && env("SMTP_PASS"));
 }
 
 /** Primary From mailbox when LEAD_NOTIFY_FROM / SMTP_USER are unset. */
@@ -23,8 +36,7 @@ export const DEFAULT_LEAD_NOTIFY_TO =
   "queries@carewellmedicalcentre.com,queries@carewellmedicalcentre.in";
 
 function notifyRecipients(): string[] {
-  const raw =
-    process.env.LEAD_NOTIFY_TO?.trim() || DEFAULT_LEAD_NOTIFY_TO;
+  const raw = env("LEAD_NOTIFY_TO") || DEFAULT_LEAD_NOTIFY_TO;
   return raw
     .split(",")
     .map((s) => s.trim())
@@ -35,15 +47,15 @@ function notifyEnabled(): boolean {
   return Boolean(
     notifyRecipients().length &&
       (smtpConfigured() ||
-        process.env.RESEND_API_KEY?.trim() ||
-        process.env.LEAD_NOTIFY_WEBHOOK_URL?.trim()),
+        env("RESEND_API_KEY") ||
+        env("LEAD_NOTIFY_WEBHOOK_URL")),
   );
 }
 
 function siteBaseUrl(): string {
   return (
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-    process.env.AUTH_URL?.replace(/\/$/, "") ||
+    env("NEXT_PUBLIC_SITE_URL").replace(/\/$/, "") ||
+    env("AUTH_URL").replace(/\/$/, "") ||
     "http://localhost:3000"
   );
 }
@@ -55,33 +67,60 @@ async function sendViaSmtp(input: {
   html: string;
   text: string;
 }): Promise<void> {
-  const host = process.env.SMTP_HOST?.trim();
-  const user = process.env.SMTP_USER?.trim();
-  const pass = process.env.SMTP_PASS?.trim();
+  const host = env("SMTP_HOST");
+  const user = env("SMTP_USER");
+  const pass = env("SMTP_PASS");
   if (!host || !user || !pass) {
     throw new Error("SMTP_HOST / SMTP_USER / SMTP_PASS required");
   }
 
-  const port = Number(process.env.SMTP_PORT || "465");
+  const port = Number(env("SMTP_PORT") || "465");
+  const secureFlag = env("SMTP_SECURE");
   const secure =
-    process.env.SMTP_SECURE === "true" ||
-    process.env.SMTP_SECURE === "1" ||
-    port === 465;
+    secureFlag === "true" || secureFlag === "1" || port === 465;
 
   const transporter = nodemailer.createTransport({
     host,
     port,
     secure,
     auth: { user, pass },
+    connectionTimeout: 20_000,
+    greetingTimeout: 15_000,
+    socketTimeout: 30_000,
   });
 
-  await transporter.sendMail({
-    from: input.from,
-    to: input.to.join(", "),
-    subject: input.subject,
-    html: input.html,
-    text: input.text,
-  });
+  // Send per-recipient so one bad address does not drop the whole alert.
+  const errors: string[] = [];
+  for (const recipient of input.to) {
+    try {
+      const info = await transporter.sendMail({
+        from: input.from,
+        to: recipient,
+        subject: input.subject,
+        html: input.html,
+        text: input.text,
+      });
+      console.info("[LeadNotify] SMTP accepted", {
+        to: recipient,
+        messageId: info.messageId,
+        response: info.response,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      errors.push(`${recipient}: ${msg}`);
+      console.error("[LeadNotify] SMTP recipient failed", {
+        to: recipient,
+        error: msg,
+      });
+    }
+  }
+
+  if (errors.length === input.to.length) {
+    throw new Error(`SMTP failed for all recipients: ${errors.join("; ")}`);
+  }
+  if (errors.length) {
+    console.warn("[LeadNotify] SMTP partial failure", { errors });
+  }
 }
 
 async function sendViaResend(input: {
@@ -91,7 +130,7 @@ async function sendViaResend(input: {
   html: string;
   text: string;
 }): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const apiKey = env("RESEND_API_KEY");
   if (!apiKey) throw new Error("RESEND_API_KEY is not set");
 
   const res = await fetch("https://api.resend.com/emails", {
@@ -124,7 +163,7 @@ async function sendViaWebhook(
     adminUrl: string;
   },
 ): Promise<void> {
-  const url = process.env.LEAD_NOTIFY_WEBHOOK_URL?.trim();
+  const url = env("LEAD_NOTIFY_WEBHOOK_URL");
   if (!url) return;
 
   const res = await fetch(url, {
@@ -149,11 +188,14 @@ async function sendViaWebhook(
  */
 export async function notifyLeadCreated(leadId: string): Promise<boolean> {
   if (!notifyEnabled()) {
-    if (process.env.NODE_ENV === "development") {
-      console.info(
-        "[LeadNotify] skipped — set LEAD_NOTIFY_TO and SMTP_* (or RESEND_API_KEY)",
-      );
-    }
+    console.warn(
+      "[LeadNotify] skipped — set LEAD_NOTIFY_TO and SMTP_HOST/USER/PASS (or RESEND_API_KEY)",
+      {
+        hasTo: notifyRecipients().length > 0,
+        smtp: smtpConfigured(),
+        resend: Boolean(env("RESEND_API_KEY")),
+      },
+    );
     return false;
   }
 
@@ -168,9 +210,9 @@ export async function notifyLeadCreated(leadId: string): Promise<boolean> {
     const formatted = formatLeadCollectionEmail(lead, adminUrl);
     const to = notifyRecipients();
     const from =
-      process.env.LEAD_NOTIFY_FROM?.trim() ||
-      (process.env.SMTP_USER?.trim()
-        ? `Care Well Medical Centre <${process.env.SMTP_USER.trim()}>`
+      env("LEAD_NOTIFY_FROM") ||
+      (env("SMTP_USER")
+        ? `Care Well Medical Centre <${env("SMTP_USER")}>`
         : `Care Well Medical Centre <${DEFAULT_LEAD_NOTIFY_FROM_ADDRESS}>`);
 
     let sent = false;
@@ -185,7 +227,7 @@ export async function notifyLeadCreated(leadId: string): Promise<boolean> {
       });
       sent = true;
       console.info("[LeadNotify] SMTP sent", { leadId, to });
-    } else if (process.env.RESEND_API_KEY?.trim()) {
+    } else if (env("RESEND_API_KEY")) {
       await sendViaResend({
         to,
         from,
@@ -202,7 +244,7 @@ export async function notifyLeadCreated(leadId: string): Promise<boolean> {
       );
     }
 
-    if (process.env.LEAD_NOTIFY_WEBHOOK_URL?.trim()) {
+    if (env("LEAD_NOTIFY_WEBHOOK_URL")) {
       await sendViaWebhook(lead, { ...formatted, adminUrl });
       sent = true;
     }
