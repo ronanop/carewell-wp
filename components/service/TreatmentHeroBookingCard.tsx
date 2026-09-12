@@ -1,6 +1,12 @@
 "use client";
 
-import { CheckCircle2, Loader2 } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock3,
+  Loader2,
+  Lock,
+  ShieldCheck,
+} from "lucide-react";
 import { useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,11 +24,11 @@ const formSchema = z.object({
   phone: z
     .string()
     .trim()
-    .min(1, "Phone is required")
+    .min(1, "Mobile number is required")
     .refine((value) => {
       const digits = value.replace(/\D/g, "");
       return digits.length >= 10 && digits.length <= 15;
-    }, "Enter a valid phone number"),
+    }, "Enter a valid 10–15 digit mobile number"),
   consent: z.boolean().refine((v) => v, "Consent is required"),
   website: z.string().optional(),
 });
@@ -30,13 +36,34 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const fieldClassName = cn(
-  "w-full rounded-md border border-[#D0D5DD] bg-white px-3.5 py-2.5",
+  "w-full rounded-lg border border-[#D0D5DD] bg-white px-3.5 py-2.5",
   "text-[0.9375rem] text-[#101828] placeholder:text-[#98A2B3]",
   "transition-[border-color,box-shadow] duration-150",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25",
-  "focus-visible:border-primary/40",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1557A0]/25",
+  "focus-visible:border-[#1557A0]/45",
 );
 
+const TRUST_ITEMS = [
+  { label: "100% private", Icon: Lock },
+  { label: "Reply in ~2 hrs", Icon: Clock3 },
+  { label: "No spam", Icon: ShieldCheck },
+] as const;
+
+function highlightFree(text: string) {
+  return text.split(/(FREE)/i).map((part, i) =>
+    /^FREE$/i.test(part) ? (
+      <span key={i} className="text-[#1557A0]">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
+/**
+ * Hero booking card — visual chrome mirrors BookingFormSection card layout.
+ */
 export function TreatmentHeroBookingCard({
   chrome,
   className,
@@ -67,6 +94,14 @@ export function TreatmentHeroBookingCard({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  const title = chrome.heading || "Book FREE Doctor Appointment";
+  const subtitle =
+    chrome.subtitle?.trim() ||
+    (chrome.treatment
+      ? `Speak with Care Well about ${chrome.treatment.toLowerCase()}.`
+      : null);
+  const cta = chrome.ctaLabel || "Book Free Consultation";
 
   function onSubmit(values: FormValues) {
     setServerError(null);
@@ -106,124 +141,176 @@ export function TreatmentHeroBookingCard({
     <div
       id="treatment-hero-booking"
       className={cn(
-        "rounded-xl bg-white p-5 shadow-[0_12px_40px_-12px_rgba(10,37,64,0.35)] sm:p-5",
+        "overflow-hidden rounded-2xl border border-slate-200/90 bg-white",
+        "shadow-[0_12px_40px_-16px_rgba(10,46,82,0.28)]",
         className,
       )}
     >
-      <h2 className="text-center font-heading text-[1.0625rem] font-semibold leading-snug tracking-tight text-[#101828] sm:text-[1.125rem]">
-        Book{" "}
-        <span className="text-primary">FREE</span> Doctor Appointment
-      </h2>
+      <div className="border-b border-slate-100 bg-gradient-to-br from-[#F3F7FC] to-white px-5 py-4 sm:px-6">
+        <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-[#1557A0] uppercase">
+          {chrome.badgeLabel?.trim() || "Free consult"}
+        </p>
+        <h2 className="mt-1 w-full max-w-none font-heading text-lg font-semibold tracking-tight text-[#0A2E52] [text-wrap:wrap] sm:text-xl">
+          {highlightFree(title)}
+        </h2>
+        {subtitle ? (
+          <p className="mt-1.5 text-sm leading-snug text-slate-600">{subtitle}</p>
+        ) : null}
+      </div>
 
-      {success ? (
-        <div className="mt-5 rounded-lg border border-emerald-200 bg-emerald-50/90 p-4 text-center" role="status">
-          <CheckCircle2 className="mx-auto size-9 text-emerald-600" aria-hidden />
-          <p className="mt-2 text-sm font-medium text-[#101828]">
-            {chrome.successMessage}
-          </p>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="mt-3"
-            onClick={() => setSuccess(false)}
+      <div className="px-5 py-5 sm:px-6 sm:py-6">
+        {success ? (
+          <div
+            className="rounded-xl border border-emerald-200 bg-emerald-50/90 p-5 text-center"
+            role="status"
           >
-            Submit another request
-          </Button>
-        </div>
-      ) : (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          noValidate
-          className="mt-5 space-y-3"
-          aria-label="Book free doctor appointment"
-        >
-          <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden>
-            <label htmlFor="cw-hero-website">Website</label>
-            <input
-              id="cw-hero-website"
-              tabIndex={-1}
-              autoComplete="off"
-              {...register("website")}
+            <CheckCircle2
+              className="mx-auto size-9 text-emerald-600"
+              aria-hidden
             />
-          </div>
-
-          <div>
-            <label htmlFor="cw-hero-name" className="sr-only">
-              Patient Name
-            </label>
-            <input
-              id="cw-hero-name"
-              className={fieldClassName}
-              autoComplete="name"
-              placeholder="Patient Name"
-              {...register("name")}
-            />
-            {errors.name?.message ? (
-              <p className="mt-1 text-[0.75rem] text-destructive">{errors.name.message}</p>
-            ) : null}
-          </div>
-
-          <div>
-            <label htmlFor="cw-hero-phone" className="sr-only">
-              Mobile Number
-            </label>
-            <input
-              id="cw-hero-phone"
-              type="tel"
-              inputMode="tel"
-              className={fieldClassName}
-              autoComplete="tel"
-              placeholder="Mobile Number"
-              {...register("phone")}
-            />
-            {errors.phone?.message ? (
-              <p className="mt-1 text-[0.75rem] text-destructive">{errors.phone.message}</p>
-            ) : null}
-          </div>
-
-          <label className="flex cursor-pointer items-start gap-2.5 text-[0.6875rem] leading-snug text-[#667085]">
-            <input
-              type="checkbox"
-              className="mt-0.5 size-3.5 shrink-0 rounded border-[#D0D5DD]"
-              {...register("consent")}
-            />
-            <span>
-              I consent to Care Well Medical Centre contacting me about this
-              request.
-            </span>
-          </label>
-          {errors.consent?.message ? (
-            <p className="text-[0.75rem] text-destructive" role="alert">
-              {errors.consent.message}
+            <p className="mt-2 text-sm font-semibold text-[#0A2E52]">
+              Request received
             </p>
-          ) : null}
-
-          {serverError ? (
-            <p
-              className="rounded-md bg-destructive/10 px-3 py-2 text-[0.75rem] text-destructive"
-              role="alert"
+            <p className="mt-1 text-sm text-slate-600">{chrome.successMessage}</p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={() => setSuccess(false)}
             >
-              {serverError}
-            </p>
-          ) : null}
-
-          <Button
-            type="submit"
-            disabled={pending}
-            className="mt-1 w-full rounded-md bg-primary text-primary-foreground shadow-none hover:bg-primary/90"
+              Submit another request
+            </Button>
+          </div>
+        ) : (
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="space-y-3.5"
+            aria-label={title}
           >
-            {pending ? (
-              <>
-                <Loader2 className="size-4 animate-spin" aria-hidden />
-                Booking…
-              </>
-            ) : (
-              "Book Free Appointment"
-            )}
-          </Button>
-        </form>
-      )}
+            <div
+              className="absolute -left-[9999px] h-0 w-0 overflow-hidden"
+              aria-hidden
+            >
+              <label htmlFor="cw-hero-website">Website</label>
+              <input
+                id="cw-hero-website"
+                tabIndex={-1}
+                autoComplete="off"
+                {...register("website")}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="cw-hero-name"
+                className="mb-1.5 block text-sm font-medium text-slate-700"
+              >
+                Patient name
+              </label>
+              <input
+                id="cw-hero-name"
+                className={fieldClassName}
+                autoComplete="name"
+                placeholder="Full name"
+                {...register("name")}
+              />
+              {errors.name?.message ? (
+                <p className="mt-1 text-[0.75rem] text-destructive" role="alert">
+                  {errors.name.message}
+                </p>
+              ) : null}
+            </div>
+
+            <div>
+              <label
+                htmlFor="cw-hero-phone"
+                className="mb-1.5 block text-sm font-medium text-slate-700"
+              >
+                Mobile number
+              </label>
+              <input
+                id="cw-hero-phone"
+                type="tel"
+                inputMode="tel"
+                className={fieldClassName}
+                autoComplete="tel"
+                placeholder="10-digit mobile"
+                {...register("phone")}
+              />
+              {errors.phone?.message ? (
+                <p className="mt-1 text-[0.75rem] text-destructive" role="alert">
+                  {errors.phone.message}
+                </p>
+              ) : null}
+            </div>
+
+            <label className="flex cursor-pointer items-start gap-2.5 text-[0.6875rem] leading-snug text-slate-600">
+              <input
+                type="checkbox"
+                className="mt-0.5 size-3.5 shrink-0 rounded border-slate-300"
+                {...register("consent")}
+              />
+              <span>
+                I consent to Care Well Medical Centre contacting me about this
+                request.
+              </span>
+            </label>
+            {errors.consent?.message ? (
+              <p className="text-[0.75rem] text-destructive" role="alert">
+                {errors.consent.message}
+              </p>
+            ) : null}
+
+            {serverError ? (
+              <p
+                className="rounded-md bg-destructive/10 px-3 py-2 text-[0.75rem] text-destructive"
+                role="alert"
+              >
+                {serverError}
+              </p>
+            ) : null}
+
+            <Button
+              type="submit"
+              disabled={pending}
+              className={cn(
+                "mt-1 h-11 w-full rounded-lg bg-[#1557A0] text-[0.9375rem] font-semibold",
+                "text-white shadow-none hover:bg-[#124a8a]",
+                "focus-visible:ring-2 focus-visible:ring-[#1557A0]/35",
+              )}
+            >
+              {pending ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" aria-hidden />
+                  Booking…
+                </>
+              ) : (
+                cta
+              )}
+            </Button>
+          </form>
+        )}
+
+        {chrome.showTrustBadges ? (
+          <ul className="mt-5 grid grid-cols-3 gap-2 border-t border-slate-100 pt-4">
+            {TRUST_ITEMS.map(({ label, Icon }) => (
+              <li
+                key={label}
+                className="flex flex-col items-center gap-1 text-center"
+              >
+                <span className="flex size-7 items-center justify-center rounded-full bg-[#1557A0]/8 text-[#1557A0]">
+                  <Icon className="size-3.5" strokeWidth={2} aria-hidden />
+                </span>
+                <span className="text-[0.6875rem] font-medium leading-tight text-slate-600">
+                  {label}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
     </div>
   );
 }

@@ -1,4 +1,6 @@
-import { getSanityClient, getSanityLiveClient } from "@/lib/sanity/client";
+import { cache } from "react";
+
+import { getSanityLiveClient, sanityClient } from "@/lib/sanity/client";
 import {
   SANITY_PAGE_BY_SLUG,
   SANITY_PAGE_BY_URI,
@@ -57,44 +59,44 @@ export async function getSanityPagesList(options?: {
   /** Skip API CDN — use for admin inventory refresh. */
   live?: boolean;
 }): Promise<SanityPageListItem[]> {
-  const client = options?.live
-    ? await getSanityLiveClient()
-    : await getSanityClient();
+  const client = options?.live ? await getSanityLiveClient() : sanityClient;
   return client.fetch<SanityPageListItem[]>(SANITY_PAGES_LIST);
 }
 
-export async function getSanityPageBySlug(
-  slug: string,
-): Promise<SanityPageDoc | null> {
-  const client = await getSanityClient();
-  return client.fetch<SanityPageDoc | null>(SANITY_PAGE_BY_SLUG, { slug });
-}
+export const getSanityPageBySlug = cache(
+  async (slug: string): Promise<SanityPageDoc | null> => {
+    return sanityClient.fetch<SanityPageDoc | null>(SANITY_PAGE_BY_SLUG, {
+      slug,
+    });
+  },
+);
 
 /**
  * Resolve a Sanity `page` doc for a public URI (SEO-preserving path).
  */
-export async function getSanityPageByUri(
-  normalizedUri: string,
-): Promise<SanityPageDoc | null> {
-  const uri = normalizedUri.endsWith("/")
-    ? normalizedUri
-    : `${normalizedUri}/`;
-  const uriNoSlash = uri.replace(/\/$/, "") || "/";
-  const parts = uriNoSlash.split("/").filter(Boolean);
-  const slug = parts[parts.length - 1] || "";
+export const getSanityPageByUri = cache(
+  async (normalizedUri: string): Promise<SanityPageDoc | null> => {
+    const uri = normalizedUri.endsWith("/")
+      ? normalizedUri
+      : `${normalizedUri}/`;
+    const uriNoSlash = uri.replace(/\/$/, "") || "/";
+    const parts = uriNoSlash.split("/").filter(Boolean);
+    const slug = parts[parts.length - 1] || "";
 
-  const client = await getSanityClient();
+    const byUri = await sanityClient.fetch<SanityPageDoc | null>(
+      SANITY_PAGE_BY_URI,
+      {
+        uri,
+        uriNoSlash,
+        slug: "__no_slug_fallback__",
+      },
+    );
+    if (byUri) return byUri;
 
-  const byUri = await client.fetch<SanityPageDoc | null>(SANITY_PAGE_BY_URI, {
-    uri,
-    uriNoSlash,
-    slug: "__no_slug_fallback__",
-  });
-  if (byUri) return byUri;
+    if (parts.length === 1 && slug) {
+      return getSanityPageBySlug(slug);
+    }
 
-  if (parts.length === 1 && slug) {
-    return getSanityPageBySlug(slug);
-  }
-
-  return null;
-}
+    return null;
+  },
+);

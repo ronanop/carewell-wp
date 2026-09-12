@@ -40,7 +40,19 @@ export const sanityPreviewClient = createClient({
   perspective: "previewDrafts",
 });
 
+/**
+ * Public CDN client — never calls `draftMode()`, so catch-all service/blog/page
+ * routes can stay on ISR (`revalidate`) instead of `Cache-Control: no-store`.
+ */
 export async function getSanityClient() {
+  return sanityClient;
+}
+
+/**
+ * Draft/preview reads only. Calling this opts the route into dynamic rendering.
+ * Use from dedicated preview paths — not from public marketing pages.
+ */
+export async function getSanityPreviewClient() {
   const { isEnabled } = await draftMode();
   const readToken =
     process.env.SANITY_API_TOKEN || process.env.SANITY_WRITE_TOKEN;

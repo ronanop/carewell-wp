@@ -1,6 +1,7 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
-import { TreatmentHeroBookingCard } from "@/components/service/TreatmentHeroBookingCard";
+import { TreatmentHeroBookingCardLazy } from "@/components/service/TreatmentHeroBookingCardLazy";
 import { buttonVariants } from "@/components/ui/button";
 import { buildUriBreadcrumbs } from "@/lib/routing/uri";
 import { cn } from "@/lib/utils";
@@ -23,7 +24,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-function buildHeroChrome(args: {
+export function buildHeroChrome(args: {
   treatment: string;
   pageTitle: string;
   pageSlug: string;
@@ -34,16 +35,16 @@ function buildHeroChrome(args: {
     widgetId: "consultation-sidebar",
     enabled: true,
     stickyOffsetPx: 96,
-    desktopWidthPx: 360,
+    desktopWidthPx: 320,
     minWidthPx: 280,
-    maxWidthPx: 360,
+    maxWidthPx: 320,
     variant: "default",
     theme: "light",
     animation: "none",
     heading: "Book FREE Doctor Appointment",
     subtitle: "",
-    ctaLabel: "Book Free Appointment",
-    badgeLabel: "Free",
+    ctaLabel: "Book Free Consultation",
+    badgeLabel: "Free consult",
     phoneNumber: "+91 9667977499",
     whatsappNumber: args.whatsappNumber ?? "919667977499",
     emergencyNumber: "",
@@ -65,21 +66,12 @@ export type HeroBreadcrumb = { label: string; href: string };
 export type HeroBannerProps = SectionBaseProps & {
   /** CMS page title — rendered as the page H1. */
   heading: string;
-  tagline?: string; // hero.tagline only — omit/empty hides the subtitle (no excerpt fallback)
-  /** WP/Sanity taxonomy only — not used for breadcrumbs. */
+  tagline?: string;
   category?: string;
-  /**
-   * WordPress page URI (e.g. `/plastic-surgery-in-delhi/gynecomastia/`).
-   * Breadcrumbs are derived from path segments — same as live WP service pages.
-   */
   uri?: string;
-  /** Optional override; defaults to `buildUriBreadcrumbs(uri)`. */
   breadcrumbs?: HeroBreadcrumb[];
-  /** Desktop / large screens (lg+). */
   image?: SanityImage;
-  /** Phones & tablets; falls back to `image` when omitted. */
   imageMobile?: SanityImage;
-  /** Falls back to shared service hero photo when omitted. */
   backgroundSrc?: string;
   primaryCtaLabel?: string;
   secondaryCtaLabel?: string;
@@ -87,14 +79,235 @@ export type HeroBannerProps = SectionBaseProps & {
   secondaryCtaHref?: string;
   whatsappNumber?: string;
   showBookingCard?: boolean;
-  /** Kept for API compat — render via QuickFactsCard outside the hero. */
   quickFacts?: QuickFact[];
+  /**
+   * `standalone` — self-contained hero with inline booking (gallery / previews).
+   * `shell` — copy only (min viewport height); backdrop rendered by page shell.
+   */
+  layout?: "standalone" | "shell";
+  /** Extra node after hero copy when layout="shell" (unused; reserved). */
+  afterCopy?: ReactNode;
 };
+
+function resolveHeroAssets({
+  image,
+  imageMobile,
+  backgroundSrc,
+}: {
+  image?: SanityImage;
+  imageMobile?: SanityImage;
+  backgroundSrc?: string;
+}) {
+  const desktopSrc =
+    sectionImageUrl(image, { width: 1600, quality: 68, format: "webp" }) ||
+    backgroundSrc ||
+    DEFAULT_HERO_BG;
+  // Mobile LCP: keep under ~828w — phones do not need 1080+ assets.
+  const mobileSrc =
+    sectionImageUrl(imageMobile, { width: 750, quality: 65, format: "webp" }) ||
+    sectionImageUrl(image, { width: 750, quality: 65, format: "webp" }) ||
+    backgroundSrc ||
+    DEFAULT_HERO_BG;
+  return { desktopSrc, mobileSrc };
+}
+
+/** Public helper for <link rel="preload"> on service templates. */
+export function resolveServiceHeroImageUrls(args: {
+  image?: SanityImage;
+  imageMobile?: SanityImage;
+  backgroundSrc?: string;
+}) {
+  return resolveHeroAssets(args);
+}
+
+function resolveCrumbs(uri: string, breadcrumbs?: HeroBreadcrumb[]) {
+  const normalizedUri = uri
+    ? uri.startsWith("/")
+      ? uri.endsWith("/")
+        ? uri
+        : `${uri}/`
+      : `/${uri.replace(/\/?$/, "/")}`
+    : "/";
+  const crumbItems: HeroBreadcrumb[] = breadcrumbs?.length
+    ? breadcrumbs
+    : buildUriBreadcrumbs(normalizedUri).map(({ label, href }) => ({
+        label,
+        href,
+      }));
+  const slug = normalizedUri.split("/").filter(Boolean).pop() || "service";
+  return { normalizedUri, crumbItems, slug };
+}
+
+function HeroBackground({
+  desktopSrc,
+  mobileSrc,
+}: {
+  desktopSrc: string;
+  mobileSrc: string;
+}) {
+  return (
+    <div className="pointer-events-none absolute inset-0" aria-hidden>
+      <picture className="absolute inset-0 block h-full w-full">
+        <source media="(min-width: 1024px)" srcSet={desktopSrc} />
+        <img
+          src={mobileSrc}
+          alt=""
+          width={750}
+          height={938}
+          fetchPriority="high"
+          decoding="sync"
+          className="h-full w-full object-cover object-[center_22%] max-lg:scale-[1.08] lg:object-[center_30%]"
+        />
+      </picture>
+      <div
+        className="absolute inset-0 hidden lg:block"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(10,37,64,0.94) 0%, rgba(15,55,110,0.82) 32%, rgba(21,87,160,0.35) 58%, rgba(21,87,160,0.08) 78%, transparent 100%)",
+        }}
+      />
+      <div
+        className="absolute inset-0 lg:hidden"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(10,37,64,0.82) 0%, rgba(10,37,64,0.72) 42%, rgba(10,37,64,0.88) 100%)",
+        }}
+      />
+    </div>
+  );
+}
+
+/**
+ * Full-viewport hero photo plane — place outside the content grid so it
+ * spans edge-to-edge behind copy + booking form.
+ */
+export function ServiceHeroBackdrop({
+  image,
+  imageMobile,
+  backgroundSrc,
+  className,
+}: {
+  image?: SanityImage;
+  imageMobile?: SanityImage;
+  backgroundSrc?: string;
+  className?: string;
+}) {
+  const { desktopSrc, mobileSrc } = resolveHeroAssets({
+    image,
+    imageMobile,
+    backgroundSrc,
+  });
+
+  return (
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-x-0 top-0 z-0 h-[min(100svh,56rem)] overflow-hidden lg:h-[calc(100svh-5.75rem)]",
+        className,
+      )}
+      aria-hidden
+    >
+      <HeroBackground desktopSrc={desktopSrc} mobileSrc={mobileSrc} />
+    </div>
+  );
+}
+
+function HeroCopy({
+  heading,
+  tagline,
+  crumbItems,
+  primaryCtaLabel,
+  secondaryCtaLabel,
+  primaryCtaHref,
+  whatsappHref,
+}: {
+  heading: string;
+  tagline?: string;
+  crumbItems: HeroBreadcrumb[];
+  primaryCtaLabel: string;
+  secondaryCtaLabel: string;
+  primaryCtaHref: string;
+  whatsappHref: string;
+}) {
+  return (
+    <>
+      <nav aria-label="Breadcrumb" className="shrink-0 text-sm text-white/70">
+        <ol className="flex flex-wrap items-center gap-1.5">
+          {crumbItems.map((item, i) => {
+            const last = i === crumbItems.length - 1;
+            return (
+              <li key={`${item.href}-${i}`} className="flex items-center gap-1.5">
+                {i > 0 ? <span aria-hidden>/</span> : null}
+                {last ? (
+                  <span className="line-clamp-1 opacity-90">{item.label}</span>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className="text-white/70 hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      <div className="mt-8 flex flex-1 flex-col justify-center lg:mt-0">
+        <h1 className="mx-auto max-w-3xl text-center font-heading text-[clamp(2rem,4.2vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)] lg:mx-0 lg:text-left">
+          {heading}
+        </h1>
+        {tagline ? (
+          <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-white/90 sm:text-lg lg:mx-0 lg:text-left">
+            {tagline}
+          </p>
+        ) : null}
+
+        <div className="mt-7 flex flex-nowrap items-center justify-center gap-3 sm:gap-4 lg:justify-start">
+          <a
+            href={primaryCtaHref}
+            className={cn(
+              buttonVariants({ variant: "default", size: "lg" }),
+              "group min-w-0 flex-1 rounded-xl bg-primary px-5 text-[0.9375rem] font-semibold text-primary-foreground",
+              "shadow-[0_8px_24px_-8px_rgba(21,87,160,0.55)]",
+              "transition-[transform,box-shadow,background-color] duration-200 ease-out",
+              "hover:-translate-y-0.5 hover:bg-[#124a8a] hover:shadow-[0_14px_32px_-10px_rgba(21,87,160,0.65)]",
+              "active:translate-y-0 active:shadow-[0_6px_16px_-8px_rgba(21,87,160,0.5)]",
+              "focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+              "sm:flex-none sm:px-7 sm:text-base",
+              "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+            )}
+          >
+            {primaryCtaLabel}
+          </a>
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              buttonVariants({ variant: "whatsapp", size: "lg" }),
+              "group shrink-0 rounded-xl px-5 text-[0.9375rem] font-semibold",
+              "shadow-[0_8px_24px_-8px_rgba(37,211,102,0.5)]",
+              "transition-[transform,box-shadow,background-color] duration-200 ease-out",
+              "hover:-translate-y-0.5 hover:bg-[#1ebe57] hover:shadow-[0_14px_32px_-10px_rgba(37,211,102,0.6)]",
+              "active:translate-y-0 active:shadow-[0_6px_16px_-8px_rgba(37,211,102,0.45)]",
+              "focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+              "sm:px-7 sm:text-base",
+              "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+            )}
+          >
+            <WhatsAppIcon className="size-5 shrink-0 transition-transform duration-200 group-hover:scale-110 motion-reduce:group-hover:scale-100" />
+            {secondaryCtaLabel}
+          </a>
+        </div>
+      </div>
+    </>
+  );
+}
 
 /**
  * Service hero — full-viewport photo plane, left copy + CTAs, right booking card.
- * Breadcrumbs match WordPress: humanized URI segments via `buildUriBreadcrumbs`.
- * Height fills the viewport below sticky promo + navbar (~5.75rem).
+ * Use `layout="shell"` when the page provides a sticky booking rail outside.
  */
 export function HeroBanner({
   id = "hero",
@@ -111,31 +324,46 @@ export function HeroBanner({
   secondaryCtaHref,
   whatsappNumber = "919667977499",
   showBookingCard = true,
+  layout = "standalone",
   className,
 }: HeroBannerProps) {
-  const desktopSrc =
-    sectionImageUrl(image, 1920) || backgroundSrc || DEFAULT_HERO_BG;
-  const mobileSrc =
-    sectionImageUrl(imageMobile, 1080) ||
-    sectionImageUrl(image, 1080) ||
-    backgroundSrc ||
-    DEFAULT_HERO_BG;
   const whatsappHref =
     secondaryCtaHref || `https://wa.me/${whatsappNumber.replace(/\D/g, "")}`;
-  const normalizedUri = uri
-    ? uri.startsWith("/")
-      ? uri.endsWith("/")
-        ? uri
-        : `${uri}/`
-      : `/${uri.replace(/\/?$/, "/")}`
-    : "/";
-  const crumbItems: HeroBreadcrumb[] = breadcrumbs?.length
-    ? breadcrumbs
-    : buildUriBreadcrumbs(normalizedUri).map(({ label, href }) => ({
-        label,
-        href,
-      }));
-  const slug = normalizedUri.split("/").filter(Boolean).pop() || "service";
+  const { normalizedUri, crumbItems, slug } = resolveCrumbs(uri, breadcrumbs);
+
+  const copy = (
+    <HeroCopy
+      heading={heading}
+      tagline={tagline}
+      crumbItems={crumbItems}
+      primaryCtaLabel={primaryCtaLabel}
+      secondaryCtaLabel={secondaryCtaLabel}
+      primaryCtaHref={primaryCtaHref}
+      whatsappHref={whatsappHref}
+    />
+  );
+
+  if (layout === "shell") {
+    return (
+      <header
+        id={id}
+        className={cn(
+          "relative z-10 flex min-h-[min(100svh,56rem)] flex-col lg:min-h-[calc(100svh-5.75rem)]",
+          className,
+        )}
+      >
+        <div className="relative flex flex-1 flex-col py-8 sm:py-10 lg:py-12">
+          {copy}
+        </div>
+      </header>
+    );
+  }
+
+  const { desktopSrc, mobileSrc } = resolveHeroAssets({
+    image,
+    imageMobile,
+    backgroundSrc,
+  });
   const chrome = buildHeroChrome({
     treatment: heading,
     pageTitle: heading,
@@ -152,103 +380,41 @@ export function HeroBanner({
         className,
       )}
     >
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        {/* Art direction: browser fetches only the matching source */}
-        <picture className="absolute inset-0 block h-full w-full">
-          <source media="(min-width: 1024px)" srcSet={desktopSrc} />
-          <img
-            src={mobileSrc}
-            alt=""
-            width={1080}
-            height={1350}
-            fetchPriority="high"
-            decoding="async"
-            className="h-full w-full object-cover object-[center_22%] max-lg:scale-[1.08] lg:object-[center_30%]"
-          />
-        </picture>
-        <div
-          className="absolute inset-0 hidden lg:block"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(10,37,64,0.94) 0%, rgba(15,55,110,0.82) 32%, rgba(21,87,160,0.35) 58%, rgba(21,87,160,0.08) 78%, transparent 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0 lg:hidden"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(10,37,64,0.82) 0%, rgba(10,37,64,0.72) 42%, rgba(10,37,64,0.88) 100%)",
-          }}
-        />
-      </div>
+      <HeroBackground desktopSrc={desktopSrc} mobileSrc={mobileSrc} />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[90rem] flex-1 flex-col px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12 xl:px-10">
-        <nav aria-label="Breadcrumb" className="shrink-0 text-sm text-white/70">
-          <ol className="flex flex-wrap items-center gap-1.5">
-            {crumbItems.map((item, i) => {
-              const last = i === crumbItems.length - 1;
-              return (
-                <li key={`${item.href}-${i}`} className="flex items-center gap-1.5">
-                  {i > 0 ? <span aria-hidden>/</span> : null}
-                  {last ? (
-                    <span className="line-clamp-1 opacity-90">{item.label}</span>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className="text-white/70 hover:text-white"
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
-        </nav>
-
-        <div className="mt-8 grid flex-1 items-center gap-10 lg:mt-0 lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] lg:gap-12 xl:gap-16">
-          <div className="min-w-0">
-            <h1 className="mx-auto max-w-3xl text-center font-heading text-[clamp(2rem,4.2vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)] lg:mx-0 lg:text-left">
-              {heading}
-            </h1>
-            {tagline ? (
-              <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-white/90 sm:text-lg lg:mx-0 lg:text-left">
-                {tagline}
-              </p>
-            ) : null}
-
-            <div className="mt-7 flex flex-nowrap items-center justify-center gap-2 sm:gap-3 lg:justify-start">
-              <a
-                href={primaryCtaHref}
-                className={cn(
-                  buttonVariants({ variant: "default", size: "default" }),
-                  "min-w-0 flex-1 rounded-md bg-primary px-3 text-sm text-primary-foreground shadow-none hover:bg-primary/90 sm:flex-none sm:px-5 sm:text-base",
-                )}
-              >
-                {primaryCtaLabel}
-              </a>
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ variant: "whatsapp", size: "default" }),
-                  "shrink-0 rounded-md px-3 text-sm shadow-none sm:px-5 sm:text-base",
-                )}
-              >
-                <WhatsAppIcon className="size-4 shrink-0" />
-                {secondaryCtaLabel}
-              </a>
-            </div>
-          </div>
+        <div
+          className={cn(
+            "mt-0 grid flex-1 items-center gap-10",
+            showBookingCard &&
+              "lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 xl:gap-16",
+          )}
+        >
+          <div className="flex min-h-0 flex-1 flex-col">{copy}</div>
 
           {showBookingCard ? (
-            <div className="mx-auto w-full max-w-[360px] lg:mx-0 lg:max-w-none">
-              <TreatmentHeroBookingCard chrome={chrome} />
+            <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:w-[320px] lg:max-w-none">
+              <TreatmentHeroBookingCardLazy chrome={chrome} />
             </div>
           ) : null}
         </div>
       </div>
     </header>
   );
+}
+
+/** Shared page-shell chrome builder for sticky booking rail. */
+export function resolveServiceHeroChrome(args: {
+  heading: string;
+  uri?: string;
+  whatsappNumber?: string;
+}) {
+  const { normalizedUri, slug } = resolveCrumbs(args.uri ?? "");
+  return buildHeroChrome({
+    treatment: args.heading,
+    pageTitle: args.heading,
+    pageSlug: slug,
+    pageUri: normalizedUri,
+    whatsappNumber: args.whatsappNumber,
+  });
 }

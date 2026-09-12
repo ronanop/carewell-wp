@@ -1,5 +1,6 @@
 import { Clock, ExternalLink, MapPin, Phone } from "lucide-react";
 
+import { LazyMapEmbed } from "@/components/maps/LazyMapEmbed";
 import { resolveGoogleMapsEmbedUrl } from "@/lib/maps/googleMapsEmbed";
 import { cn } from "@/lib/utils";
 import type { SectionBaseProps } from "./types";
@@ -219,17 +220,14 @@ export function LocationSection({
                   : "h-[280px] sm:h-[320px]",
               )}
             >
-              <iframe
+              <LazyMapEmbed
                 title={
                   resolvedAddress
                     ? `Map — ${resolvedAddress}`
                     : "Clinic location map"
                 }
                 src={embedSrc}
-                className="h-full w-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
+                className="absolute inset-0 h-full w-full"
               />
             </div>
           ) : mapsLink ? (

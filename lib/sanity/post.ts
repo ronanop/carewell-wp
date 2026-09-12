@@ -12,6 +12,7 @@ import {
   SANITY_POSTS_LIST,
   SANITY_POSTS_MORE,
 } from "@/lib/sanity/queries";
+import { cache } from "react";
 
 export type SanityPostImage = {
   alt?: string;
@@ -102,8 +103,7 @@ export async function getSanityMorePosts(
   excludeId: string,
   limit = 3,
 ): Promise<SanityPostCard[]> {
-  const client = await getSanityClient();
-  return client.fetch<SanityPostCard[]>(SANITY_POSTS_MORE, {
+  return sanityClient.fetch<SanityPostCard[]>(SANITY_POSTS_MORE, {
     excludeId,
     limit,
   });
@@ -131,42 +131,44 @@ export function mergeNextPosts(
   return out;
 }
 
-export async function getSanityPostBySlug(
-  slug: string,
-): Promise<SanityPostDoc | null> {
-  const client = await getSanityClient();
-  return client.fetch<SanityPostDoc | null>(SANITY_POST_BY_SLUG, { slug });
-}
+export const getSanityPostBySlug = cache(
+  async (slug: string): Promise<SanityPostDoc | null> => {
+    return sanityClient.fetch<SanityPostDoc | null>(SANITY_POST_BY_SLUG, {
+      slug,
+    });
+  },
+);
 
 /**
  * Resolve a Sanity `post` for a WordPress-style URI (SEO-preserving root path).
  * Prefers exact `uri` match; falls back to slug only for single-segment URIs.
  */
-export async function getSanityPostByUri(
-  normalizedUri: string,
-): Promise<SanityPostDoc | null> {
-  const uri = normalizedUri.endsWith("/")
-    ? normalizedUri
-    : `${normalizedUri}/`;
-  const uriNoSlash = uri.replace(/\/$/, "") || "/";
-  const parts = uriNoSlash.split("/").filter(Boolean);
-  const slug = parts[parts.length - 1] || "";
+export const getSanityPostByUri = cache(
+  async (normalizedUri: string): Promise<SanityPostDoc | null> => {
+    const uri = normalizedUri.endsWith("/")
+      ? normalizedUri
+      : `${normalizedUri}/`;
+    const uriNoSlash = uri.replace(/\/$/, "") || "/";
+    const parts = uriNoSlash.split("/").filter(Boolean);
+    const slug = parts[parts.length - 1] || "";
 
-  const client = await getSanityClient();
+    const byUri = await sanityClient.fetch<SanityPostDoc | null>(
+      SANITY_POST_BY_URI,
+      {
+        uri,
+        uriNoSlash,
+        slug: "__no_slug_fallback__",
+      },
+    );
+    if (byUri) return byUri;
 
-  const byUri = await client.fetch<SanityPostDoc | null>(SANITY_POST_BY_URI, {
-    uri,
-    uriNoSlash,
-    slug: "__no_slug_fallback__",
-  });
-  if (byUri) return byUri;
+    if (parts.length === 1 && slug) {
+      return getSanityPostBySlug(slug);
+    }
 
-  if (parts.length === 1 && slug) {
-    return getSanityPostBySlug(slug);
-  }
-
-  return null;
-}
+    return null;
+  },
+);
 
 const SERVICE_CATEGORY_KEYWORDS: Record<string, string[]> = {
   hair: ["hair", "transplant", "prp", "beard", "eyebrow"],

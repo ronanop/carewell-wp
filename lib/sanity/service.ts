@@ -1,5 +1,7 @@
+import { cache } from "react";
+
 import type { SanityServiceDoc } from "@/components/service/sanityServiceTypes";
-import { getSanityClient, getSanityLiveClient } from "@/lib/sanity/client";
+import { getSanityLiveClient, sanityClient } from "@/lib/sanity/client";
 import {
   SANITY_SERVICE_BY_SLUG,
   SANITY_SERVICE_BY_URI,
@@ -37,48 +39,44 @@ export async function getSanityServicesList(options?: {
   /** Skip API CDN — use for admin inventory refresh. */
   live?: boolean;
 }): Promise<SanityServiceListItem[]> {
-  const client = options?.live
-    ? await getSanityLiveClient()
-    : await getSanityClient();
+  const client = options?.live ? await getSanityLiveClient() : sanityClient;
   return client.fetch<SanityServiceListItem[]>(SANITY_SERVICES_LIST);
 }
 
-export async function getSanityServiceBySlug(
-  slug: string,
-): Promise<SanityServiceDoc | null> {
-  const client = await getSanityClient();
-  return client.fetch<SanityServiceDoc | null>(SANITY_SERVICE_BY_SLUG, {
-    slug,
-  });
-}
+export const getSanityServiceBySlug = cache(
+  async (slug: string): Promise<SanityServiceDoc | null> => {
+    return sanityClient.fetch<SanityServiceDoc | null>(SANITY_SERVICE_BY_SLUG, {
+      slug,
+    });
+  },
+);
 
 /**
  * Resolve a Sanity service for a WordPress-style URI (SEO-preserving path).
  * Prefers exact `uri` match; falls back to slug only for single-segment URIs.
+ * React `cache()` dedupes generateMetadata + page render in one request.
  */
-export async function getSanityServiceByUri(
-  normalizedUri: string,
-): Promise<SanityServiceDoc | null> {
-  const uri = normalizedUri.endsWith("/")
-    ? normalizedUri
-    : `${normalizedUri}/`;
-  const uriNoSlash = uri.replace(/\/$/, "") || "/";
-  const parts = uriNoSlash.split("/").filter(Boolean);
-  const slug = parts[parts.length - 1] || "";
+export const getSanityServiceByUri = cache(
+  async (normalizedUri: string): Promise<SanityServiceDoc | null> => {
+    const uri = normalizedUri.endsWith("/")
+      ? normalizedUri
+      : `${normalizedUri}/`;
+    const uriNoSlash = uri.replace(/\/$/, "") || "/";
+    const parts = uriNoSlash.split("/").filter(Boolean);
+    const slug = parts[parts.length - 1] || "";
 
-  const client = await getSanityClient();
+    // Pass a non-matching slug sentinel so we only hit uri clauses in GROQ
+    const byUri = await sanityClient.fetch<SanityServiceDoc | null>(
+      SANITY_SERVICE_BY_URI,
+      { uri, uriNoSlash, slug: "__no_slug_fallback__" },
+    );
+    if (byUri) return byUri;
 
-  // Pass a non-matching slug sentinel so we only hit uri clauses in GROQ
-  const byUri = await client.fetch<SanityServiceDoc | null>(
-    SANITY_SERVICE_BY_URI,
-    { uri, uriNoSlash, slug: "__no_slug_fallback__" },
-  );
-  if (byUri) return byUri;
+    // Single-segment only — avoid nested path colliding with another service's slug
+    if (parts.length === 1 && slug) {
+      return getSanityServiceBySlug(slug);
+    }
 
-  // Single-segment only — avoid nested path colliding with another service's slug
-  if (parts.length === 1 && slug) {
-    return getSanityServiceBySlug(slug);
-  }
-
-  return null;
-}
+    return null;
+  },
+);

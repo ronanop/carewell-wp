@@ -31,7 +31,7 @@ function iconForLabel(label?: string): LucideIcon {
 }
 
 /**
- * At-a-glance clinical facts — value-first trust strip under the hero.
+ * At-a-glance clinical facts — sits in the main column above Overview.
  * Empty facts → render nothing.
  */
 export function QuickFactsCard({
@@ -81,74 +81,63 @@ export function QuickFactsCard({
       aria-labelledby={`${id}-heading`}
       className={cn("relative", className)}
     >
-      <div className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div className="rounded-3xl border border-[#1557A0]/10 bg-gradient-to-br from-white via-white to-[#F1F6FC] p-5 shadow-[0_14px_38px_-24px_rgba(10,46,82,0.38)] sm:p-6">
-          <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
-          <div>
-            <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-[#1557A0] uppercase">
-              Snapshot
-            </p>
-            <h2
-              id={`${id}-heading`}
-              className="mt-1 font-heading text-lg font-semibold tracking-tight text-[#0A2E52] sm:text-xl"
-            >
-              {title}
-            </h2>
-          </div>
-          {note ? (
-            <p className="max-w-sm text-xs leading-relaxed text-slate-500">
-              {note}
-            </p>
-          ) : null}
-        </div>
-
-        <dl
-          className={cn(
-            "grid gap-3",
-            "sm:grid-cols-2 lg:grid-cols-4 lg:gap-0",
-            "lg:rounded-2xl lg:border lg:border-slate-200/90 lg:bg-white lg:shadow-[0_8px_30px_-18px_rgba(10,46,82,0.35)]",
-          )}
-        >
-          {facts.map((fact, i) => {
-            const Icon = iconForLabel(fact.label);
-            return (
-              <div
-                key={`${fact.label}-${i}`}
-                className={cn(
-                  "group relative rounded-xl border border-slate-200/90 bg-white p-4",
-                  "transition-[transform,box-shadow,border-color] duration-200",
-                  "hover:border-[#1557A0]/25 hover:shadow-[0_10px_28px_-16px_rgba(21,87,160,0.45)]",
-                  "motion-safe:hover:-translate-y-0.5",
-                  "lg:rounded-none lg:border-0 lg:bg-transparent lg:p-5 lg:shadow-none",
-                  "lg:hover:translate-y-0 lg:hover:shadow-none",
-                  i > 0 && "lg:border-l lg:border-slate-200",
-                )}
+      {/* Match Overview horizontal inset so the card aligns with article content */}
+      <div className="relative mx-auto max-w-6xl px-4 pb-2 pt-4 sm:px-6 sm:pb-4 sm:pt-6 lg:px-8">
+        <div className="rounded-2xl border border-[#1557A0]/12 bg-gradient-to-br from-white via-white to-[#F1F6FC] p-4 shadow-[0_10px_28px_-20px_rgba(10,46,82,0.35)] sm:p-5">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-[#1557A0] uppercase">
+                Snapshot
+              </p>
+              <h2
+                id={`${id}-heading`}
+                className="mt-1 font-heading text-base font-semibold tracking-tight text-[#0A2E52] sm:text-lg"
               >
-                <div className="flex items-start gap-3">
+                {title}
+              </h2>
+            </div>
+            {note ? (
+              <p className="max-w-xs text-xs leading-relaxed text-slate-500">
+                {note}
+              </p>
+            ) : null}
+          </div>
+
+          <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
+            {facts.map((fact, i) => {
+              const Icon = iconForLabel(fact.label);
+              return (
+                <div
+                  key={`${fact.label}-${i}`}
+                  className={cn(
+                    "flex items-start gap-3 rounded-xl border border-slate-200/90 bg-white/90 px-3.5 py-3",
+                    "transition-[border-color,box-shadow] duration-200",
+                    "hover:border-[#1557A0]/25 hover:shadow-[0_8px_20px_-14px_rgba(21,87,160,0.4)]",
+                  )}
+                >
                   <span
                     className={cn(
-                      "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg",
+                      "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg",
                       "bg-[#1557A0]/8 text-[#1557A0]",
                       "ring-1 ring-[#1557A0]/12",
                     )}
                     aria-hidden
                   >
-                    <Icon className="size-4" strokeWidth={2} />
+                    <Icon className="size-3.5" strokeWidth={2} />
                   </span>
                   <div className="min-w-0">
-                    <dt className="text-[0.75rem] font-medium leading-snug text-slate-500">
+                    <dt className="text-[0.6875rem] font-medium leading-snug text-slate-500">
                       {fact.label}
                     </dt>
-                    <dd className="mt-1 font-heading text-[1.0625rem] font-semibold tracking-tight text-[#0A2E52] sm:text-lg">
+                    <dd className="mt-0.5 font-heading text-[0.9375rem] font-semibold tracking-tight text-[#0A2E52] sm:text-base">
                       {fact.value}
                     </dd>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </dl>
-          </div>
+              );
+            })}
+          </dl>
+        </div>
       </div>
     </section>
   );

@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import {
-  BookingFormSection,
   FinalCtaStrip,
   HeroBanner,
   LocationSection,
   QuickFactsCard,
+  resolveServiceHeroChrome,
+  resolveServiceHeroImageUrls,
+  ServiceHeroBackdrop,
 } from "@/components/service/sections";
+import { ServiceStickyBookingRail } from "@/components/service/ServiceStickyBookingRail";
+import { TreatmentHeroBookingCardLazy } from "@/components/service/TreatmentHeroBookingCardLazy";
 import { ServicePageBuilderSections } from "@/components/service/ServicePageBuilderSections";
 import type { SanityServiceDoc } from "@/components/service/sanityServiceTypes";
 import type { SanityPostCard } from "@/lib/sanity/post";
@@ -88,7 +92,7 @@ export function buildSanityServiceMetadata(
 
 /**
  * Full CMS-driven service page (navbar + sections + footer).
- * Served at the document's original WordPress URI for SEO.
+ * Hero booking card sticks in the right rail through hero + main content.
  */
 export function SanityServiceTemplate({
   service: rawService,
@@ -99,58 +103,58 @@ export function SanityServiceTemplate({
 }) {
   const service = polishServiceCopy(rawService);
   const heading = service.title;
+  const chrome = resolveServiceHeroChrome({
+    heading,
+    uri: service.uri,
+  });
+  const { mobileSrc } = resolveServiceHeroImageUrls({
+    image: service.hero?.image,
+    imageMobile: service.hero?.imageMobile,
+  });
 
   return (
     <>
+      {/* Discover LCP hero image before CSS/JS — critical for mobile CWV. */}
+      {mobileSrc.startsWith("http") || mobileSrc.startsWith("/") ? (
+        <link rel="preload" as="image" href={mobileSrc} fetchPriority="high" />
+      ) : null}
       <NavbarPlaceholder />
       <main className="service-page bg-[#FAFBFE] text-slate-900">
-        <HeroBanner
-          heading={heading}
-          tagline={service.hero?.tagline}
-          category={service.category}
-          uri={service.uri}
-          image={service.hero?.image}
-          imageMobile={service.hero?.imageMobile}
-          primaryCtaLabel={service.hero?.primaryCtaLabel}
-          secondaryCtaLabel={service.hero?.secondaryCtaLabel}
-          quickFacts={service.hero?.quickFacts}
-        />
+        <div className="relative">
+          <ServiceHeroBackdrop
+            image={service.hero?.image}
+            imageMobile={service.hero?.imageMobile}
+          />
 
-        <QuickFactsCard
-          facts={service.hero?.quickFacts}
-          note={service.hero?.quickFactsNote}
-        />
-
-        <div className="service-content mx-auto grid w-full max-w-[90rem] gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-8 xl:gap-16 xl:px-10">
-          <div className="service-main-column min-w-0 space-y-2">
-            <ServicePageBuilderSections
-              service={service}
-              relatedPosts={relatedPosts}
+          <div className="service-content relative z-10 mx-auto grid w-full max-w-[90rem] px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-8 xl:gap-16 xl:px-10">
+            <HeroBanner
+              layout="shell"
+              heading={heading}
+              tagline={service.hero?.tagline}
+              category={service.category}
+              uri={service.uri}
+              image={service.hero?.image}
+              imageMobile={service.hero?.imageMobile}
+              primaryCtaLabel={service.hero?.primaryCtaLabel}
+              secondaryCtaLabel={service.hero?.secondaryCtaLabel}
+              quickFacts={service.hero?.quickFacts}
+              showBookingCard={false}
             />
-          </div>
 
-          <div className="space-y-4 lg:sticky lg:top-36 lg:self-start">
-            <BookingFormSection
-              sticky={false}
-              layout="card"
-              treatmentLabel={service.title}
-              pageUri={service.uri}
-              pageSlug={service.slug}
-              eyebrow={service.booking?.eyebrow}
-              title={service.booking?.title}
-              subtitle={service.booking?.subtitle}
-              submitLabel={service.booking?.submitLabel}
-              nameLabel={service.booking?.nameLabel}
-              namePlaceholder={service.booking?.namePlaceholder}
-              phoneLabel={service.booking?.phoneLabel}
-              phonePlaceholder={service.booking?.phonePlaceholder}
-              trustItems={service.booking?.trustItems}
-              successTitle={service.booking?.successTitle}
-              successBody={service.booking?.successBody}
-              bandEyebrow={service.booking?.bandEyebrow}
-              bandHeadline={service.booking?.bandHeadline}
-              bandBody={service.booking?.bandBody}
-            />
+            <ServiceStickyBookingRail className="w-full max-lg:pb-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+              <TreatmentHeroBookingCardLazy chrome={chrome} />
+            </ServiceStickyBookingRail>
+
+            <div className="service-main-column min-w-0 space-y-2 bg-[#FAFBFE] pb-10 pt-2 sm:pb-12 lg:col-start-1 lg:pt-4">
+              <QuickFactsCard
+                facts={service.hero?.quickFacts}
+                note={service.hero?.quickFactsNote}
+              />
+              <ServicePageBuilderSections
+                service={service}
+                relatedPosts={relatedPosts}
+              />
+            </div>
           </div>
         </div>
 
