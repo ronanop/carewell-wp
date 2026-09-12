@@ -107,7 +107,7 @@ export function SanityServiceTemplate({
     heading,
     uri: service.uri,
   });
-  const { mobileSrc } = resolveServiceHeroImageUrls({
+  const { mobileSrc, mobileSrcSet } = resolveServiceHeroImageUrls({
     image: service.hero?.image,
     imageMobile: service.hero?.imageMobile,
   });
@@ -116,7 +116,14 @@ export function SanityServiceTemplate({
     <>
       {/* Discover LCP hero image before CSS/JS — critical for mobile CWV. */}
       {mobileSrc.startsWith("http") || mobileSrc.startsWith("/") ? (
-        <link rel="preload" as="image" href={mobileSrc} fetchPriority="high" />
+        <link
+          rel="preload"
+          as="image"
+          href={mobileSrc}
+          imageSrcSet={mobileSrcSet}
+          imageSizes="100vw"
+          fetchPriority="high"
+        />
       ) : null}
       <NavbarPlaceholder />
       <main className="service-page bg-[#FAFBFE] text-slate-900">

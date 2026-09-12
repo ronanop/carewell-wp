@@ -53,7 +53,7 @@ export function QuickFactsCard({
           className,
         )}
       >
-        <p className="mb-3 text-xs font-semibold tracking-wide text-white/75 uppercase">
+        <p className="mb-3 text-xs font-semibold tracking-wide text-white/90 uppercase">
           {title}
         </p>
         <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:divide-white/15">
@@ -62,7 +62,7 @@ export function QuickFactsCard({
               key={`${fact.label}-${i}`}
               className="min-w-0 sm:px-3 first:sm:pl-0 last:sm:pr-0"
             >
-              <dt className="text-[0.6875rem] leading-snug text-white/65">
+              <dt className="text-[0.6875rem] leading-snug text-white/90">
                 {fact.label}
               </dt>
               <dd className="mt-1 text-sm font-semibold tracking-tight text-white">
@@ -81,7 +81,6 @@ export function QuickFactsCard({
       aria-labelledby={`${id}-heading`}
       className={cn("relative", className)}
     >
-      {/* Match Overview horizontal inset so the card aligns with article content */}
       <div className="relative mx-auto max-w-6xl px-4 pb-2 pt-4 sm:px-6 sm:pb-4 sm:pt-6 lg:px-8">
         <div className="rounded-2xl border border-[#1557A0]/12 bg-gradient-to-br from-white via-white to-[#F1F6FC] p-4 shadow-[0_10px_28px_-20px_rgba(10,46,82,0.35)] sm:p-5">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
@@ -97,7 +96,7 @@ export function QuickFactsCard({
               </h2>
             </div>
             {note ? (
-              <p className="max-w-xs text-xs leading-relaxed text-slate-500">
+              <p className="max-w-xs text-xs leading-relaxed text-slate-600">
                 {note}
               </p>
             ) : null}
@@ -110,29 +109,28 @@ export function QuickFactsCard({
                 <div
                   key={`${fact.label}-${i}`}
                   className={cn(
-                    "flex items-start gap-3 rounded-xl border border-slate-200/90 bg-white/90 px-3.5 py-3",
+                    "rounded-xl border border-slate-200/90 bg-white/90 px-3.5 py-3",
                     "transition-[border-color,box-shadow] duration-200",
                     "hover:border-[#1557A0]/25 hover:shadow-[0_8px_20px_-14px_rgba(21,87,160,0.4)]",
                   )}
                 >
-                  <span
-                    className={cn(
-                      "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg",
-                      "bg-[#1557A0]/8 text-[#1557A0]",
-                      "ring-1 ring-[#1557A0]/12",
-                    )}
-                    aria-hidden
-                  >
-                    <Icon className="size-3.5" strokeWidth={2} />
-                  </span>
-                  <div className="min-w-0">
-                    <dt className="text-[0.6875rem] font-medium leading-snug text-slate-500">
-                      {fact.label}
-                    </dt>
-                    <dd className="mt-0.5 font-heading text-[0.9375rem] font-semibold tracking-tight text-[#0A2E52] sm:text-base">
-                      {fact.value}
-                    </dd>
-                  </div>
+                  {/* dl > div may only contain dt/dd — icon lives inside dt */}
+                  <dt className="flex items-start gap-3 text-[0.6875rem] font-medium leading-snug text-slate-600">
+                    <span
+                      className={cn(
+                        "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg",
+                        "bg-[#1557A0]/8 text-[#1557A0]",
+                        "ring-1 ring-[#1557A0]/12",
+                      )}
+                      aria-hidden
+                    >
+                      <Icon className="size-3.5" strokeWidth={2} />
+                    </span>
+                    <span className="min-w-0 pt-1.5">{fact.label}</span>
+                  </dt>
+                  <dd className="mt-0.5 pl-11 font-heading text-[0.9375rem] font-semibold tracking-tight text-[#0A2E52] sm:text-base">
+                    {fact.value}
+                  </dd>
                 </div>
               );
             })}

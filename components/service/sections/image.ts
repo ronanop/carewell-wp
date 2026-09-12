@@ -32,3 +32,19 @@ export function sectionImageUrl(
     return image.asset.url || null;
   }
 }
+
+/** Comma-separated `srcSet` for responsive Sanity images (mobile LCP). */
+export function sectionImageSrcSet(
+  image: SanityImage | undefined,
+  widths: number[],
+  opts: Omit<SectionImageOpts, "width"> = {},
+) {
+  if (!image?.asset) return null;
+  const parts = widths
+    .map((w) => {
+      const url = sectionImageUrl(image, { ...opts, width: w });
+      return url ? `${url} ${w}w` : null;
+    })
+    .filter(Boolean);
+  return parts.length ? parts.join(", ") : null;
+}

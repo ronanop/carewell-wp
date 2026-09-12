@@ -6,10 +6,11 @@ import { buttonVariants } from "@/components/ui/button";
 import { buildUriBreadcrumbs } from "@/lib/routing/uri";
 import { cn } from "@/lib/utils";
 import type { ResolvedConsultationChrome } from "@/types/page-chrome";
-import { sectionImageUrl } from "./image";
+import { sectionImageSrcSet, sectionImageUrl } from "./image";
 import type { QuickFact, SanityImage, SectionBaseProps } from "./types";
 
 const DEFAULT_HERO_BG = "/images/service-hero-background.jpg";
+const MOBILE_HERO_WIDTHS = [480, 640, 750, 828] as const;
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -102,13 +103,18 @@ function resolveHeroAssets({
     sectionImageUrl(image, { width: 1600, quality: 68, format: "webp" }) ||
     backgroundSrc ||
     DEFAULT_HERO_BG;
+  const mobileImage = imageMobile?.asset ? imageMobile : image;
   // Mobile LCP: keep under ~828w — phones do not need 1080+ assets.
   const mobileSrc =
-    sectionImageUrl(imageMobile, { width: 750, quality: 65, format: "webp" }) ||
-    sectionImageUrl(image, { width: 750, quality: 65, format: "webp" }) ||
+    sectionImageUrl(mobileImage, { width: 750, quality: 62, format: "webp" }) ||
     backgroundSrc ||
     DEFAULT_HERO_BG;
-  return { desktopSrc, mobileSrc };
+  const mobileSrcSet =
+    sectionImageSrcSet(mobileImage, [...MOBILE_HERO_WIDTHS], {
+      quality: 62,
+      format: "webp",
+    }) || undefined;
+  return { desktopSrc, mobileSrc, mobileSrcSet };
 }
 
 /** Public helper for <link rel="preload"> on service templates. */
@@ -141,9 +147,11 @@ function resolveCrumbs(uri: string, breadcrumbs?: HeroBreadcrumb[]) {
 function HeroBackground({
   desktopSrc,
   mobileSrc,
+  mobileSrcSet,
 }: {
   desktopSrc: string;
   mobileSrc: string;
+  mobileSrcSet?: string;
 }) {
   return (
     <div className="pointer-events-none absolute inset-0" aria-hidden>
@@ -151,11 +159,13 @@ function HeroBackground({
         <source media="(min-width: 1024px)" srcSet={desktopSrc} />
         <img
           src={mobileSrc}
+          srcSet={mobileSrcSet}
+          sizes="100vw"
           alt=""
           width={750}
           height={938}
           fetchPriority="high"
-          decoding="sync"
+          decoding="async"
           className="h-full w-full object-cover object-[center_22%] max-lg:scale-[1.08] lg:object-[center_30%]"
         />
       </picture>
@@ -192,7 +202,7 @@ export function ServiceHeroBackdrop({
   backgroundSrc?: string;
   className?: string;
 }) {
-  const { desktopSrc, mobileSrc } = resolveHeroAssets({
+  const { desktopSrc, mobileSrc, mobileSrcSet } = resolveHeroAssets({
     image,
     imageMobile,
     backgroundSrc,
@@ -206,7 +216,11 @@ export function ServiceHeroBackdrop({
       )}
       aria-hidden
     >
-      <HeroBackground desktopSrc={desktopSrc} mobileSrc={mobileSrc} />
+      <HeroBackground
+        desktopSrc={desktopSrc}
+        mobileSrc={mobileSrc}
+        mobileSrcSet={mobileSrcSet}
+      />
     </div>
   );
 }
@@ -230,19 +244,19 @@ function HeroCopy({
 }) {
   return (
     <>
-      <nav aria-label="Breadcrumb" className="shrink-0 text-sm text-white/70">
+      <nav aria-label="Breadcrumb" className="shrink-0 text-sm text-white/90">
         <ol className="flex flex-wrap items-center gap-1.5">
           {crumbItems.map((item, i) => {
             const last = i === crumbItems.length - 1;
             return (
               <li key={`${item.href}-${i}`} className="flex items-center gap-1.5">
-                {i > 0 ? <span aria-hidden>/</span> : null}
+                {i > 0 ? <span aria-hidden className="text-white/70">/</span> : null}
                 {last ? (
-                  <span className="line-clamp-1 opacity-90">{item.label}</span>
+                  <span className="line-clamp-1 text-white">{item.label}</span>
                 ) : (
                   <Link
                     href={item.href}
-                    className="text-white/70 hover:text-white"
+                    className="text-white/90 underline-offset-2 hover:text-white hover:underline"
                   >
                     {item.label}
                   </Link>
@@ -359,7 +373,7 @@ export function HeroBanner({
     );
   }
 
-  const { desktopSrc, mobileSrc } = resolveHeroAssets({
+  const { desktopSrc, mobileSrc, mobileSrcSet } = resolveHeroAssets({
     image,
     imageMobile,
     backgroundSrc,
@@ -380,7 +394,11 @@ export function HeroBanner({
         className,
       )}
     >
-      <HeroBackground desktopSrc={desktopSrc} mobileSrc={mobileSrc} />
+      <HeroBackground
+        desktopSrc={desktopSrc}
+        mobileSrc={mobileSrc}
+        mobileSrcSet={mobileSrcSet}
+      />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[90rem] flex-1 flex-col px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12 xl:px-10">
         <div

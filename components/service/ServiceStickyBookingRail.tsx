@@ -18,8 +18,9 @@ function measureStickyTop(): number {
 }
 
 /**
- * Sticky booking rail that works even when html/body use overflow-x: clip.
- * Styles are applied imperatively (no React state on scroll) to avoid jitter.
+ * Desktop-only sticky booking rail.
+ * On mobile, renders children in normal flow with zero scroll listeners
+ * (avoids forced reflow competing with LCP).
  */
 export function ServiceStickyBookingRail({
   children,
@@ -28,7 +29,7 @@ export function ServiceStickyBookingRail({
   children: ReactNode;
   className?: string;
 }) {
-  const railRef = useRef<HTMLElement | null>(null);
+  const railRef = useRef<HTMLAsideElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const modeRef = useRef<Mode>("flow");
@@ -39,6 +40,9 @@ export function ServiceStickyBookingRail({
     const placeholder = placeholderRef.current;
     const card = cardRef.current;
     if (!rail || !placeholder || !card) return;
+
+    // Mobile: no sticky math — leave the card in document flow.
+    if (!window.matchMedia(LG_MQ).matches) return;
 
     const measureRail = () => {
       const rect = placeholder.getBoundingClientRect();
@@ -133,8 +137,11 @@ export function ServiceStickyBookingRail({
     };
 
     const onResize = () => {
+      if (!window.matchMedia(LG_MQ).matches) {
+        applyFlow();
+        return;
+      }
       measureRail();
-      // Force re-apply with fresh metrics
       const prev = modeRef.current;
       modeRef.current = "flow";
       if (prev === "fixed") applyFixed();
