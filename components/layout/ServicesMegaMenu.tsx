@@ -143,6 +143,7 @@ function FeatureCard({ category }: { category: MegaServiceCategory }) {
           src={imageSrc}
           alt=""
           fill
+          loading="lazy"
           className="object-cover object-center transition-opacity duration-300"
           sizes="250px"
         />
@@ -150,6 +151,7 @@ function FeatureCard({ category }: { category: MegaServiceCategory }) {
       <div className="flex flex-1 flex-col bg-[#E8F4F8] px-4 py-4">
         <Link
           href={category.href}
+          prefetch={false}
           className="text-lg font-bold text-[#0A2540] no-underline transition-colors hover:text-primary hover:underline"
         >
           {category.title}
@@ -182,6 +184,7 @@ function ServiceColumn({
     >
       <Link
         href={category.href}
+        prefetch={false}
         className="block border-b border-border/70 pb-2 text-lg font-bold text-[#0A2540] no-underline hover:text-primary hover:no-underline"
         onFocus={onActivate}
       >
@@ -193,6 +196,7 @@ function ServiceColumn({
             {group.title && group.href ? (
               <Link
                 href={group.href}
+                prefetch={false}
                 className="mb-2 block text-sm font-bold text-[#0A2540] no-underline transition-colors hover:text-primary hover:underline"
                 onFocus={onActivate}
               >
@@ -208,6 +212,7 @@ function ServiceColumn({
                 <li key={item.href + item.label}>
                   <Link
                     href={item.href}
+                    prefetch={false}
                     className="group/link inline-flex items-start gap-1.5 text-[0.9375rem] font-semibold leading-snug text-[#0A2540] no-underline transition-colors hover:text-primary hover:no-underline"
                     onFocus={onActivate}
                   >
@@ -305,6 +310,7 @@ export function ServicesMegaMenuPanel() {
         <div className="mt-6 flex justify-end border-t border-border pt-4">
           <Link
             href="/services"
+            prefetch={false}
             className="text-base font-bold text-primary no-underline hover:underline"
             onClick={() => setOpen(false)}
           >

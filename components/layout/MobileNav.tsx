@@ -181,6 +181,7 @@ export function MobileNav({
                           <li key={category.id}>
                             <Link
                               href={category.href}
+                              prefetch={false}
                               className="block px-2 py-1.5 text-[0.875rem] font-semibold text-[#0A2540] no-underline hover:text-primary hover:no-underline"
                               tabIndex={open ? undefined : -1}
                               onClick={close}
@@ -193,6 +194,7 @@ export function MobileNav({
                                   {group.title && group.href ? (
                                     <Link
                                       href={group.href}
+                                      prefetch={false}
                                       className="block rounded-md px-2 py-1 text-[0.75rem] font-semibold text-[#475569] no-underline hover:bg-secondary hover:text-primary hover:underline"
                                       tabIndex={open ? undefined : -1}
                                       onClick={close}
@@ -205,6 +207,7 @@ export function MobileNav({
                                       <li key={item.href + item.label}>
                                         <Link
                                           href={item.href}
+                                          prefetch={false}
                                           className="block rounded-md px-2 py-1.5 text-[0.8125rem] text-[#334155] no-underline hover:bg-secondary hover:text-primary hover:no-underline"
                                           tabIndex={open ? undefined : -1}
                                           onClick={close}
@@ -222,6 +225,7 @@ export function MobileNav({
                         <li>
                           <Link
                             href="/services"
+                            prefetch={false}
                             className="block px-2 py-2 text-[0.8125rem] font-medium text-primary no-underline hover:underline"
                             tabIndex={open ? undefined : -1}
                             onClick={close}

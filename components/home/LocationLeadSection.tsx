@@ -10,6 +10,7 @@ import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { submitConsultationLeadAction } from "@/lib/leads/actions/leadActions";
 import { collectLeadAttribution } from "@/lib/leads/client/attribution";
 import { trackGaLeadSubmit } from "@/lib/analytics/ga";
+import { LazyMapEmbed } from "@/components/maps/LazyMapEmbed";
 import { CLINIC_GOOGLE_MAPS_EMBED_URL } from "@/lib/maps/googleMapsEmbed";
 import {
   resolveElementField,
@@ -252,13 +253,9 @@ export function LocationLeadSection() {
                   const zoom = fields.zoom ?? mapZoom;
                   const src = buildMapEmbedUrl(query, zoom as number | string);
                   return (
-                    <iframe
+                    <LazyMapEmbed
                       title="Care Well Medical Centre — Chittaranjan Park, New Delhi"
                       src={src || mapSrc}
-                      className="absolute inset-0 h-full w-full max-w-full border-0"
-                      loading="lazy"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
                     />
                   );
                 }}

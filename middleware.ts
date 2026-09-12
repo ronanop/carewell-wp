@@ -131,6 +131,11 @@ async function handlePublic(req: NextRequest) {
     return new NextResponse("Not Found", { status: 404 });
   }
 
+  // Homepage never uses CMS redirects — skip Sanity redirect map (TTFB).
+  if (pathname === "/" || pathname === "") {
+    return NextResponse.next();
+  }
+
   if (!pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
     try {
       const hit = await resolveRedirect(pathname);
@@ -169,5 +174,9 @@ export default async function middleware(
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Exclude exact `/` so homepage skips middleware entirely (TTFB).
+  matcher: [
+    "/admin/:path*",
+    "/((?!_next/static|_next/image|favicon.ico).+)",
+  ],
 };

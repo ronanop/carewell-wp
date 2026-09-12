@@ -108,7 +108,8 @@ async function loadMegaMenuCategoriesFromDb(): Promise<MegaServiceCategory[]> {
 const getCachedMegaMenuCategories = unstable_cache(
   loadMegaMenuCategoriesFromDb,
   ["site-mega-menu-default"],
-  { revalidate: 300, tags: [MEGA_MENU_CACHE_TAG] },
+  // Keep in sync with homepage ISR (3600) so s-maxage is not capped at 5 min.
+  { revalidate: 3600, tags: [MEGA_MENU_CACHE_TAG] },
 );
 
 /**

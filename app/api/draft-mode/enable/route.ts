@@ -55,8 +55,11 @@ export async function GET(request: Request) {
   const draft = await draftMode();
   draft.enable();
 
-  // Use public origin — Hostinger Node sees 0.0.0.0:3000 on request.url
-  return NextResponse.redirect(new URL(safePath, resolvePublicOrigin(request)));
+  // Use public origin — Hostinger Node sees 0.0.0.0:3000 on request.url.
+  // cw_preview=1 lets DraftPreviewBar probe status without hitting every visitor.
+  const target = new URL(safePath, resolvePublicOrigin(request));
+  target.searchParams.set("cw_preview", "1");
+  return NextResponse.redirect(target);
 }
 
 /** Same-origin relative path only — blocks open redirects. */
