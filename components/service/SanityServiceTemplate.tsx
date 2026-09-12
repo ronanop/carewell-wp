@@ -175,7 +175,7 @@ export function SanityServiceTemplate({
             imageMobile={service.hero?.imageMobile}
           />
 
-          <div className="service-content relative z-10 mx-auto grid w-full max-w-[90rem] px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-8 xl:gap-16 xl:px-10">
+          <div className="service-content relative z-10 mx-auto grid w-full min-w-0 max-w-[90rem] grid-cols-1 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-8 xl:gap-16 xl:px-10">
             <HeroBanner
               layout="shell"
               heading={heading}
@@ -190,11 +190,11 @@ export function SanityServiceTemplate({
               showBookingCard={false}
             />
 
-            <ServiceStickyBookingRail className="w-full max-lg:pb-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+            <ServiceStickyBookingRail className="min-w-0 w-full max-w-full max-lg:pb-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
               <TreatmentHeroBookingCardLazy chrome={chrome} />
             </ServiceStickyBookingRail>
 
-            <div className="service-main-column min-w-0 space-y-2 bg-[#FAFBFE] pb-10 pt-2 sm:pb-12 lg:col-start-1 lg:pt-4">
+            <div className="service-main-column min-w-0 max-w-full space-y-2 bg-[#FAFBFE] pb-10 pt-2 sm:pb-12 lg:col-start-1 lg:pt-4">
               <QuickFactsCard
                 facts={service.hero?.quickFacts}
                 note={service.hero?.quickFactsNote}

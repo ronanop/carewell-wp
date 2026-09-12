@@ -212,7 +212,7 @@ export function ServiceHeroBackdrop({
   return (
     <div
       className={cn(
-        "pointer-events-none absolute inset-x-0 top-0 z-0 h-[min(100svh,56rem)] overflow-hidden lg:h-[calc(100svh-5.75rem)]",
+        "pointer-events-none absolute inset-x-0 top-0 z-0 h-[calc(100svh-4.75rem)] overflow-hidden lg:h-[calc(100svh-5.75rem)]",
         className,
       )}
       aria-hidden
@@ -268,28 +268,28 @@ function HeroCopy({
         </ol>
       </nav>
 
-      <div className="mt-8 flex flex-1 flex-col justify-center lg:mt-0">
-        <h1 className="mx-auto max-w-3xl text-center font-heading text-[clamp(2rem,4.2vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)] lg:mx-0 lg:text-left">
+      <div className="flex min-w-0 flex-1 flex-col justify-center pb-[6vh] pt-2 sm:pb-[4vh] lg:justify-center lg:pb-0 lg:pt-0">
+        <h1 className="mx-auto w-full max-w-3xl text-center font-heading text-[clamp(1.85rem,7vw,3.5rem)] font-bold leading-[1.12] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)] lg:mx-0 lg:text-left lg:text-[clamp(2rem,4.2vw,3.5rem)] lg:leading-[1.1]">
           {heading}
         </h1>
         {tagline ? (
-          <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-white/90 sm:text-lg lg:mx-0 lg:text-left">
+          <p className="mx-auto mt-4 w-full max-w-2xl text-center text-[1.0625rem] leading-relaxed text-pretty text-white/95 sm:mt-5 sm:text-lg lg:mx-0 lg:text-left">
             {tagline}
           </p>
         ) : null}
 
-        <div className="mt-7 flex flex-nowrap items-center justify-center gap-3 sm:gap-4 lg:justify-start">
+        <div className="mt-8 flex w-full max-w-full flex-col items-stretch gap-3 sm:mt-7 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-center sm:gap-4 lg:mt-8 lg:justify-start">
           <a
             href={primaryCtaHref}
             className={cn(
               buttonVariants({ variant: "default", size: "lg" }),
-              "group min-w-0 flex-1 rounded-xl bg-primary px-5 text-[0.9375rem] font-semibold text-primary-foreground",
-              "shadow-[0_8px_24px_-8px_rgba(21,87,160,0.55)]",
+              "group w-full min-h-12 rounded-xl bg-primary px-5 text-[0.9375rem] font-semibold text-primary-foreground sm:w-auto sm:min-w-0 sm:flex-none sm:px-7 sm:text-base",
+              "whitespace-normal text-center [text-wrap:balance]",
+              "shadow-[0_8px_24px_-8px_rgba(21,87,160,0.55)] ring-1 ring-white/15",
               "transition-[transform,box-shadow,background-color] duration-200 ease-out",
               "hover:-translate-y-0.5 hover:bg-[#124a8a] hover:shadow-[0_14px_32px_-10px_rgba(21,87,160,0.65)]",
               "active:translate-y-0 active:shadow-[0_6px_16px_-8px_rgba(21,87,160,0.5)]",
               "focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
-              "sm:flex-none sm:px-7 sm:text-base",
               "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
             )}
           >
@@ -301,13 +301,13 @@ function HeroCopy({
             rel="noopener noreferrer"
             className={cn(
               buttonVariants({ variant: "whatsapp", size: "lg" }),
-              "group shrink-0 rounded-xl px-5 text-[0.9375rem] font-semibold",
-              "shadow-[0_8px_24px_-8px_rgba(37,211,102,0.5)]",
+              "group w-full min-h-12 rounded-xl px-5 text-[0.9375rem] font-semibold sm:w-auto sm:flex-none sm:px-7 sm:text-base",
+              "whitespace-normal text-center",
+              "shadow-[0_8px_24px_-8px_rgba(37,211,102,0.5)] ring-1 ring-white/10",
               "transition-[transform,box-shadow,background-color] duration-200 ease-out",
               "hover:-translate-y-0.5 hover:bg-[#1ebe57] hover:shadow-[0_14px_32px_-10px_rgba(37,211,102,0.6)]",
               "active:translate-y-0 active:shadow-[0_6px_16px_-8px_rgba(37,211,102,0.45)]",
               "focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
-              "sm:px-7 sm:text-base",
               "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
             )}
           >
@@ -363,11 +363,12 @@ export function HeroBanner({
       <header
         id={id}
         className={cn(
-          "relative z-10 flex min-h-[min(100svh,56rem)] flex-col lg:min-h-[calc(100svh-5.75rem)]",
+          // Mobile/tablet: fill the first screen below the navbar so booking starts off-screen.
+          "relative z-10 flex min-h-[calc(100svh-4.75rem)] min-w-0 max-w-full flex-col lg:min-h-[calc(100svh-5.75rem)]",
           className,
         )}
       >
-        <div className="relative flex flex-1 flex-col py-8 sm:py-10 lg:py-12">
+        <div className="relative flex min-w-0 flex-1 flex-col py-5 sm:py-10 lg:py-12">
           {copy}
         </div>
       </header>
@@ -391,7 +392,7 @@ export function HeroBanner({
     <header
       id={id}
       className={cn(
-        "relative flex min-h-[min(100svh,56rem)] flex-col overflow-hidden lg:min-h-[calc(100svh-5.75rem)]",
+        "relative flex min-h-[calc(100svh-4.75rem)] min-w-0 max-w-full flex-col overflow-hidden lg:min-h-[calc(100svh-5.75rem)]",
         className,
       )}
     >
@@ -401,7 +402,7 @@ export function HeroBanner({
         mobileSrcSet={mobileSrcSet}
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[90rem] flex-1 flex-col px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12 xl:px-10">
+      <div className="relative z-10 mx-auto flex w-full max-w-[90rem] flex-1 flex-col px-4 py-5 sm:px-6 sm:py-10 lg:px-8 lg:py-12 xl:px-10">
         <div
           className={cn(
             "mt-0 grid flex-1 items-center gap-10",

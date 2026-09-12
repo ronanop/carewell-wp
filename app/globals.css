@@ -1763,6 +1763,14 @@
 
 .service-page .service-content {
   align-items: start;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.service-page .service-content > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .service-page {
