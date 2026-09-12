@@ -29,7 +29,7 @@ export function ServiceStickyBookingRail({
   children: ReactNode;
   className?: string;
 }) {
-  const railRef = useRef<HTMLAsideElement>(null);
+  const railRef = useRef<HTMLElement | null>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const modeRef = useRef<Mode>("flow");
