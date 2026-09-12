@@ -37,7 +37,7 @@ export function ServicesSection() {
   );
 
   return (
-    <section className="overflow-x-clip bg-background section-padding max-[767px]:!pb-0 max-[767px]:!pt-4 lg:pb-0 lg:pt-6">
+    <section className="overflow-x-clip bg-background section-padding max-[767px]:!pb-2 max-[767px]:!pt-5 lg:pb-2 lg:pt-6">
       <ServicesCarousel
         label={
           <EditableElement
@@ -45,7 +45,7 @@ export function ServicesSection() {
             kind="label"
             defaultValue={DEFAULT_LABEL}
             as="p"
-            className="hidden text-center text-[1rem] font-semibold uppercase text-primary sm:block sm:text-left"
+            className="text-center text-[0.8125rem] font-semibold tracking-[0.14em] text-primary uppercase sm:text-left sm:text-[0.875rem]"
           >
             {({ value }) => value || label}
           </EditableElement>
@@ -56,7 +56,7 @@ export function ServicesSection() {
             kind="heading"
             defaultValue={DEFAULT_HEADING}
             as="h2"
-            className="mt-3 text-center font-heading text-[1.45rem] font-bold leading-tight text-[#0A2540] sm:text-left sm:text-[2.4rem]"
+            className="mt-2 text-center font-heading text-[1.55rem] font-bold leading-tight tracking-tight text-[#0A2540] sm:mt-3 sm:text-left sm:text-[2.35rem]"
           >
             {({ value }) => value || heading}
           </EditableElement>
@@ -67,7 +67,7 @@ export function ServicesSection() {
             kind="paragraph"
             defaultValue={DEFAULT_DESCRIPTION}
             as="p"
-            className="mt-3 text-center text-[0.78rem] font-medium leading-[1.5] text-slate-700 sm:mt-4 sm:text-left sm:text-[1.25rem] sm:leading-[1.7]"
+            className="mt-3 text-center text-[0.9375rem] font-medium leading-relaxed text-slate-600 sm:mt-4 sm:text-left sm:text-lg sm:leading-relaxed"
           >
             {({ value }) => value || description}
           </EditableElement>

@@ -263,9 +263,18 @@ export function ServicesCarousel({
   const canScrollPrev = activeIndex > 0;
   const canScrollNext = activeIndex < maxIndex;
 
+  const navButtonClass = cn(
+    "cw-interactive inline-flex size-11 items-center justify-center rounded-full",
+    "border border-[#0A2540]/15 bg-white text-[#0A2540] shadow-sm",
+    "transition-[opacity,background-color,box-shadow,color,transform] duration-200",
+    "hover:border-[#0A2540] hover:bg-[#0A2540] hover:text-white hover:shadow-md",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    "disabled:pointer-events-none disabled:opacity-35",
+  );
+
   return (
     <div>
-      <div className="container-content flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+      <div className="container-content flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
         <StaggerReveal
           className="max-w-3xl text-left lg:max-w-[52rem]"
           stepMs={70}
@@ -285,14 +294,7 @@ export function ServicesCarousel({
             aria-label="Previous services"
             disabled={!canScrollPrev}
             onClick={goPrev}
-            className={cn(
-              "inline-flex size-11 items-center justify-center rounded-full",
-              "border border-[#0A2540] bg-[#0A2540] text-white shadow-sm",
-              "transition-[opacity,background-color,box-shadow] duration-200",
-              "hover:bg-[#163A5C] hover:shadow-md",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              "disabled:pointer-events-none disabled:opacity-35"
-            )}
+            className={navButtonClass}
           >
             <ChevronLeft className="size-5" aria-hidden />
           </button>
@@ -301,108 +303,126 @@ export function ServicesCarousel({
             aria-label="Next services"
             disabled={!canScrollNext}
             onClick={goNext}
-            className={cn(
-              "inline-flex size-11 items-center justify-center rounded-full",
-              "border border-[#0A2540] bg-[#0A2540] text-white shadow-sm",
-              "transition-[opacity,background-color,box-shadow] duration-200",
-              "hover:bg-[#163A5C] hover:shadow-md",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              "disabled:pointer-events-none disabled:opacity-35"
-            )}
+            className={navButtonClass}
           >
             <ChevronRight className="size-5" aria-hidden />
           </button>
         </div>
       </div>
 
-      <div className="mt-8 px-4 pb-3 pt-4 sm:mt-10 md:px-5">
+      <div className="relative mt-7 sm:mt-9">
         <div
-          ref={viewportRef}
-          className={cn(
-            "w-full overflow-hidden [container-type:inline-size]",
-            "max-[767px]:pb-2",
-            isDragging && "cursor-grabbing"
-          )}
-          style={{ perspective: "1000px", touchAction: "pan-y" }}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerCancel}
-          onClickCapture={onClickCapture}
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="Services"
-        >
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-6 bg-gradient-to-r from-background to-transparent sm:w-10"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-background to-transparent sm:w-12"
+          aria-hidden
+        />
+
+        <div className="px-4 pb-1 pt-1 sm:px-5 md:px-6">
           <div
-            ref={trackRef}
+            ref={viewportRef}
             className={cn(
-              "flex w-max gap-3 sm:gap-4 md:gap-5 lg:gap-6",
-              !isDragging &&
-                !reducedMotion &&
-                "transition-transform duration-300 ease-out",
-              !isDragging && reducedMotion && "transition-none"
+              "w-full overflow-hidden [container-type:inline-size]",
+              isDragging && "cursor-grabbing",
             )}
-            style={{
-              transform: `translate3d(${translateX}px, 0, 0)`,
-              willChange: isDragging ? "transform" : undefined,
-            }}
+            style={{ touchAction: "pan-y" }}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerCancel}
+            onClickCapture={onClickCapture}
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Services"
           >
-            {slides.map((child, index) => (
-              <div
-                key={index}
-                data-service-slide
-                className={cn(
-                  "min-w-0 shrink-0",
-                  "w-[min(16rem,78cqi)]",
-                  "sm:w-[85cqi]",
-                  "md:w-[45cqi]",
-                  "lg:w-[30cqi]",
-                  "lg:[zoom:0.85]"
-                )}
-              >
-                {child}
-              </div>
-            ))}
+            <div
+              ref={trackRef}
+              className={cn(
+                "flex w-max gap-4 sm:gap-5 lg:gap-6",
+                !isDragging &&
+                  !reducedMotion &&
+                  "transition-transform duration-300 ease-out",
+                !isDragging && reducedMotion && "transition-none",
+              )}
+              style={{
+                transform: `translate3d(${translateX}px, 0, 0)`,
+                willChange: isDragging ? "transform" : undefined,
+              }}
+            >
+              {slides.map((child, index) => (
+                <div
+                  key={index}
+                  data-service-slide
+                  className={cn(
+                    "min-w-0 shrink-0",
+                    // Larger, clearer cards — peek next slide on mobile
+                    "w-[min(20.5rem,86cqi)]",
+                    "sm:w-[min(22rem,72cqi)]",
+                    "md:w-[min(21rem,46cqi)]",
+                    "lg:w-[min(22rem,31.5cqi)]",
+                  )}
+                >
+                  {child}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-      <div
-        className="mt-3 flex justify-center gap-2 sm:hidden"
-        role="group"
-        aria-label="Service cards"
-      >
-        <button
-          type="button"
-          aria-label="Previous services"
-          disabled={!canScrollPrev}
-          onClick={goPrev}
-          className={cn(
-            "inline-flex size-11 items-center justify-center rounded-full",
-            "border border-[#0A2540] bg-[#0A2540] text-white shadow-sm",
-            "transition-[opacity,background-color,box-shadow] duration-200",
-            "hover:bg-[#163A5C] hover:shadow-md",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            "disabled:pointer-events-none disabled:opacity-35"
-          )}
+
+      <div className="mt-5 flex flex-col items-center gap-3 sm:mt-6">
+        {maxIndex > 0 ? (
+          <div
+            className="flex items-center justify-center gap-1.5"
+            role="tablist"
+            aria-label="Services position"
+          >
+            {Array.from({ length: maxIndex + 1 }, (_, index) => (
+              <button
+                key={index}
+                type="button"
+                role="tab"
+                aria-label={`Show services group ${index + 1}`}
+                aria-selected={index === activeIndex}
+                onClick={() => goTo(index)}
+                className={cn(
+                  "h-2 rounded-full transition-[width,background-color] duration-200",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                  index === activeIndex
+                    ? "w-6 bg-[#0A2540]"
+                    : "w-2 bg-[#0A2540]/25 hover:bg-[#0A2540]/45",
+                )}
+              />
+            ))}
+          </div>
+        ) : null}
+
+        <div
+          className="flex justify-center gap-2 sm:hidden"
+          role="group"
+          aria-label="Service cards"
         >
-          <ChevronLeft className="size-5" aria-hidden />
-        </button>
-        <button
-          type="button"
-          aria-label="Next services"
-          disabled={!canScrollNext}
-          onClick={goNext}
-          className={cn(
-            "inline-flex size-11 items-center justify-center rounded-full",
-            "border border-[#0A2540] bg-[#0A2540] text-white shadow-sm",
-            "transition-[opacity,background-color,box-shadow] duration-200",
-            "hover:bg-[#163A5C] hover:shadow-md",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            "disabled:pointer-events-none disabled:opacity-35"
-          )}
-        >
-          <ChevronRight className="size-5" aria-hidden />
-        </button>
+          <button
+            type="button"
+            aria-label="Previous services"
+            disabled={!canScrollPrev}
+            onClick={goPrev}
+            className={navButtonClass}
+          >
+            <ChevronLeft className="size-5" aria-hidden />
+          </button>
+          <button
+            type="button"
+            aria-label="Next services"
+            disabled={!canScrollNext}
+            onClick={goNext}
+            className={navButtonClass}
+          >
+            <ChevronRight className="size-5" aria-hidden />
+          </button>
+        </div>
       </div>
     </div>
   );

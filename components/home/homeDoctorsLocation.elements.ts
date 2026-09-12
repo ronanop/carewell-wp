@@ -554,18 +554,66 @@ export const HOME_ABOUT_HOME_ELEMENTS: ElementDescriptor[] = [
 ];
 
 export const HOME_SPECIALTY_DEFAULTS = [
-  { code: "HAI", name: "Hair Transplant" },
-  { code: "LAS", name: "Laser Hair Removal" },
-  { code: "ACN", name: "Acne & Scar Treatment" },
-  { code: "CRY", name: "Cryolipolysis (Fat Freezing)" },
-  { code: "ANT", name: "Anti-Aging Treatments" },
-  { code: "BOT", name: "Botox" },
-  { code: "RHI", name: "Rhinoplasty" },
-  { code: "BEA", name: "Beard Transplant" },
-  { code: "HYD", name: "Hydrafacial" },
-  { code: "LIP", name: "Liposuction" },
-  { code: "BRE", name: "Breast Augmentation" },
-  { code: "HYM", name: "Hymenoplasty" },
+  {
+    code: "HAI",
+    name: "Hair Transplant",
+    href: "/hair-transplant-in-delhi/",
+  },
+  {
+    code: "LAS",
+    name: "Laser Hair Removal",
+    href: "/cosmetic-treatments-in-delhi/laser-hair-removal/",
+  },
+  {
+    code: "ACN",
+    name: "Acne & Scar Treatment",
+    href: "/skin-treatments-in-delhi/acne-scar/",
+  },
+  {
+    code: "CRY",
+    name: "Cryolipolysis (Fat Freezing)",
+    href: "/body-contouring-in-delhi/cryolipolysis/",
+  },
+  {
+    code: "ANT",
+    name: "Anti-Aging Treatments",
+    href: "/cosmetic-treatments-in-delhi/anti-aging/",
+  },
+  {
+    code: "BOT",
+    name: "Botox",
+    href: "/cosmetic-treatments-in-delhi/botox/",
+  },
+  {
+    code: "RHI",
+    name: "Rhinoplasty",
+    href: "/plastic-surgery-in-delhi/rhinoplasty/",
+  },
+  {
+    code: "BEA",
+    name: "Beard Transplant",
+    href: "/hair-transplant-in-delhi/beard/",
+  },
+  {
+    code: "HYD",
+    name: "Hydrafacial",
+    href: "/skin-treatments-in-delhi/",
+  },
+  {
+    code: "LIP",
+    name: "Liposuction",
+    href: "/plastic-surgery-in-delhi/liposuction/",
+  },
+  {
+    code: "BRE",
+    name: "Breast Augmentation",
+    href: "/plastic-surgery-in-delhi/breast-augmentation/",
+  },
+  {
+    code: "HYM",
+    name: "Hymenoplasty",
+    href: "/intimate-surgery-in-delhi/hymenoplasty/",
+  },
 ] as const;
 
 export const homeSpecialtiesRepeater: RepeaterDescriptor = {
@@ -575,6 +623,7 @@ export const homeSpecialtiesRepeater: RepeaterDescriptor = {
   itemFields: [
     { key: "code", label: "Code", type: "text", group: "Content" },
     { key: "name", label: "Name", type: "text", group: "Content" },
+    { key: "href", label: "Link", type: "link", group: "Content" },
   ],
   defaultItems: HOME_SPECIALTY_DEFAULTS.map((item) => ({ ...item })),
   allowAdd: true,
@@ -626,9 +675,10 @@ export const HOME_SPECIALTY_ELEMENTS: ElementDescriptor[] = [
       fields: [
         { key: "name", label: "Name", type: "text" as const, group: "Content" as const },
         { key: "code", label: "Code", type: "text" as const, group: "Content" as const },
+        { key: "href", label: "Link", type: "link" as const, group: "Content" as const },
       ],
       supports: { inlineEdit: true, duplicate: true, delete: true },
-      defaultValues: { name: item.name, code: item.code },
+      defaultValues: { name: item.name, code: item.code, href: item.href },
     },
   ]),
 ];

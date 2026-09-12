@@ -84,7 +84,7 @@ export function ConsultationSpecialties() {
     config,
     "home.specialties",
     HOME_SPECIALTY_DEFAULTS.map((item) => ({ ...item })),
-    ["code", "name"],
+    ["code", "name", "href"],
   );
 
   return (
@@ -114,10 +114,11 @@ export function ConsultationSpecialties() {
         <StaggerReveal
           as="ul"
           stepMs={55}
-          className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-5 md:grid-cols-3 lg:grid-cols-6 lg:gap-6"
+          className="mt-10 grid grid-cols-2 gap-3 overflow-visible sm:mt-12 sm:gap-5 md:grid-cols-3 lg:grid-cols-6 lg:gap-6"
         >          {specialties.map((specialty) => {
             const code = String(specialty.code ?? "");
             const name = String(specialty.name ?? "");
+            const defaultHref = String(specialty.href ?? "").trim();
 
             return (
               <li key={specialty.__index}>
@@ -134,20 +135,25 @@ export function ConsultationSpecialties() {
                       displayCode,
                       displayName,
                     );
+                    const href =
+                      String(fields.href ?? defaultHref).trim() ||
+                      `/services/${slugify(displayName)}`;
 
                     return (
                       <Link
-                        href={`/services/${slugify(displayName)}`}
+                        href={href}
                         className={cn(
-                          "relative flex h-full min-h-[8rem] flex-col items-center justify-center overflow-hidden rounded-2xl border border-[#DCE8F5] bg-gradient-to-br from-white via-[#F8FBFF] to-[#EEF5FF] px-3 py-5 text-center no-underline sm:min-h-[10rem] sm:px-3 sm:py-6",
-                          "shadow-[0_8px_24px_rgb(10_37_64/0.06)] transition-[transform,box-shadow,border-color] duration-300",
+                          "group relative flex h-full min-h-[8rem] flex-col items-center justify-center overflow-hidden rounded-2xl border border-[#DCE8F5] bg-gradient-to-br from-white via-[#F8FBFF] to-[#EEF5FF] px-3 py-5 text-center no-underline sm:min-h-[10rem] sm:px-3 sm:py-6",
+                          "shadow-[0_8px_24px_rgb(10_37_64/0.06)]",
+                          "origin-center transition-[transform,box-shadow,border-color] duration-300 ease-out will-change-transform",
                           "before:absolute before:inset-x-6 before:top-0 before:h-1 before:rounded-b-full before:bg-gradient-to-r before:from-[#5BA3E8] before:via-[#B09468] before:to-[#0A2540] before:opacity-80 before:content-['']",
-                          "hover:-translate-y-1 hover:border-[#9CC7EE] hover:shadow-[0_14px_30px_rgb(10_37_64/0.12)]",
+                          "hover:z-10 hover:scale-105 hover:border-[#9CC7EE] hover:shadow-[0_16px_34px_rgb(10_37_64/0.14)]",
+                          "motion-reduce:transition-none motion-reduce:hover:scale-100",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                         )}
                       >
                         {iconSrc ? (
-                          <span className="relative flex h-[3.175rem] w-[3.175rem] items-center justify-center rounded-full bg-white p-2 shadow-sm ring-1 ring-[#DCE8F5] sm:h-[3.8rem] sm:w-[3.8rem]">
+                          <span className="relative flex h-[3.175rem] w-[3.175rem] items-center justify-center rounded-full bg-white p-2 shadow-sm ring-1 ring-[#DCE8F5] transition-transform duration-300 ease-out group-hover:scale-110 sm:h-[3.8rem] sm:w-[3.8rem] motion-reduce:group-hover:scale-100">
                             <Image
                               src={iconSrc}
                               alt=""

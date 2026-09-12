@@ -73,11 +73,12 @@ export const homepage = defineType({
   title: "Homepage",
   type: "document",
   description:
-    "Customise homepage images, button links, service card links, and footer links. Empty fields keep the site defaults.",
+    "Customise homepage images, button links, service cards, Google reviews, and footer links. Empty fields keep the site defaults.",
   groups: [
     { name: "images", title: "Images", default: true },
     { name: "buttons", title: "Buttons & links" },
     { name: "services", title: "Service cards" },
+    { name: "reviews", title: "Google reviews" },
     { name: "footer", title: "Footer links" },
   ],
   fields: [
@@ -147,6 +148,58 @@ export const homepage = defineType({
     ctaObject("reviewsCta", "Google reviews — see all link", {
       label: "See all reviews on Google",
       href: "https://www.google.com/maps/search/?api=1&query=Care+Well+Medical+Centre+Chittaranjan+Park+New+Delhi",
+    }),
+
+    defineField({
+      name: "googleReviews",
+      title: "Google review highlights",
+      type: "array",
+      group: "reviews",
+      description:
+        "Patient review cards on the homepage. Leave empty to keep built-in reviews. Add, edit, reorder, or delete items here.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          fields: [
+            defineField({
+              name: "name",
+              title: "Reviewer name",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "initial",
+              title: "Avatar initial",
+              type: "string",
+              description: "Single letter shown in the avatar (defaults to first letter of name).",
+              validation: (rule) => rule.max(2),
+            }),
+            defineField({
+              name: "rating",
+              title: "Star rating",
+              type: "number",
+              initialValue: 5,
+              validation: (rule) => rule.required().min(1).max(5),
+            }),
+            defineField({
+              name: "text",
+              title: "Review text",
+              type: "text",
+              rows: 4,
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: { title: "name", subtitle: "text", rating: "rating" },
+            prepare({ title, subtitle, rating }) {
+              return {
+                title: title || "Review",
+                subtitle: `${rating ?? "—"}★ · ${subtitle || ""}`.slice(0, 80),
+              };
+            },
+          },
+        }),
+      ],
     }),
 
     defineField({

@@ -65,12 +65,19 @@ function parseCategory(raw: unknown): MegaServiceCategory | null {
     .map(parseGroup)
     .filter((group): group is MegaServiceGroup => group !== null);
   if (!groups.length) return null;
+  const defaults = MEGA_SERVICE_CATEGORIES.find((cat) => cat.id === id);
+  const imageSrc =
+    asString(row.imageSrc).trim() || defaults?.imageSrc || undefined;
   return {
     id,
     title,
     href: normalizeHref(href),
-    description: asString(row.description).trim() || "",
-    accent: asString(row.accent).trim() || "from-primary/20 via-primary/5 to-secondary",
+    description: asString(row.description).trim() || defaults?.description || "",
+    accent:
+      asString(row.accent).trim() ||
+      defaults?.accent ||
+      "from-primary/20 via-primary/5 to-secondary",
+    imageSrc,
     groups,
   };
 }

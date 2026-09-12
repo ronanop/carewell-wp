@@ -249,6 +249,7 @@ export function GoogleReviewsSection() {
 
   const visible = reviews.slice(page * perPage, page * perPage + perPage);
   const ratingNumber = Number.parseFloat(String(ratingValue)) || 4.3;
+  const hasReviews = reviews.length > 0;
 
   return (
     <section
@@ -387,32 +388,58 @@ export function GoogleReviewsSection() {
 
             {/* Review carousel */}
             <div className="relative flex min-w-0 flex-col px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
-              <div className="grid min-h-[11rem] flex-1 gap-3 sm:min-h-[14rem] sm:gap-4 md:grid-cols-2">
-                {visible.map((item) => {
-                  const name = String(item.name ?? "Patient");
-                  const initial = String(item.initial ?? name.charAt(0));
-                  const rating = Number.parseFloat(String(item.rating ?? "5")) || 5;
-                  const text = String(item.text ?? "");
-                  return (
-                    <ReviewCard
-                      key={item.__index}
-                      name={name}
-                      initial={initial}
-                      rating={rating}
-                      text={text}
-                    />
-                  );
-                })}
-              </div>
+              {hasReviews ? (
+                <div className="grid min-h-[11rem] flex-1 gap-3 sm:min-h-[14rem] sm:gap-4 md:grid-cols-2">
+                  {visible.map((item) => {
+                    const name = String(item.name ?? "Patient");
+                    const initial = String(item.initial ?? name.charAt(0));
+                    const rating =
+                      Number.parseFloat(String(item.rating ?? "5")) || 5;
+                    const text = String(item.text ?? "");
+                    return (
+                      <EditableElement
+                        key={item.__index}
+                        id={`home.reviews.item.${item.__index}.name`}
+                        kind="list-item"
+                        field="name"
+                        defaultValue={name}
+                        className="h-full min-w-0"
+                      >
+                        {({ fields }) => (
+                          <ReviewCard
+                            name={String(fields.name ?? name)}
+                            initial={String(
+                              fields.initial ?? initial ?? name.charAt(0),
+                            )}
+                            rating={
+                              Number.parseFloat(
+                                String(fields.rating ?? rating),
+                              ) || 5
+                            }
+                            text={String(fields.text ?? text)}
+                          />
+                        )}
+                      </EditableElement>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex min-h-[11rem] flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-4 py-8 text-center sm:min-h-[14rem]">
+                  <p className="max-w-sm text-sm text-slate-500">
+                    No review highlights yet. Add reviews in Sanity Studio →
+                    Homepage → Google reviews.
+                  </p>
+                </div>
+              )}
 
-              {pageCount > 1 ? (
+              {hasReviews && pageCount > 1 ? (
                 <>
                   <button
                     type="button"
                     onClick={goPrev}
                     aria-label="Previous reviews"
                     className={cn(
-                      "absolute left-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full",
+                      "cw-interactive absolute left-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full",
                       "border border-slate-200/80 bg-white/95 text-[#0A2540] shadow-sm",
                       "transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:left-2 sm:size-10",
                     )}
@@ -424,7 +451,7 @@ export function GoogleReviewsSection() {
                     onClick={goNext}
                     aria-label="Next reviews"
                     className={cn(
-                      "absolute right-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full",
+                      "cw-interactive absolute right-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full",
                       "border border-slate-200/80 bg-white/95 text-[#0A2540] shadow-sm",
                       "transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:right-2 sm:size-10",
                     )}
@@ -434,7 +461,7 @@ export function GoogleReviewsSection() {
                 </>
               ) : null}
 
-              {pageCount > 1 ? (
+              {hasReviews && pageCount > 1 ? (
                 <div
                   className="mt-3 flex items-center justify-center gap-1.5 sm:mt-5"
                   role="group"

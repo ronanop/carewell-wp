@@ -29,6 +29,16 @@ export function MegaMenuAdminEditor({ initialCategories, canEdit }: Props) {
     );
   }
 
+  function updateCategoryImageSrc(categoryIndex: number, imageSrc: string) {
+    setCategories((prev) =>
+      prev.map((cat, i) =>
+        i === categoryIndex
+          ? { ...cat, imageSrc: imageSrc.trim() || undefined }
+          : cat,
+      ),
+    );
+  }
+
   function updateGroupHref(
     categoryIndex: number,
     groupIndex: number,
@@ -165,19 +175,47 @@ export function MegaMenuAdminEditor({ initialCategories, canEdit }: Props) {
                 {category.title}
               </h2>
               <p className="mt-0.5 text-xs text-slate-500">{category.description}</p>
-              <label className="mt-3 block text-xs font-medium text-slate-600">
-                Category page URL
-                <input
-                  type="text"
-                  disabled={!canEdit || pending}
-                  value={category.href}
-                  onChange={(e) =>
-                    updateCategoryHref(categoryIndex, e.target.value)
-                  }
-                  className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none ring-primary/20 focus:border-primary focus:ring-2 disabled:bg-slate-50"
-                  placeholder="/hair-transplant/"
-                />
-              </label>
+              <div className="mt-3 grid gap-3 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:items-start">
+                <div className="relative mx-auto aspect-[4/5] w-24 overflow-hidden rounded-lg border border-slate-200 bg-slate-100 sm:mx-0 sm:w-full">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={category.imageSrc?.trim() || "/images/hero-model.png"}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <label className="block text-xs font-medium text-slate-600">
+                    Category page URL
+                    <input
+                      type="text"
+                      disabled={!canEdit || pending}
+                      value={category.href}
+                      onChange={(e) =>
+                        updateCategoryHref(categoryIndex, e.target.value)
+                      }
+                      className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none ring-primary/20 focus:border-primary focus:ring-2 disabled:bg-slate-50"
+                      placeholder="/hair-transplant/"
+                    />
+                  </label>
+                  <label className="block text-xs font-medium text-slate-600">
+                    Category panel image
+                    <input
+                      type="text"
+                      disabled={!canEdit || pending}
+                      value={category.imageSrc ?? ""}
+                      onChange={(e) =>
+                        updateCategoryImageSrc(categoryIndex, e.target.value)
+                      }
+                      className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none ring-primary/20 focus:border-primary focus:ring-2 disabled:bg-slate-50"
+                      placeholder="/images/services/hair-transplant.jpg"
+                    />
+                    <span className="mt-1 block text-[0.7rem] font-normal text-slate-500">
+                      Public path under <code>/public</code> or full image URL. Shown in the Services mega menu side panel.
+                    </span>
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div className="divide-y divide-slate-100">

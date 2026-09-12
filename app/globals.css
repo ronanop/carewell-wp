@@ -305,7 +305,7 @@
 
   /* Scale */
   --motion-scale-default: 1;
-  --motion-scale-hover: 1.02;
+  --motion-scale-hover: 1.03;
   --motion-scale-modal-in: 0.95;
 
   /* Opacity */
@@ -958,12 +958,19 @@
     border-color: color-mix(in oklab, var(--primary) 28%, var(--border));
   }
   .cw-interactive {
+    transform-origin: center;
     transition:
       color var(--motion-duration-fast) var(--motion-ease-out),
       background-color var(--motion-duration-fast) var(--motion-ease-out),
       border-color var(--motion-duration-fast) var(--motion-ease-out),
       transform var(--motion-duration-normal) var(--motion-ease-out),
       box-shadow var(--motion-duration-normal) var(--motion-ease-out);
+  }
+  .cw-interactive:hover {
+    transform: translateY(-1px) scale(var(--motion-scale-hover));
+  }
+  .cw-interactive:active {
+    transform: translateY(0) scale(0.98);
   }
   .cw-reveal {
     opacity: 0;
@@ -981,6 +988,8 @@
     .cw-card:hover { transform: none; }
     .cw-reveal { opacity: 1; transform: none; transition: none; }
     .cw-interactive { transition: none; }
+    .cw-interactive:hover,
+    .cw-interactive:active { transform: none; }
   }
 
   /* Phase 8.1 ? composition / reading measure / hierarchy */

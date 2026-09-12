@@ -41,7 +41,10 @@ export function resolveRepeaterItems<T extends RepeaterItem>(
   breakpoint: ResponsiveBreakpoint = "desktop",
 ): Array<T & { __index: number }> {
   const override = getRepeaterOverride(config, repeaterId);
-  const baseItems = (override.items?.length ? override.items : defaults) as T[];
+  // `items: []` is an explicit empty list (CMS delete-all); only fall back when unset.
+  const baseItems = (
+    override.items !== undefined ? override.items : defaults
+  ) as T[];
 
   let indexes = baseItems.map((_, index) => index);
   if (override.order?.length) {

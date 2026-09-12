@@ -21,13 +21,7 @@ import {
 } from "@/lib/navigation/services-mega-menu";
 import { cn } from "@/lib/utils";
 
-const CATEGORY_IMAGES: Record<string, string> = {
-  // Prefer compressed assets — avoid 1.8MB portrait on the nav path.
-  hair: "/images/hero-model.png",
-  skin: "/images/hero-model.png",
-  surgical: "/images/hero-model.png",
-  wellness: "/images/hero-background.png",
-};
+const FALLBACK_CATEGORY_IMAGE = "/images/hero-model.png";
 
 type MegaMenuContextValue = {
   open: boolean;
@@ -134,7 +128,7 @@ export function MegaMenuProvider({
 }
 
 function FeatureCard({ category }: { category: MegaServiceCategory }) {
-  const imageSrc = CATEGORY_IMAGES[category.id] ?? "/images/hero-model.png";
+  const imageSrc = category.imageSrc?.trim() || FALLBACK_CATEGORY_IMAGE;
 
   return (
     <aside className="flex h-full min-h-[22rem] w-full flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-sm lg:max-w-[15.5rem]">

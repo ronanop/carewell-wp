@@ -34,6 +34,13 @@ type HomepageServiceCard = {
   objectPosition?: string | null;
 } | null;
 
+type HomepageGoogleReview = {
+  name?: string | null;
+  initial?: string | null;
+  rating?: number | string | null;
+  text?: string | null;
+} | null;
+
 export type SanityHomepageDoc = {
   _id: string;
   heroImage?: SanityImageField;
@@ -51,6 +58,7 @@ export type SanityHomepageDoc = {
   ctaWhatsapp?: HomepageCta;
   reviewsCta?: HomepageCta;
   serviceCards?: HomepageServiceCard[] | null;
+  googleReviews?: HomepageGoogleReview[] | null;
   footerQuickLinks?: HomepageLink[] | null;
   footerServiceLinks?: HomepageLink[] | null;
   footerSocialLinks?: HomepageLink[] | null;
@@ -78,6 +86,12 @@ const HOMEPAGE_QUERY = `*[_type == "homepage" && _id == "homepage"][0]{
     href,
     objectPosition,
     image{ alt, asset->{ _id, url } }
+  },
+  googleReviews[]{
+    name,
+    initial,
+    rating,
+    text
   },
   footerQuickLinks[]{ label, href },
   footerServiceLinks[]{ label, href },
@@ -174,17 +188,46 @@ export function homepageToPresentationConfig(
     });
   }
 
+  const reviewItems: RepeaterItem[] = [];
+  const reviewsConfigured = Array.isArray(doc.googleReviews);
+  for (const review of doc.googleReviews ?? []) {
+    const name = review?.name?.trim() ?? "";
+    const text = review?.text?.trim() ?? "";
+    if (!name || !text) continue;
+    const initial =
+      review?.initial?.trim() || name.charAt(0).toUpperCase() || "P";
+    const ratingRaw = review?.rating;
+    const rating =
+      typeof ratingRaw === "number"
+        ? String(Math.min(5, Math.max(1, ratingRaw)))
+        : String(ratingRaw ?? "5").trim() || "5";
+    reviewItems.push({
+      name,
+      initial: initial.slice(0, 2),
+      rating,
+      text,
+    });
+  }
+
+  const repeaterOverrides: PresentationConfig["repeaterOverrides"] = {};
+  if (serviceItems.length) {
+    repeaterOverrides["home.services"] = { items: serviceItems };
+  }
+  // Explicit empty array = hide built-in reviews (delete-all in Studio).
+  if (reviewsConfigured) {
+    repeaterOverrides["home.reviews"] = { items: reviewItems };
+  }
+
   const hasOverrides =
-    Object.keys(elementOverrides).length > 0 || serviceItems.length > 0;
+    Object.keys(elementOverrides).length > 0 ||
+    Object.keys(repeaterOverrides).length > 0;
   if (!hasOverrides) return null;
 
   return {
     schemaVersion: 1,
     templateSlug: "home",
     elementOverrides,
-    ...(serviceItems.length
-      ? { repeaterOverrides: { "home.services": { items: serviceItems } } }
-      : {}),
+    ...(Object.keys(repeaterOverrides).length ? { repeaterOverrides } : {}),
   } as PresentationConfig;
 }
 

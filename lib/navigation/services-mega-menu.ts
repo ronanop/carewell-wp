@@ -15,8 +15,10 @@ export type MegaServiceCategory = {
   title: string;
   href: string;
   description: string;
-  /** Soft gradient used until category photos are provided */
+  /** Soft gradient used when no category image is set */
   accent: string;
+  /** Side panel photo for this category (public path or absolute URL) */
+  imageSrc?: string;
   groups: MegaServiceGroup[];
 };
 
@@ -31,6 +33,7 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
     href: "/hair-loss-treatment-in-delhi/",
     description: "Personalized plans for healthier hair and confidence.",
     accent: "from-primary/20 via-primary/5 to-secondary",
+    imageSrc: "/images/hero-model.png",
     groups: [
       {
         title: "Hair Loss Treatment",
@@ -80,6 +83,7 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
     href: "/skin-treatments-in-delhi/",
     description: "Refined skin and aesthetic care tailored to your goals.",
     accent: "from-accent-gold-200 via-secondary to-primary/10",
+    imageSrc: "/images/hero-model.png",
     groups: [
       {
         title: "Skin Treatments",
@@ -151,6 +155,7 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
     href: "/plastic-surgery-in-delhi/",
     description: "Specialist-led surgical care with precision and discretion.",
     accent: "from-neutral-200 via-secondary to-primary/15",
+    imageSrc: "/images/hero-model.png",
     groups: [
       {
         links: [
@@ -210,6 +215,7 @@ export const MEGA_SERVICE_CATEGORIES: MegaServiceCategory[] = [
     href: "/holistic-wellness-treatments-in-delhi/",
     description: "Holistic therapies that support recovery and vitality.",
     accent: "from-success-50 via-primary/10 to-secondary",
+    imageSrc: "/images/hero-background.png",
     groups: [
       {
         title: "Holistic Wellness",

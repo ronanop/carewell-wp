@@ -142,6 +142,43 @@ export const HOME_GOOGLE_REVIEWS_ELEMENTS: ElementDescriptor[] = [
       text: "Reviews shown as posted on Google • Updated periodically",
     },
   },
+  ...HOME_GOOGLE_REVIEWS_DEFAULTS.flatMap((item, index) => [
+    {
+      id: `home.reviews.item.${index}.name`,
+      displayName: `Review ${index + 1}`,
+      kind: "list-item" as const,
+      sectionId: "home.reviews",
+      inlineField: "name",
+      fields: [
+        { key: "name", label: "Name", type: "text" as const, group: "Content" as const },
+        {
+          key: "initial",
+          label: "Initial",
+          type: "text" as const,
+          group: "Content" as const,
+        },
+        {
+          key: "rating",
+          label: "Stars (1–5)",
+          type: "text" as const,
+          group: "Content" as const,
+        },
+        {
+          key: "text",
+          label: "Review text",
+          type: "textarea" as const,
+          group: "Content" as const,
+        },
+      ],
+      supports: { inlineEdit: true, duplicate: true, delete: true },
+      defaultValues: {
+        name: item.name,
+        initial: item.initial,
+        rating: item.rating,
+        text: item.text,
+      },
+    },
+  ]),
 ];
 
 export const homeGoogleReviewsRepeater: RepeaterDescriptor = {
@@ -155,8 +192,8 @@ export const homeGoogleReviewsRepeater: RepeaterDescriptor = {
     { key: "text", label: "Review text", type: "textarea", group: "Content" },
   ],
   defaultItems: HOME_GOOGLE_REVIEWS_DEFAULTS.map((item) => ({ ...item })),
-  minItems: 2,
-  maxItems: 8,
+  minItems: 0,
+  maxItems: 24,
   allowAdd: true,
   allowDelete: true,
   allowDuplicate: true,
