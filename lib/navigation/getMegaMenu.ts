@@ -1,6 +1,6 @@
 import "server-only";
 
-import { unstable_noStore as noStore } from "next/cache";
+import { unstable_cache } from "next/cache";
 
 import { getPrisma } from "@/lib/db/prisma";
 import {
@@ -9,6 +9,8 @@ import {
   type MegaServiceGroup,
   type MegaServiceLink,
 } from "@/lib/navigation/services-mega-menu";
+
+export const MEGA_MENU_CACHE_TAG = "mega-menu";
 
 function asString(value: unknown, fallback = ""): string {
   return typeof value === "string" ? value : fallback;
@@ -89,12 +91,7 @@ export function getDefaultMegaMenuCategories(): MegaServiceCategory[] {
   return structuredClone(MEGA_SERVICE_CATEGORIES);
 }
 
-/**
- * Public + admin: resolved mega menu (DB override or code defaults).
- * Uses noStore so admin edits show on the next request without waiting for ISR.
- */
-export async function getMegaMenuCategories(): Promise<MegaServiceCategory[]> {
-  noStore();
+async function loadMegaMenuCategoriesFromDb(): Promise<MegaServiceCategory[]> {
   try {
     const prisma = getPrisma();
     const row = await prisma.siteMegaMenu.findUnique({
@@ -106,4 +103,24 @@ export async function getMegaMenuCategories(): Promise<MegaServiceCategory[]> {
   } catch {
     return getDefaultMegaMenuCategories();
   }
+}
+
+const getCachedMegaMenuCategories = unstable_cache(
+  loadMegaMenuCategoriesFromDb,
+  ["site-mega-menu-default"],
+  { revalidate: 300, tags: [MEGA_MENU_CACHE_TAG] },
+);
+
+/**
+ * Public + admin: resolved mega menu (DB override or code defaults).
+ * Cached so the public site can stay on ISR (no `noStore` on the hot path).
+ * Admin saves call `revalidateTag(MEGA_MENU_CACHE_TAG)`.
+ */
+export async function getMegaMenuCategories(): Promise<MegaServiceCategory[]> {
+  return getCachedMegaMenuCategories();
+}
+
+/** Fresh read for admin editor (bypass Data Cache). */
+export async function getMegaMenuCategoriesFresh(): Promise<MegaServiceCategory[]> {
+  return loadMegaMenuCategoriesFromDb();
 }

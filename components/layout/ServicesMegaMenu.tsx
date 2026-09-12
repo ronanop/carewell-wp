@@ -22,9 +22,10 @@ import {
 import { cn } from "@/lib/utils";
 
 const CATEGORY_IMAGES: Record<string, string> = {
-  hair: "/images/hero-portrait.png",
+  // Prefer compressed assets — avoid 1.8MB portrait on the nav path.
+  hair: "/images/hero-model.png",
   skin: "/images/hero-model.png",
-  surgical: "/images/hero-portrait.png",
+  surgical: "/images/hero-model.png",
   wellness: "/images/hero-background.png",
 };
 

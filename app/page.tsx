@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
-import { type HomeYouTubeVideo } from "@/components/home/TestimonialsSection";
+import {
+  TestimonialsSection,
+  type HomeYouTubeVideo,
+} from "@/components/home/TestimonialsSection";
+import { BlogSection } from "@/components/home/BlogSection";
 import { HomePageView } from "@/components/pages/home/HomePageView";
 import { getHomepagePresentationConfig } from "@/lib/sanity/homepage";
 import {
@@ -32,26 +37,47 @@ function toHomeYouTubeVideos(
   }));
 }
 
+async function HomeTestimonialsSlot() {
+  const youtubeVideos = await listChannelVideos(HOME_YOUTUBE_LIMIT).catch(
+    () => [],
+  );
+  return (
+    <TestimonialsSection videos={toHomeYouTubeVideos(youtubeVideos)} />
+  );
+}
+
+async function HomeBlogSlot() {
+  const latestPosts = await getSanityLatestPosts(HOME_BLOG_LIMIT).catch(
+    () => [],
+  );
+  const posts = toHomeBlogPosts(latestPosts);
+  if (!posts.length) return null;
+  return <BlogSection posts={posts} />;
+}
+
 /**
- * Homepage — thin route. Single implementation lives in HomePageView (ADR-015).
- * Blog cards: latest Sanity posts. Testimonials: YouTube channel Atom RSS.
+ * Homepage — thin route. Hero + config on the critical path; YouTube/blogs stream in.
  * Images / CTAs / service links: optional Sanity `homepage` singleton.
  */
 export default async function HomePage() {
-  const [youtubeVideos, latestPosts, homepageConfig] = await Promise.all([
-    listChannelVideos(HOME_YOUTUBE_LIMIT).catch(() => []),
-    getSanityLatestPosts(HOME_BLOG_LIMIT).catch(() => []),
-    getHomepagePresentationConfig().catch(() => null),
-  ]);
-  const latestYouTubeVideos = toHomeYouTubeVideos(youtubeVideos);
-  const latestBlogPosts = toHomeBlogPosts(latestPosts);
+  const homepageConfig = await getHomepagePresentationConfig().catch(
+    () => null,
+  );
 
   return (
     <HomePageView
       mode="public"
       config={homepageConfig}
-      latestBlogPosts={latestBlogPosts}
-      latestYouTubeVideos={latestYouTubeVideos}
+      testimonialsSlot={
+        <Suspense fallback={<TestimonialsSection videos={[]} />}>
+          <HomeTestimonialsSlot />
+        </Suspense>
+      }
+      blogSlot={
+        <Suspense fallback={null}>
+          <HomeBlogSlot />
+        </Suspense>
+      }
     />
   );
 }

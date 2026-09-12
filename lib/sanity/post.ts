@@ -1,6 +1,10 @@
 import type { HomeBlogPost } from "@/components/home/BlogSection";
 import type { PageBuilderSlot } from "@/lib/blog/pageBuilder";
-import { getSanityClient, getSanityLiveClient } from "@/lib/sanity/client";
+import {
+  getSanityClient,
+  getSanityLiveClient,
+  sanityClient,
+} from "@/lib/sanity/client";
 import {
   SANITY_POST_BY_SLUG,
   SANITY_POST_BY_URI,
@@ -90,8 +94,8 @@ export async function getSanityPostsList(options?: {
 export async function getSanityLatestPosts(
   limit = 3,
 ): Promise<SanityPostCard[]> {
-  const client = await getSanityClient();
-  return client.fetch<SanityPostCard[]>(SANITY_POSTS_LATEST, { limit });
+  // CDN client — no draftMode(); safe for ISR homepage / listings.
+  return sanityClient.fetch<SanityPostCard[]>(SANITY_POSTS_LATEST, { limit });
 }
 
 export async function getSanityMorePosts(

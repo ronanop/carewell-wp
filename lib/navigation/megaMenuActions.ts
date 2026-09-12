@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { auth } from "@/auth";
 import { getPrisma } from "@/lib/db/prisma";
 import {
   getDefaultMegaMenuCategories,
+  MEGA_MENU_CACHE_TAG,
   normalizeMegaMenuCategories,
 } from "@/lib/navigation/getMegaMenu";
 import type { MegaServiceCategory } from "@/lib/navigation/services-mega-menu";
@@ -48,6 +49,7 @@ export async function saveMegaMenuAction(
       update: { categories },
     });
 
+    revalidateTag(MEGA_MENU_CACHE_TAG);
     revalidatePath("/", "layout");
     revalidatePath("/admin/menu");
 
@@ -79,6 +81,7 @@ export async function resetMegaMenuAction(): Promise<MegaMenuActionResult> {
       update: { categories },
     });
 
+    revalidateTag(MEGA_MENU_CACHE_TAG);
     revalidatePath("/", "layout");
     revalidatePath("/admin/menu");
 

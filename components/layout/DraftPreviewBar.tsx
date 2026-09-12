@@ -1,10 +1,31 @@
-import Link from "next/link";
-import { draftMode } from "next/headers";
+"use client";
 
-/** Shown only while Sanity draft mode is on — unpublished page preview. */
-export async function DraftPreviewBar() {
-  const { isEnabled } = await draftMode();
-  if (!isEnabled) return null;
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+/**
+ * Client-only so the root layout never calls `draftMode()` (which forces
+ * dynamic rendering and kills homepage ISR / raises TTFB).
+ */
+export function DraftPreviewBar() {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/draft-mode/status/", { credentials: "same-origin" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { enabled?: boolean } | null) => {
+        if (!cancelled && data?.enabled) setEnabled(true);
+      })
+      .catch(() => {
+        /* ignore — bar is optional */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!enabled) return null;
 
   return (
     <div className="sticky top-0 z-[80] flex flex-wrap items-center justify-between gap-3 border-b border-amber-300 bg-amber-50 px-4 py-2 text-sm text-amber-950">

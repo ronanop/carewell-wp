@@ -1,3 +1,4 @@
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import NextAuth from "next-auth";
 
@@ -10,6 +11,12 @@ import { resolvePublicOrigin } from "@/lib/seo/public-origin";
 
 const { auth } = NextAuth(authConfig);
 
+/** Auth middleware instance — only invoked for `/admin` routes. */
+const adminAuth = auth(() => {
+  // `authorized` in auth.config already gates /admin; pass through.
+  return NextResponse.next();
+});
+
 type RedirectHit = { to: string; permanent: boolean };
 
 let redirectCache:
@@ -21,8 +28,8 @@ let redirectCache:
     }
   | null = null;
 
-/** Full redirect map refresh interval. */
-const REDIRECT_TTL_MS = 60 * 1000;
+/** Full redirect map refresh interval (5 min — fewer edge Sanity hits). */
+const REDIRECT_TTL_MS = 5 * 60 * 1000;
 
 const BLOCKED_PREFIXES = [
   "/dev",
@@ -85,6 +92,8 @@ function hitFromMap(
 /**
  * Resolve a CMS redirect. Uses the cached map first; on miss, does a live
  * Sanity lookup so newly published Studio redirects work before the TTL refresh.
+ * Homepage skips the live miss lookup — it almost never redirects and the
+ * extra Sanity round-trip was hurting TTFB.
  */
 async function resolveRedirect(pathname: string): Promise<RedirectHit | null> {
   const cache = await getRedirectCache();
@@ -94,6 +103,12 @@ async function resolveRedirect(pathname: string): Promise<RedirectHit | null> {
 
   const missKey = normalizePath(pathname);
   if (cache.misses.has(missKey)) return null;
+
+  // Hot path: do not live-query Sanity for `/` on every cold miss.
+  if (missKey === "/") {
+    cache.misses.add(missKey);
+    return null;
+  }
 
   const live = await fetchSanityRedirectByFromEdge(keys);
   if (!live) {
@@ -109,19 +124,14 @@ async function resolveRedirect(pathname: string): Promise<RedirectHit | null> {
   return hit;
 }
 
-export default auth(async (req) => {
+async function handlePublic(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (isBlockedInternalRoute(pathname)) {
     return new NextResponse("Not Found", { status: 404 });
   }
 
-  // Public CMS redirects (skip admin + API)
-  if (
-    !pathname.startsWith("/admin") &&
-    !pathname.startsWith("/api") &&
-    !pathname.startsWith("/_next")
-  ) {
+  if (!pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
     try {
       const hit = await resolveRedirect(pathname);
       if (hit) {
@@ -139,7 +149,24 @@ export default auth(async (req) => {
   }
 
   return NextResponse.next();
-});
+}
+
+/**
+ * Auth.js only for `/admin` — public routes skip session JWT work (TTFB).
+ */
+export default async function middleware(
+  req: NextRequest,
+  event: unknown,
+) {
+  const { pathname } = req.nextUrl;
+
+  if (pathname.startsWith("/admin")) {
+    // NextAuth middleware expects (req, event)
+    return adminAuth(req as never, event as never);
+  }
+
+  return handlePublic(req);
+}
 
 export const config = {
   matcher: ["/admin/:path*", "/((?!_next/static|_next/image|favicon.ico).*)"],

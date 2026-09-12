@@ -1,26 +1,16 @@
 /**
  * Homepage — single React tree for public site and Static Experience Studio (ADR-015/016).
- * Sections are imported directly so the client hydrates the same markup the server sent.
- * `next/dynamic` Loadable chunks were rendering a different tree and failing hydration.
+ * Above-fold sections stay statically imported for LCP. Below-fold sections are
+ * dynamically imported (ssr: true) to shrink the initial client JS graph.
  */
 
-import { AboutSection } from "@/components/home/AboutSection";
-import { AiSkinAnalysis } from "@/components/home/AiSkinAnalysis";
-import { BlogSection, type HomeBlogPost } from "@/components/home/BlogSection";
-import { ConsultationSpecialties } from "@/components/home/ConsultationSpecialties";
-import { CTABanner } from "@/components/home/CTABanner";
-import { DoctorsSection } from "@/components/home/DoctorsSection";
-import { GoogleReviewsSection } from "@/components/home/GoogleReviewsSection";
+import dynamic from "next/dynamic";
+import type { ReactNode } from "react";
+
 import { HeroSection } from "@/components/home/HeroSection";
-import { LocationLeadSection } from "@/components/home/LocationLeadSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
-import {
-  TestimonialsSection,
-  type HomeYouTubeVideo,
-} from "@/components/home/TestimonialsSection";
 import { TreatmentJourney } from "@/components/home/TreatmentJourney";
 import { TrustIndicators } from "@/components/home/TrustIndicators";
-import { WhyChooseUs } from "@/components/home/WhyChooseUs";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 import { StaticEditProvider } from "@/components/pages/StaticEditProvider";
@@ -28,13 +18,69 @@ import { StaticSectionFrame } from "@/components/pages/StaticSectionFrame";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { isSectionEnabled } from "@/lib/static-pages/applyOverrides";
 import type { StaticPageViewProps } from "@/types/static-page-descriptor";
-import type { ReactNode } from "react";
+
+const AboutSection = dynamic(
+  () =>
+    import("@/components/home/AboutSection").then((m) => ({
+      default: m.AboutSection,
+    })),
+  { ssr: true },
+);
+const AiSkinAnalysis = dynamic(
+  () =>
+    import("@/components/home/AiSkinAnalysis").then((m) => ({
+      default: m.AiSkinAnalysis,
+    })),
+  { ssr: true },
+);
+const ConsultationSpecialties = dynamic(
+  () =>
+    import("@/components/home/ConsultationSpecialties").then((m) => ({
+      default: m.ConsultationSpecialties,
+    })),
+  { ssr: true },
+);
+const CTABanner = dynamic(
+  () =>
+    import("@/components/home/CTABanner").then((m) => ({
+      default: m.CTABanner,
+    })),
+  { ssr: true },
+);
+const DoctorsSection = dynamic(
+  () =>
+    import("@/components/home/DoctorsSection").then((m) => ({
+      default: m.DoctorsSection,
+    })),
+  { ssr: true },
+);
+const GoogleReviewsSection = dynamic(
+  () =>
+    import("@/components/home/GoogleReviewsSection").then((m) => ({
+      default: m.GoogleReviewsSection,
+    })),
+  { ssr: true },
+);
+const LocationLeadSection = dynamic(
+  () =>
+    import("@/components/home/LocationLeadSection").then((m) => ({
+      default: m.LocationLeadSection,
+    })),
+  { ssr: true },
+);
+const WhyChooseUs = dynamic(
+  () =>
+    import("@/components/home/WhyChooseUs").then((m) => ({
+      default: m.WhyChooseUs,
+    })),
+  { ssr: true },
+);
 
 export type HomePageViewProps = StaticPageViewProps & {
-  /** Latest posts for BlogSection (optional — empty until Sanity blogs wire up). */
-  latestBlogPosts?: HomeBlogPost[];
-  /** Latest YouTube videos for TestimonialsSection (public route only). */
-  latestYouTubeVideos?: HomeYouTubeVideo[];
+  /** Streamed testimonials (preferred). */
+  testimonialsSlot?: ReactNode;
+  /** Streamed blog cards (preferred). */
+  blogSlot?: ReactNode;
 };
 
 /** Section-level fade entry as the homepage is scrolled. */
@@ -55,8 +101,8 @@ function HomeSectionEnter({
 export function HomePageView({
   mode,
   config = null,
-  latestBlogPosts,
-  latestYouTubeVideos,
+  testimonialsSlot,
+  blogSlot,
 }: HomePageViewProps) {
   const enabled = (sectionId: string, fallback = true) =>
     isSectionEnabled(config, sectionId, fallback);
@@ -139,16 +185,12 @@ export function HomePageView({
               type="testimonials"
               mode={mode}
             >
-              <HomeSectionEnter>
-                <TestimonialsSection videos={latestYouTubeVideos} />
-              </HomeSectionEnter>
+              <HomeSectionEnter>{testimonialsSlot}</HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
-          {enabled("home.blog") && (latestBlogPosts?.length ?? 0) > 0 ? (
+          {enabled("home.blog") && blogSlot ? (
             <StaticSectionFrame id="home.blog" type="related-blogs" mode={mode}>
-              <HomeSectionEnter>
-                <BlogSection posts={latestBlogPosts} />
-              </HomeSectionEnter>
+              <HomeSectionEnter>{blogSlot}</HomeSectionEnter>
             </StaticSectionFrame>
           ) : null}
           {enabled("home.reviews") ? (

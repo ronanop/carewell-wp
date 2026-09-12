@@ -1,6 +1,6 @@
 import { MegaMenuAdminEditor } from "@/components/admin/MegaMenuAdminEditor";
 import { requireAdminSession } from "@/lib/admin/requireSession";
-import { getMegaMenuCategories } from "@/lib/navigation/getMegaMenu";
+import { getMegaMenuCategoriesFresh } from "@/lib/navigation/getMegaMenu";
 
 export const metadata = {
   title: "Services menu | Care Well Admin",
@@ -9,7 +9,7 @@ export const metadata = {
 
 export default async function AdminMenuPage() {
   const session = await requireAdminSession();
-  const categories = await getMegaMenuCategories();
+  const categories = await getMegaMenuCategoriesFresh();
   const role = session.user.role;
   const canEdit =
     role === "ADMIN" || role === "EDITOR" || role === "DEVELOPER";

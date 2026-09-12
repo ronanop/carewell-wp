@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { draftMode } from "next/headers";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
@@ -26,7 +25,7 @@ const geistMono = Geist_Mono({
   adjustFontFallback: true,
 });
 
-const metadataBaseConfig: Metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {
     google: "fY6UpMdyowNLXucOjBTc7Pwapc6h3E19iOJNZVBWf-Q",
@@ -60,15 +59,6 @@ const metadataBaseConfig: Metadata = {
     url: SITE_URL,
   },
 };
-
-export async function generateMetadata(): Promise<Metadata> {
-  const { isEnabled } = await draftMode();
-  if (!isEnabled) return metadataBaseConfig;
-  return {
-    ...metadataBaseConfig,
-    robots: { index: false, follow: false },
-  };
-}
 
 export default function RootLayout({
   children,

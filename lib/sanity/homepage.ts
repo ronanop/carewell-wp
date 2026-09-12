@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import { getSanityClient, urlFor } from "@/lib/sanity/client";
+import { sanityClient, urlFor } from "@/lib/sanity/client";
 import type { ElementOverrides } from "@/types/element-descriptor";
 import type { PresentationConfig } from "@/types/presentation-config";
 import type { RepeaterItem } from "@/types/repeater-descriptor";
@@ -201,11 +201,14 @@ export function homepageToFooter(
   return { quickLinks, serviceLinks, socialLinks };
 }
 
+/**
+ * Public CDN client only — avoids `draftMode()` so homepage ISR / TTFB stay intact.
+ * Studio draft preview of the homepage singleton is not supported on this path.
+ */
 export const getSanityHomepage = cache(
   async (): Promise<SanityHomepageDoc | null> => {
     try {
-      const client = await getSanityClient();
-      return await client.fetch<SanityHomepageDoc | null>(HOMEPAGE_QUERY);
+      return await sanityClient.fetch<SanityHomepageDoc | null>(HOMEPAGE_QUERY);
     } catch (error) {
       console.error("[CWMC]", {
         context: "getSanityHomepage",
