@@ -60,8 +60,9 @@ export function TreatmentHeroBookingCardLazy({
     const isNarrow =
       typeof window !== "undefined" &&
       window.matchMedia("(max-width: 1023px)").matches;
-    const idleTimeout = isNarrow ? 4500 : 1800;
-    const fallbackMs = isNarrow ? 2800 : 900;
+    // Keep RHF/zod off the mobile LCP critical path longer than desktop.
+    const idleTimeout = isNarrow ? 8000 : 1800;
+    const fallbackMs = isNarrow ? 5000 : 900;
 
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       idleId = window.requestIdleCallback(show, { timeout: idleTimeout });

@@ -10,7 +10,8 @@ import { sectionImageSrcSet, sectionImageUrl } from "./image";
 import type { QuickFact, SanityImage, SectionBaseProps } from "./types";
 
 const DEFAULT_HERO_BG = "/images/service-hero-background.jpg";
-const MOBILE_HERO_WIDTHS = [480, 640, 750, 828] as const;
+/** Cap mobile LCP candidate — prefer 640w on phones; 750 for large phones only. */
+const MOBILE_HERO_WIDTHS = [640, 750] as const;
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -104,14 +105,14 @@ function resolveHeroAssets({
     backgroundSrc ||
     DEFAULT_HERO_BG;
   const mobileImage = imageMobile?.asset ? imageMobile : image;
-  // Mobile LCP: keep under ~828w — phones do not need 1080+ assets.
+  // Mobile LCP: prefer 640w / q52 webp — homepage wins with a small portrait.
   const mobileSrc =
-    sectionImageUrl(mobileImage, { width: 750, quality: 62, format: "webp" }) ||
+    sectionImageUrl(mobileImage, { width: 640, quality: 52, format: "webp" }) ||
     backgroundSrc ||
     DEFAULT_HERO_BG;
   const mobileSrcSet =
     sectionImageSrcSet(mobileImage, [...MOBILE_HERO_WIDTHS], {
-      quality: 62,
+      quality: 52,
       format: "webp",
     }) || undefined;
   return { desktopSrc, mobileSrc, mobileSrcSet };
@@ -162,11 +163,11 @@ function HeroBackground({
           srcSet={mobileSrcSet}
           sizes="100vw"
           alt=""
-          width={750}
-          height={938}
+          width={640}
+          height={800}
           fetchPriority="high"
-          decoding="async"
-          className="h-full w-full object-cover object-[center_22%] max-lg:scale-[1.08] lg:object-[center_30%]"
+          decoding="sync"
+          className="h-full w-full object-cover object-[center_22%] lg:object-[center_30%]"
         />
       </picture>
       <div

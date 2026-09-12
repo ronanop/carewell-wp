@@ -14,7 +14,6 @@ import { getSanityPageByUri } from "@/lib/sanity/page";
 import {
   getSanityMorePosts,
   getSanityPostByUri,
-  getSanityRelatedPostsForService,
   mergeNextPosts,
   postPublicPath,
 } from "@/lib/sanity/post";
@@ -128,17 +127,8 @@ export default async function CatchAllPage({ params }: CatchAllPageProps) {
 
   const sanityService = await getSanityServiceByUri(normalizedUri);
   if (sanityService) {
-    const relatedPosts = await getSanityRelatedPostsForService({
-      category: sanityService.category,
-      title: sanityService.title,
-      limit: 3,
-    });
-    return (
-      <SanityServiceTemplate
-        service={sanityService}
-        relatedPosts={relatedPosts}
-      />
-    );
+    // Do not await related posts here — stream them after hero for mobile LCP.
+    return <SanityServiceTemplate service={sanityService} />;
   }
 
   const sanityPost = await getSanityPostByUri(normalizedUri);

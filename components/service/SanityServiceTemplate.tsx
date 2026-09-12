@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense, type ReactNode } from "react";
 import {
   FinalCtaStrip,
   HeroBanner,
@@ -13,6 +14,7 @@ import { TreatmentHeroBookingCardLazy } from "@/components/service/TreatmentHero
 import { ServicePageBuilderSections } from "@/components/service/ServicePageBuilderSections";
 import type { SanityServiceDoc } from "@/components/service/sanityServiceTypes";
 import type { SanityPostCard } from "@/lib/sanity/post";
+import { getSanityRelatedPostsForService } from "@/lib/sanity/post";
 import { FooterPlaceholder } from "@/components/layout/FooterPlaceholder";
 import { NavbarPlaceholder } from "@/components/layout/NavbarPlaceholder";
 
@@ -90,16 +92,39 @@ export function buildSanityServiceMetadata(
   };
 }
 
+/** Fetches related posts then renders CMS sections — streamed after hero. */
+async function ServiceSectionsStream({
+  service,
+}: {
+  service: SanityServiceDoc;
+}) {
+  const relatedPosts = await getSanityRelatedPostsForService({
+    category: service.category,
+    title: service.title,
+    limit: 3,
+  });
+
+  return (
+    <ServicePageBuilderSections
+      service={service}
+      relatedPosts={relatedPosts}
+    />
+  );
+}
+
 /**
  * Full CMS-driven service page (navbar + sections + footer).
- * Hero booking card sticks in the right rail through hero + main content.
+ * Hero + booking flush first; body sections stream in via Suspense.
  */
 export function SanityServiceTemplate({
   service: rawService,
-  relatedPosts = [],
+  relatedPosts,
+  relatedPostsSlot,
 }: {
   service: SanityServiceDoc;
+  /** @deprecated Prefer streaming via internal Suspense; kept for callers. */
   relatedPosts?: SanityPostCard[];
+  relatedPostsSlot?: ReactNode;
 }) {
   const service = polishServiceCopy(rawService);
   const heading = service.title;
@@ -111,6 +136,23 @@ export function SanityServiceTemplate({
     image: service.hero?.image,
     imageMobile: service.hero?.imageMobile,
   });
+
+  const sections =
+    relatedPostsSlot ??
+    (relatedPosts ? (
+      <ServicePageBuilderSections
+        service={service}
+        relatedPosts={relatedPosts}
+      />
+    ) : (
+      <Suspense
+        fallback={
+          <div className="min-h-[24rem] animate-pulse rounded-2xl bg-slate-100/80" />
+        }
+      >
+        <ServiceSectionsStream service={service} />
+      </Suspense>
+    ));
 
   return (
     <>
@@ -157,10 +199,7 @@ export function SanityServiceTemplate({
                 facts={service.hero?.quickFacts}
                 note={service.hero?.quickFactsNote}
               />
-              <ServicePageBuilderSections
-                service={service}
-                relatedPosts={relatedPosts}
-              />
+              {sections}
             </div>
           </div>
         </div>
