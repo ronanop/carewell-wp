@@ -52,6 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]);
 
     for (const service of services) {
+      if (service.noIndex) continue;
       const path = servicePublicPath(service);
       if (path === "/") continue;
       entries.push({
@@ -62,6 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     for (const post of posts) {
+      if (post.noIndex) continue;
       const path = postPublicPath(post);
       if (path === "/" || path === "/blogs/") continue;
       entries.push({

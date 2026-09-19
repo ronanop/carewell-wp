@@ -28,6 +28,7 @@ export type SanityPostImage = {
 
 export type SanityPostCard = {
   _id: string;
+  _createdAt?: string | null;
   title: string;
   slug: string;
   uri?: string | null;
@@ -41,6 +42,7 @@ export type SanityPostCard = {
   authorName?: string | null;
   authorRole?: string | null;
   mainImage?: SanityPostImage | null;
+  noIndex?: boolean | null;
 };
 
 export type SanityPostDoc = SanityPostCard & {
@@ -82,6 +84,20 @@ export function postPublicPath(post: {
   return `/${slug.replace(/^\/+|\/+$/g, "")}/`;
 }
 
+/** Newest first by publish date (falls back to createdAt; missing dates last). */
+export function sortPostsByDateDesc(
+  posts: SanityPostCard[],
+): SanityPostCard[] {
+  return [...posts].sort((a, b) => {
+    const aTime =
+      Date.parse(a.publishedAt || "") || Date.parse(a._createdAt || "") || 0;
+    const bTime =
+      Date.parse(b.publishedAt || "") || Date.parse(b._createdAt || "") || 0;
+    if (bTime !== aTime) return bTime - aTime;
+    return (a.title || "").localeCompare(b.title || "");
+  });
+}
+
 export async function getSanityPostsList(options?: {
   /** Skip API CDN — use for admin inventory refresh. */
   live?: boolean;
@@ -89,7 +105,8 @@ export async function getSanityPostsList(options?: {
   const client = options?.live
     ? await getSanityLiveClient()
     : await getSanityClient();
-  return client.fetch<SanityPostCard[]>(SANITY_POSTS_LIST);
+  const posts = await client.fetch<SanityPostCard[]>(SANITY_POSTS_LIST);
+  return sortPostsByDateDesc(posts);
 }
 
 export async function getSanityLatestPosts(

@@ -17,6 +17,7 @@ export type SanityServiceListItem = {
   category?: string | null;
   faqCount?: number | null;
   hasHero?: boolean | null;
+  noIndex?: boolean | null;
 };
 
 /** Public path for a service — prefers stored WP `uri`, else `/{slug}/`. */

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { SanityBlogListing } from "@/components/blog/SanityPostTemplate";
-import { getSanityPostsList } from "@/lib/sanity/post";
+import { getSanityPostsList, sortPostsByDateDesc } from "@/lib/sanity/post";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 
 export const revalidate = 1800;
@@ -36,5 +36,10 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
       })
     : posts;
 
-  return <SanityBlogListing posts={filtered} searchQuery={q || ""} />;
+  return (
+    <SanityBlogListing
+      posts={sortPostsByDateDesc(filtered)}
+      searchQuery={q || ""}
+    />
+  );
 }

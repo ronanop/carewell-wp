@@ -404,7 +404,8 @@ export const SANITY_SERVICES_LIST = `*[_type == "service"]{
   uri,
   category,
   "faqCount": count(faqs),
-  "hasHero": defined(hero.heading) || defined(hero.image) || defined(hero.imageMobile)
+  "hasHero": defined(hero.heading) || defined(hero.image) || defined(hero.imageMobile),
+  "noIndex": seo.noIndex
 } | order(uri asc)`;
 
 export const SANITY_REDIRECTS = `*[_type == "redirect" && isEnabled == true]{
@@ -424,6 +425,7 @@ const SANITY_POST_IMAGE = `{
 
 const SANITY_POST_CARD = `{
   _id,
+  _createdAt,
   title,
   "slug": slug.current,
   uri,
@@ -436,7 +438,8 @@ const SANITY_POST_CARD = `{
   readTimeMinutes,
   authorName,
   authorRole,
-  mainImage${SANITY_POST_IMAGE}
+  mainImage${SANITY_POST_IMAGE},
+  "noIndex": seo.noIndex
 }`;
 
 const SANITY_POST_FULL = `{
@@ -505,7 +508,8 @@ export const SANITY_POST_BY_SLUG = `*[_type == "post" && slug.current == $slug][
 /** Match original WP URI (with/without trailing slash) or slug. */
 export const SANITY_POST_BY_URI = `*[_type == "post" && (uri == $uri || uri == $uriNoSlash || slug.current == $slug)][0]${SANITY_POST_FULL}`;
 
-export const SANITY_POSTS_LIST = `*[_type == "post" && defined(slug.current)] | order(publishedAt desc)${SANITY_POST_CARD}`;
+/** Public /blogs index — newest first (publishedAt, else created). */
+export const SANITY_POSTS_LIST = `*[_type == "post" && defined(slug.current)] | order(coalesce(publishedAt, _createdAt) desc)${SANITY_POST_CARD}`;
 
 export const SANITY_POSTS_LATEST = `*[_type == "post" && defined(slug.current)] | order(coalesce(publishedAt, _createdAt) desc)[0...$limit]${SANITY_POST_CARD}`;
 

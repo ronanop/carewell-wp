@@ -48,6 +48,23 @@ export const post = defineType({
     { name: "seo", title: "SEO" },
     { name: "legacy", title: "Legacy" },
   ],
+  orderings: [
+    {
+      title: "Publish date, newest",
+      name: "publishedAtDesc",
+      by: [{ field: "publishedAt", direction: "desc" }],
+    },
+    {
+      title: "Publish date, oldest",
+      name: "publishedAtAsc",
+      by: [{ field: "publishedAt", direction: "asc" }],
+    },
+    {
+      title: "Title",
+      name: "titleAsc",
+      by: [{ field: "title", direction: "asc" }],
+    },
+  ],
   fields: [
     blogPageBuilderField,
     defineField({

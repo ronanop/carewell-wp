@@ -4,9 +4,13 @@ import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
 import { DraftPreviewBar } from "@/components/layout/DraftPreviewBar";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
+import { ScrollToTopOnReload } from "@/components/layout/ScrollToTopOnReload";
 import { SmartBookingPopupLazy } from "@/components/leads/SmartBookingPopupLazy";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/constants";
 import "./globals.css";
+
+/** Runs before paint so reload never flashes mid-page scroll. */
+const SCROLL_TO_TOP_ON_RELOAD = `(function(){try{if("scrollRestoration"in history)history.scrollRestoration="manual";var n=performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload")window.scrollTo(0,0);}catch(e){}})();`;
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -72,6 +76,7 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} ${geistMono.variable} h-full`}
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: SCROLL_TO_TOP_ON_RELOAD }} />
         <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="" />
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -79,6 +84,7 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.className} flex min-h-full flex-col antialiased`}
       >
+        <ScrollToTopOnReload />
         <DraftPreviewBar />
         {children}
         <FloatingWhatsApp />

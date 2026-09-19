@@ -11,7 +11,11 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title("Blog posts")
         .schemaType("post")
-        .child(S.documentTypeList("post").title("Blog posts")),
+        .child(
+          S.documentTypeList("post")
+            .title("Blog posts")
+            .defaultOrdering([{ field: "publishedAt", direction: "desc" }]),
+        ),
       S.listItem()
         .title("Pages")
         .schemaType("page")
