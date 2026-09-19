@@ -180,8 +180,9 @@ function HeroBackground({
       <div
         className="absolute inset-0 lg:hidden"
         style={{
+          // Lighter mid-frame so the photo reads; soft top/bottom scrims for copy.
           background:
-            "linear-gradient(180deg, rgba(10,37,64,0.82) 0%, rgba(10,37,64,0.72) 42%, rgba(10,37,64,0.88) 100%)",
+            "linear-gradient(180deg, rgba(10,37,64,0.48) 0%, rgba(10,37,64,0.22) 38%, rgba(10,37,64,0.32) 62%, rgba(10,37,64,0.62) 100%)",
         }}
       />
     </div>
@@ -245,19 +246,22 @@ function HeroCopy({
 }) {
   return (
     <>
-      <nav aria-label="Breadcrumb" className="shrink-0 text-sm text-white/90">
+      <nav
+        aria-label="Breadcrumb"
+        className="shrink-0 text-sm text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]"
+      >
         <ol className="flex flex-wrap items-center gap-1.5">
           {crumbItems.map((item, i) => {
             const last = i === crumbItems.length - 1;
             return (
               <li key={`${item.href}-${i}`} className="flex items-center gap-1.5">
-                {i > 0 ? <span aria-hidden className="text-white/70">/</span> : null}
+                {i > 0 ? <span aria-hidden className="text-white/80">/</span> : null}
                 {last ? (
                   <span className="line-clamp-1 text-white">{item.label}</span>
                 ) : (
                   <Link
                     href={item.href}
-                    className="text-white/90 underline-offset-2 hover:text-white hover:underline"
+                    className="text-white/95 underline-offset-2 hover:text-white hover:underline"
                   >
                     {item.label}
                   </Link>
@@ -268,17 +272,19 @@ function HeroCopy({
         </ol>
       </nav>
 
-      <div className="flex min-w-0 flex-1 flex-col justify-center pb-[6vh] pt-2 sm:pb-[4vh] lg:justify-center lg:pb-0 lg:pt-0">
-        <h1 className="mx-auto w-full max-w-3xl text-center font-heading text-[clamp(1.85rem,7vw,3.5rem)] font-bold leading-[1.12] tracking-tight text-balance text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)] lg:mx-0 lg:text-left lg:text-[clamp(2rem,4.2vw,3.5rem)] lg:leading-[1.1]">
-          {heading}
-        </h1>
-        {tagline ? (
-          <p className="mx-auto mt-4 w-full max-w-2xl text-center text-[1.0625rem] leading-relaxed text-pretty text-white/95 sm:mt-5 sm:text-lg lg:mx-0 lg:text-left">
-            {tagline}
-          </p>
-        ) : null}
+      <div className="flex min-w-0 flex-1 flex-col pb-5 pt-0 sm:pb-6 sm:pt-2 lg:justify-center lg:pb-0 lg:pt-0">
+        <div className="flex min-w-0 flex-col pt-3 sm:pt-4 lg:flex-none lg:pt-0">
+          <h1 className="mx-auto w-full max-w-3xl text-center font-heading text-[clamp(1.5rem,5.2vw,3.5rem)] font-bold leading-[1.18] tracking-tight text-pretty text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.65),0_2px_16px_rgba(0,0,0,0.45),0_4px_24px_rgba(10,37,64,0.4)] lg:mx-0 lg:text-left lg:text-[clamp(2rem,4.2vw,3.5rem)] lg:leading-[1.1] lg:text-balance lg:[text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)]">
+            {heading}
+          </h1>
+          {tagline ? (
+            <p className="mx-auto mt-3 w-full max-w-2xl text-center text-[1rem] leading-relaxed text-pretty text-white/95 [text-shadow:0_1px_3px_rgba(0,0,0,0.6),0_2px_12px_rgba(0,0,0,0.35)] sm:mt-4 sm:text-[1.0625rem] sm:text-lg lg:mx-0 lg:mt-5 lg:text-left lg:text-white/95 lg:[text-shadow:none]">
+              {tagline}
+            </p>
+          ) : null}
+        </div>
 
-        <div className="mt-8 flex w-full max-w-full flex-col items-stretch gap-3 sm:mt-7 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-center sm:gap-4 lg:mt-8 lg:justify-start">
+        <div className="mt-auto flex w-full max-w-full shrink-0 flex-col items-stretch gap-3 pt-6 sm:mt-9 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-center sm:gap-4 sm:pt-0 lg:mt-8 lg:justify-start">
           <a
             href={primaryCtaHref}
             className={cn(

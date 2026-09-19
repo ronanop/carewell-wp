@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const WHATSAPP_URL =
@@ -7,10 +8,13 @@ const WHATSAPP_URL =
 
 /**
  * Deferred floating CTA — mounts after idle so it does not compete with LCP.
- * Uses a static SVG (not an animated GIF).
+ * On mobile service pages (with #hero WhatsApp CTA), stays hidden until the
+ * hero scrolls out of view so the two buttons never compete.
  */
 export function FloatingWhatsApp() {
+  const pathname = usePathname();
   const [ready, setReady] = useState(false);
+  const [pastHero, setPastHero] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,7 +47,51 @@ export function FloatingWhatsApp() {
     };
   }, []);
 
-  if (!ready) return null;
+  useEffect(() => {
+    if (!ready) return;
+
+    const mq = window.matchMedia("(max-width: 767px)");
+    let observer: IntersectionObserver | undefined;
+    let rafId = 0;
+
+    const attachHeroObserver = () => {
+      observer?.disconnect();
+      observer = undefined;
+
+      if (!mq.matches) {
+        setPastHero(true);
+        return;
+      }
+
+      const hero = document.getElementById("hero");
+      if (!hero) {
+        setPastHero(true);
+        return;
+      }
+
+      setPastHero(false);
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          setPastHero(!entry.isIntersecting);
+        },
+        { threshold: 0, rootMargin: "0px" },
+      );
+      observer.observe(hero);
+    };
+
+    // Hero may mount after client navigation — retry once on next frame.
+    attachHeroObserver();
+    rafId = requestAnimationFrame(attachHeroObserver);
+    mq.addEventListener("change", attachHeroObserver);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      mq.removeEventListener("change", attachHeroObserver);
+      observer?.disconnect();
+    };
+  }, [ready, pathname]);
+
+  if (!ready || !pastHero) return null;
 
   return (
     <a
