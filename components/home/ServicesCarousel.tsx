@@ -151,7 +151,9 @@ export function ServicesCarousel({
   useEffect(() => {
     if (reducedMotion || !inView || maxIndex <= 0) return;
 
-    let intervalId: ReturnType<typeof window.setInterval> | undefined;
+    // Use `number` (DOM timer id). Avoid ReturnType<typeof setInterval>, which
+    // resolves to NodeJS.Timeout under @types/node and breaks Hostinger builds.
+    let intervalId: number | undefined;
     const startTimeoutId = window.setTimeout(() => {
       const advance = () => {
         if (isDraggingRef.current || userPausedRef.current) return;
@@ -160,7 +162,7 @@ export function ServicesCarousel({
       };
 
       advance();
-      intervalId = window.setInterval(advance, AUTO_INTERVAL_MS);
+      intervalId = window.setInterval(advance, AUTO_INTERVAL_MS) as unknown as number;
     }, AUTO_START_MS);
 
     return () => {
