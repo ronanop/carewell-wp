@@ -1832,6 +1832,7 @@
 }
 
 .service-page .service-main-column p {
+  text-align: left;
   text-wrap: pretty;
 }
 
@@ -1860,11 +1861,6 @@
     width: 100%;
     max-width: none;
     text-wrap: wrap;
-  }
-
-  .service-page .service-main-column p {
-    text-align: justify;
-    text-justify: inter-word;
   }
 
   .service-page .service-card-grid {

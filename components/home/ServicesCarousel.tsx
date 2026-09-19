@@ -28,6 +28,10 @@ const SWIPE_AXIS_LOCK_PX = 10;
 const SWIPE_COMMIT_PX = 48;
 /** Ignore synthetic clicks after a meaningful horizontal drag. */
 const CLICK_SUPPRESS_PX = 8;
+/** Wait before the first auto-advance so the section can settle. */
+const AUTO_START_MS = 1500;
+/** Time between auto-advances while the carousel is idle. */
+const AUTO_INTERVAL_MS = 4000;
 
 export function ServicesCarousel({
   label,
@@ -37,7 +41,10 @@ export function ServicesCarousel({
 }: ServicesCarouselProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const suppressClickRef = useRef(false);
+  const isDraggingRef = useRef(false);
+  const userPausedRef = useRef(false);
   const dragRef = useRef<{
     pointerId: number | null;
     startX: number;
@@ -58,6 +65,7 @@ export function ServicesCarousel({
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [inView, setInView] = useState(false);
 
   const slides = Children.toArray(children);
 
@@ -68,6 +76,22 @@ export function ServicesCarousel({
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
   }, []);
+
+  useEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    isDraggingRef.current = isDragging;
+  }, [isDragging]);
 
   const measure = useCallback(() => {
     const viewport = viewportRef.current;
@@ -109,14 +133,49 @@ export function ServicesCarousel({
 
   const goTo = useCallback(
     (index: number) => {
+      userPausedRef.current = true;
       setActiveIndex(Math.max(0, Math.min(maxIndex, index)));
       setDragOffset(0);
+      // Resume autoplay shortly after a manual jump.
+      window.setTimeout(() => {
+        userPausedRef.current = false;
+      }, AUTO_INTERVAL_MS);
     },
     [maxIndex]
   );
 
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
   const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
+
+  // Auto-advance after a short settle delay while the carousel is on screen.
+  useEffect(() => {
+    if (reducedMotion || !inView || maxIndex <= 0) return;
+
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+    const startTimeoutId = window.setTimeout(() => {
+      const advance = () => {
+        if (isDraggingRef.current || userPausedRef.current) return;
+        setActiveIndex((index) => (index >= maxIndex ? 0 : index + 1));
+        setDragOffset(0);
+      };
+
+      advance();
+      intervalId = window.setInterval(advance, AUTO_INTERVAL_MS);
+    }, AUTO_START_MS);
+
+    return () => {
+      window.clearTimeout(startTimeoutId);
+      if (intervalId !== undefined) window.clearInterval(intervalId);
+    };
+  }, [reducedMotion, inView, maxIndex]);
+
+  const pauseAutoplay = useCallback(() => {
+    userPausedRef.current = true;
+  }, []);
+
+  const resumeAutoplay = useCallback(() => {
+    userPausedRef.current = false;
+  }, []);
 
   const commitDrag = useCallback(() => {
     const offset = dragRef.current.offset;
@@ -145,6 +204,7 @@ export function ServicesCarousel({
       if (event.pointerType === "mouse" && event.button !== 0) return;
       if (maxIndex <= 0) return;
 
+      userPausedRef.current = true;
       dragRef.current = {
         pointerId: event.pointerId,
         startX: event.clientX,
@@ -227,6 +287,10 @@ export function ServicesCarousel({
         dragRef.current.offset = 0;
         setIsDragging(false);
         setDragOffset(0);
+        // Soft resume after a non-swipe tap.
+        window.setTimeout(() => {
+          userPausedRef.current = false;
+        }, AUTO_INTERVAL_MS);
       }
 
       try {
@@ -273,7 +337,17 @@ export function ServicesCarousel({
   );
 
   return (
-    <div>
+    <div
+      ref={sectionRef}
+      onMouseEnter={pauseAutoplay}
+      onMouseLeave={resumeAutoplay}
+      onFocusCapture={pauseAutoplay}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          resumeAutoplay();
+        }
+      }}
+    >
       <div className="container-content flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
         <StaggerReveal
           className="max-w-3xl text-left lg:max-w-[52rem]"
