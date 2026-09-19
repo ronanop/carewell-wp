@@ -8,6 +8,7 @@ import {
   resolveServiceHeroChrome,
   resolveServiceHeroImageUrls,
   ServiceHeroBackdrop,
+  ServiceMobileHeroIntro,
 } from "@/components/service/sections";
 import { ServiceStickyBookingRail } from "@/components/service/ServiceStickyBookingRail";
 import { TreatmentHeroBookingCardLazy } from "@/components/service/TreatmentHeroBookingCardLazy";
@@ -178,6 +179,7 @@ export function SanityServiceTemplate({
           <div className="service-content relative z-10 mx-auto grid w-full min-w-0 max-w-[90rem] grid-cols-1 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-8 xl:gap-16 xl:px-10">
             <HeroBanner
               layout="shell"
+              className="lg:col-span-2 lg:col-start-1 lg:row-start-1"
               heading={heading}
               tagline={service.hero?.tagline}
               category={service.category}
@@ -190,11 +192,21 @@ export function SanityServiceTemplate({
               showBookingCard={false}
             />
 
-            <ServiceStickyBookingRail className="min-w-0 w-full max-w-full max-lg:pb-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+            <ServiceMobileHeroIntro
+              heading={heading}
+              tagline={service.hero?.tagline}
+            />
+
+            <ServiceStickyBookingRail className="min-w-0 w-full max-w-full max-lg:pb-6 lg:col-start-2 lg:row-start-2 lg:self-start lg:pt-4">
               <TreatmentHeroBookingCardLazy chrome={chrome} />
             </ServiceStickyBookingRail>
 
-            <div className="service-main-column min-w-0 max-w-full space-y-2 bg-[#FAFBFE] pb-10 pt-2 sm:pb-12 lg:col-start-1 lg:pt-4">
+            <div className="service-main-column min-w-0 max-w-full space-y-2 bg-[#FAFBFE] pb-10 pt-2 sm:pb-12 lg:col-start-1 lg:row-start-2 lg:pt-4">
+              <ServiceMobileHeroIntro
+                heading={heading}
+                tagline={service.hero?.tagline}
+                className="hidden pb-3 pt-0 lg:block"
+              />
               <QuickFactsCard
                 facts={service.hero?.quickFacts}
                 note={service.hero?.quickFactsNote}

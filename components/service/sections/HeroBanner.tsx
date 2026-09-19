@@ -170,21 +170,6 @@ function HeroBackground({
           className="h-full w-full object-cover object-[center_22%] lg:object-[center_30%]"
         />
       </picture>
-      <div
-        className="absolute inset-0 hidden lg:block"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(10,37,64,0.94) 0%, rgba(15,55,110,0.82) 32%, rgba(21,87,160,0.35) 58%, rgba(21,87,160,0.08) 78%, transparent 100%)",
-        }}
-      />
-      <div
-        className="absolute inset-0 lg:hidden"
-        style={{
-          // Lighter mid-frame so the photo reads; soft top/bottom scrims for copy.
-          background:
-            "linear-gradient(180deg, rgba(10,37,64,0.48) 0%, rgba(10,37,64,0.22) 38%, rgba(10,37,64,0.32) 62%, rgba(10,37,64,0.62) 100%)",
-        }}
-      />
     </div>
   );
 }
@@ -228,16 +213,12 @@ export function ServiceHeroBackdrop({
 }
 
 function HeroCopy({
-  heading,
-  tagline,
   crumbItems,
   primaryCtaLabel,
   secondaryCtaLabel,
   primaryCtaHref,
   whatsappHref,
 }: {
-  heading: string;
-  tagline?: string;
   crumbItems: HeroBreadcrumb[];
   primaryCtaLabel: string;
   secondaryCtaLabel: string;
@@ -272,19 +253,16 @@ function HeroCopy({
         </ol>
       </nav>
 
-      <div className="flex min-w-0 flex-1 flex-col pb-5 pt-0 sm:pb-6 sm:pt-2 lg:justify-center lg:pb-0 lg:pt-0">
-        <div className="flex min-w-0 flex-col pt-3 sm:pt-4 lg:flex-none lg:pt-0">
-          <h1 className="mx-auto w-full max-w-3xl text-center font-heading text-[clamp(1.5rem,5.2vw,3.5rem)] font-bold leading-[1.18] tracking-tight text-pretty text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.65),0_2px_16px_rgba(0,0,0,0.45),0_4px_24px_rgba(10,37,64,0.4)] lg:mx-0 lg:text-left lg:text-[clamp(2rem,4.2vw,3.5rem)] lg:leading-[1.1] lg:text-balance lg:[text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_12px_rgba(10,37,64,0.35)]">
-            {heading}
-          </h1>
-          {tagline ? (
-            <p className="mx-auto mt-3 w-full max-w-2xl text-center text-[1rem] leading-relaxed text-pretty text-white/95 [text-shadow:0_1px_3px_rgba(0,0,0,0.6),0_2px_12px_rgba(0,0,0,0.35)] sm:mt-4 sm:text-[1.0625rem] sm:text-lg lg:mx-0 lg:mt-5 lg:text-left lg:text-white/95 lg:[text-shadow:none]">
-              {tagline}
-            </p>
-          ) : null}
-        </div>
-
-        <div className="mt-auto flex w-full max-w-full shrink-0 flex-col items-stretch gap-3 pt-6 sm:mt-9 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-center sm:gap-4 sm:pt-0 lg:mt-8 lg:justify-start">
+      <div className="flex min-w-0 flex-1 flex-col pb-5 pt-0 sm:pb-6 sm:pt-2 lg:justify-start lg:pb-0 lg:pt-0">
+        {/* Title/tagline render below hero (mobile: above form; desktop: above snapshot). */}
+        <div
+          className={cn(
+            "mt-auto flex w-full max-w-full shrink-0 flex-col items-stretch gap-3 pt-6",
+            "sm:mt-9 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-center sm:gap-4 sm:pt-0",
+            // Desktop: viewport-centered, anchored just above the hero image bottom.
+            "lg:mt-auto lg:mb-6 lg:w-screen lg:max-w-[100vw] lg:ml-[calc(50%-50vw)] lg:justify-center lg:px-4 lg:pt-0 xl:mb-8",
+          )}
+        >
           <a
             href={primaryCtaHref}
             className={cn(
@@ -354,8 +332,6 @@ export function HeroBanner({
 
   const copy = (
     <HeroCopy
-      heading={heading}
-      tagline={tagline}
       crumbItems={crumbItems}
       primaryCtaLabel={primaryCtaLabel}
       secondaryCtaLabel={secondaryCtaLabel}
@@ -419,13 +395,49 @@ export function HeroBanner({
           <div className="flex min-h-0 flex-1 flex-col">{copy}</div>
 
           {showBookingCard ? (
-            <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:w-[320px] lg:max-w-none">
-              <TreatmentHeroBookingCardLazy chrome={chrome} />
-            </div>
+            <>
+              <ServiceMobileHeroIntro heading={heading} tagline={tagline} />
+              <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:w-[320px] lg:max-w-none">
+                <TreatmentHeroBookingCardLazy chrome={chrome} />
+              </div>
+            </>
           ) : null}
         </div>
       </div>
     </header>
+  );
+}
+
+/**
+ * Title + tagline below the hero photo plane.
+ * - Mobile: above the booking form (`lg:hidden` via default class)
+ * - Desktop: above the quick-facts snapshot (`hidden lg:block`)
+ */
+export function ServiceMobileHeroIntro({
+  heading,
+  tagline,
+  className,
+}: {
+  heading: string;
+  tagline?: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative z-10 bg-[#FAFBFE] px-0 pb-4 pt-5 lg:hidden",
+        className,
+      )}
+    >
+      <h1 className="mx-auto w-full max-w-3xl text-center font-heading text-[clamp(1.5rem,5.2vw,2.25rem)] font-bold leading-[1.18] tracking-tight text-pretty text-[#0A2540] lg:mx-0 lg:text-left lg:text-[clamp(1.75rem,3vw,2.5rem)] lg:leading-[1.15]">
+        {heading}
+      </h1>
+      {tagline ? (
+        <p className="mx-auto mt-3 w-full max-w-2xl text-center text-[1rem] leading-relaxed text-pretty text-slate-600 sm:mt-3.5 sm:text-[1.0625rem] lg:mx-0 lg:mt-4 lg:text-left lg:text-lg">
+          {tagline}
+        </p>
+      ) : null}
+    </div>
   );
 }
 
