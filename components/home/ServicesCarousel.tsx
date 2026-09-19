@@ -151,7 +151,7 @@ export function ServicesCarousel({
   useEffect(() => {
     if (reducedMotion || !inView || maxIndex <= 0) return;
 
-    let intervalId: ReturnType<typeof setInterval> | undefined;
+    let intervalId: ReturnType<typeof window.setInterval> | undefined;
     const startTimeoutId = window.setTimeout(() => {
       const advance = () => {
         if (isDraggingRef.current || userPausedRef.current) return;
