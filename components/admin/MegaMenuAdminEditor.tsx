@@ -1,13 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
 import {
   resetMegaMenuAction,
   saveMegaMenuAction,
+  uploadMegaMenuImageAction,
 } from "@/lib/navigation/megaMenuActions";
+import {
+  MEGA_MENU_PANEL_DISPLAY,
+  MEGA_MENU_PANEL_IMAGE_SIZE,
+} from "@/lib/navigation/megaMenuImage";
+import { resizeFileToExactSize } from "@/lib/media/resizeImageToExactSize";
 import type { MegaServiceCategory } from "@/lib/navigation/services-mega-menu";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +28,8 @@ export function MegaMenuAdminEditor({ initialCategories, canEdit }: Props) {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const fileInputs = useRef<Record<string, HTMLInputElement | null>>({});
 
   function updateCategoryHref(categoryIndex: number, href: string) {
     setCategories((prev) =>
@@ -121,6 +129,50 @@ export function MegaMenuAdminEditor({ initialCategories, canEdit }: Props) {
     });
   }
 
+  async function onUploadImage(categoryIndex: number, file: File | undefined) {
+    if (!canEdit || !file) return;
+    const category = categories[categoryIndex];
+    if (!category) return;
+
+    setMessage(null);
+    setError(null);
+    setUploadingId(category.id);
+
+    try {
+      const blob = await resizeFileToExactSize(
+        file,
+        MEGA_MENU_PANEL_IMAGE_SIZE,
+        file.type === "image/png" ? "image/png" : "image/jpeg",
+      );
+      const formData = new FormData();
+      formData.set(
+        "file",
+        new File([blob], `${category.id}-panel.jpg`, {
+          type: blob.type || "image/jpeg",
+        }),
+      );
+
+      const result = await uploadMegaMenuImageAction(category.id, formData);
+      if (!result.ok) {
+        setError(result.message);
+        return;
+      }
+
+      updateCategoryImageSrc(categoryIndex, result.imageSrc);
+      setMessage(
+        `${category.title}: panel image updated (${MEGA_MENU_PANEL_IMAGE_SIZE.width}×${MEGA_MENU_PANEL_IMAGE_SIZE.height}px). Click Save menu to publish.`,
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Could not process that image.",
+      );
+    } finally {
+      setUploadingId(null);
+      const input = fileInputs.current[category.id];
+      if (input) input.value = "";
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-3">
@@ -175,14 +227,25 @@ export function MegaMenuAdminEditor({ initialCategories, canEdit }: Props) {
                 {category.title}
               </h2>
               <p className="mt-0.5 text-xs text-slate-500">{category.description}</p>
-              <div className="mt-3 grid gap-3 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:items-start">
-                <div className="relative mx-auto aspect-[4/5] w-24 overflow-hidden rounded-lg border border-slate-200 bg-slate-100 sm:mx-0 sm:w-full">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={category.imageSrc?.trim() || "/images/hero-model.png"}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
+              <div className="mt-3 grid gap-3 sm:grid-cols-[15.5rem_minmax(0,1fr)] sm:items-start">
+                <div className="space-y-2">
+                  <div
+                    className="relative mx-auto w-full max-w-[15.5rem] overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm sm:mx-0"
+                    style={{
+                      aspectRatio: `${MEGA_MENU_PANEL_DISPLAY.width} / ${MEGA_MENU_PANEL_DISPLAY.height}`,
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={category.imageSrc?.trim() || "/images/hero-model.png"}
+                      alt=""
+                      className="h-full w-full object-cover object-center"
+                    />
+                  </div>
+                  <p className="text-center text-[0.65rem] text-slate-500 sm:text-left">
+                    Preview at menu size ({MEGA_MENU_PANEL_DISPLAY.width}×
+                    {MEGA_MENU_PANEL_DISPLAY.height}px, 4:5)
+                  </p>
                 </div>
                 <div className="space-y-3">
                   <label className="block text-xs font-medium text-slate-600">
@@ -198,22 +261,69 @@ export function MegaMenuAdminEditor({ initialCategories, canEdit }: Props) {
                       placeholder="/hair-transplant/"
                     />
                   </label>
-                  <label className="block text-xs font-medium text-slate-600">
-                    Category panel image
-                    <input
-                      type="text"
-                      disabled={!canEdit || pending}
-                      value={category.imageSrc ?? ""}
-                      onChange={(e) =>
-                        updateCategoryImageSrc(categoryIndex, e.target.value)
-                      }
-                      className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none ring-primary/20 focus:border-primary focus:ring-2 disabled:bg-slate-50"
-                      placeholder="/images/services/hair-transplant.jpg"
-                    />
-                    <span className="mt-1 block text-[0.7rem] font-normal text-slate-500">
-                      Public path under <code>/public</code> or full image URL. Shown in the Services mega menu side panel.
-                    </span>
-                  </label>
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-slate-600">
+                      Category panel image
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        ref={(el) => {
+                          fileInputs.current[category.id] = el;
+                        }}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        disabled={!canEdit || pending || uploadingId === category.id}
+                        className="sr-only"
+                        onChange={(e) =>
+                          void onUploadImage(
+                            categoryIndex,
+                            e.target.files?.[0],
+                          )
+                        }
+                      />
+                      <button
+                        type="button"
+                        disabled={
+                          !canEdit || pending || uploadingId === category.id
+                        }
+                        onClick={() =>
+                          fileInputs.current[category.id]?.click()
+                        }
+                        className={cn(
+                          buttonVariants({ variant: "outline", size: "sm" }),
+                          "cursor-pointer",
+                        )}
+                      >
+                        {uploadingId === category.id
+                          ? "Uploading…"
+                          : "Upload panel image"}
+                      </button>
+                    </div>
+                    <label className="block text-xs font-medium text-slate-600">
+                      Or paste path / URL
+                      <input
+                        type="text"
+                        disabled={!canEdit || pending}
+                        value={category.imageSrc ?? ""}
+                        onChange={(e) =>
+                          updateCategoryImageSrc(
+                            categoryIndex,
+                            e.target.value,
+                          )
+                        }
+                        className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none ring-primary/20 focus:border-primary focus:ring-2 disabled:bg-slate-50"
+                        placeholder="/images/mega-menu/wellness.jpg"
+                      />
+                    </label>
+                    <p className="text-[0.7rem] font-normal leading-relaxed text-slate-500">
+                      Prefer{" "}
+                      <strong>Sanity Studio → Services mega menu</strong> for
+                      panel photos ({MEGA_MENU_PANEL_IMAGE_SIZE.width}×
+                      {MEGA_MENU_PANEL_IMAGE_SIZE.height}px). Local upload /
+                      path below is a fallback when Sanity has no image. Then
+                      click <strong>Save menu</strong> for path changes.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

@@ -15,6 +15,7 @@ import {
   type ReactNode,
 } from "react";
 
+import { MEGA_MENU_PANEL_DISPLAY } from "@/lib/navigation/megaMenuImage";
 import {
   MEGA_SERVICE_CATEGORIES,
   type MegaServiceCategory,
@@ -139,7 +140,7 @@ function FeatureCard({ category }: { category: MegaServiceCategory }) {
           fill
           loading="lazy"
           className="object-cover object-center transition-opacity duration-300"
-          sizes="250px"
+          sizes={`${MEGA_MENU_PANEL_DISPLAY.width}px`}
         />
       </div>
       <div className="flex flex-1 flex-col bg-[#E8F4F8] px-4 py-4">

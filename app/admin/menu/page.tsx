@@ -21,9 +21,10 @@ export default async function AdminMenuPage() {
           Services mega menu
         </h1>
         <p className="mt-1 max-w-2xl text-sm text-slate-600">
-          Set the page URL next to each Services menu item. Saved links persist
-          in the database and appear on the public site navbar (desktop mega
-          menu and mobile Services list).
+          Edit Services menu links here. Category panel photos are managed in{" "}
+          <strong>Sanity Studio → Services mega menu</strong> (496×620, 4:5).
+          Sanity images override local paths when set. Link changes persist in
+          the database and show on the public navbar.
         </p>
       </div>
 

@@ -9,6 +9,7 @@ import {
   testimonial,
 } from "./cms";
 import { homepage } from "./homepage";
+import { servicesMegaMenu } from "./servicesMegaMenu";
 
 export const schemaTypes = [
   // objects
@@ -25,6 +26,7 @@ export const schemaTypes = [
   testimonial,
   navigation,
   homepage,
+  servicesMegaMenu,
   siteSettings,
   redirect,
 ];

@@ -26,8 +26,8 @@ const DEFAULT_SECONDARY_LABEL = "Meet Dr. Bhasin";
 const DEFAULT_SECONDARY_HREF = "/about/dr-sandeep-bhasin";
 
 /**
- * Full-bleed About hero — brand-first, one headline, one line, CTAs.
- * Background image is the dominant visual plane (no inset media card).
+ * Full-bleed About hero — brand-first editorial plane.
+ * Teal depth + gold accent; one headline, one line, CTAs.
  */
 export function AboutHero() {
   const { config } = useStaticEditContext();
@@ -77,7 +77,7 @@ export function AboutHero() {
   );
 
   return (
-    <header className="relative isolate min-h-[min(92vh,52rem)] overflow-hidden">
+    <header className="relative isolate min-h-[min(94vh,54rem)] overflow-hidden">
       <div className="absolute inset-0">
         <EditableElement
           id="about.hero.image"
@@ -93,49 +93,52 @@ export function AboutHero() {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-[center_30%]"
+              className="scale-105 object-cover object-[center_28%] motion-safe:animate-[about-hero-ken_28s_ease-out_forwards]"
             />
           )}
         </EditableElement>
-        {/* Atmospheric depth — soft teal wash + left-weighted readability scrim */}
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary-950/88 via-primary-900/72 to-primary-800/45"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary-950/92 via-primary-900/78 to-primary-700/50"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#041f1f]/75 via-[#0a3f3f]/40 to-transparent"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,transparent_0%,rgba(4,31,31,0.55)_70%)]"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          className="pointer-events-none absolute inset-0 opacity-[0.09]"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 20% 20%, #fff 0.6px, transparent 0.7px)",
-            backgroundSize: "18px 18px",
+              "radial-gradient(circle at 1px 1px, #fff 0.65px, transparent 0)",
+            backgroundSize: "22px 22px",
           }}
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-primary-950/40 to-transparent"
           aria-hidden
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[min(92vh,52rem)] flex-col">
+      <div className="relative z-10 flex min-h-[min(94vh,54rem)] flex-col">
         <div className="container-content pt-6 sm:pt-8">
           <AboutBreadcrumb tone="on-dark" />
         </div>
 
-        <div className="container-content flex flex-1 flex-col justify-center pb-16 pt-10 sm:pb-20 sm:pt-14 lg:pb-24">
+        <div className="container-content flex flex-1 flex-col justify-center pb-20 pt-12 sm:pb-24 sm:pt-16 lg:pb-28">
           <div className="max-w-3xl">
             <EditableElement
               id="about.hero.label"
               kind="label"
               defaultValue={DEFAULT_BRAND}
               as="p"
-              className="font-heading text-[clamp(1.35rem,3.2vw,2.15rem)] font-semibold tracking-tight text-white"
+              className="font-heading text-[clamp(1.4rem,3.4vw,2.25rem)] font-semibold tracking-tight text-white"
             >
               {({ value }) => value || brand}
             </EditableElement>
 
             <div
-              className="mt-4 h-px w-16 bg-accent-gold-400/90 sm:mt-5"
+              className="mt-5 h-[2px] w-14 origin-left bg-accent-gold-400 motion-safe:animate-[about-rule-in_0.8s_ease-out_0.2s_both] sm:mt-6 sm:w-16"
               aria-hidden
             />
 
@@ -144,7 +147,7 @@ export function AboutHero() {
               kind="heading"
               defaultValue={DEFAULT_HEADING}
               as="h1"
-              className="mt-5 max-w-[18ch] font-heading text-[clamp(2rem,5vw,3.35rem)] font-bold leading-[1.12] tracking-tight text-balance text-white sm:mt-6"
+              className="mt-6 max-w-[17ch] font-heading text-[clamp(2.15rem,5.4vw,3.6rem)] font-bold leading-[1.08] tracking-tight text-balance text-white sm:mt-7"
             >
               {({ value }) => value || heading}
             </EditableElement>
@@ -154,12 +157,11 @@ export function AboutHero() {
               kind="paragraph"
               defaultValue={DEFAULT_BODY}
               as="p"
-              className="mt-5 max-w-xl text-body-lg leading-relaxed text-white/82 sm:mt-6"
+              className="mt-6 max-w-xl text-body-lg leading-relaxed text-white/80 sm:mt-7"
             >
               {({ value }) => value || body}
             </EditableElement>
 
-            {/* Keep body.1 editable in Studio without crowding the hero */}
             <EditableElement
               id="about.hero.body.1"
               kind="paragraph"
@@ -170,7 +172,7 @@ export function AboutHero() {
               {() => null}
             </EditableElement>
 
-            <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <div className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <EditableElement
                 id="about.hero.primaryButton"
                 kind="button"
@@ -183,7 +185,7 @@ export function AboutHero() {
                     href={String(fields.href ?? primaryHref)}
                     className={cn(
                       buttonVariants({ size: "lg" }),
-                      "h-12 rounded-lg bg-white px-7 text-primary-800 shadow-md hover:bg-white/92 no-underline hover:no-underline",
+                      "h-12 rounded-lg bg-white px-8 text-primary-800 shadow-md transition-transform hover:bg-white/93 hover:scale-[1.02] no-underline hover:no-underline",
                     )}
                   >
                     {String(fields.label ?? primaryLabel)}
@@ -203,7 +205,7 @@ export function AboutHero() {
                     href={String(fields.href ?? secondaryHref)}
                     className={cn(
                       buttonVariants({ size: "lg", variant: "outline" }),
-                      "h-12 rounded-lg border-white/45 bg-transparent px-7 text-white hover:bg-white/10 no-underline hover:no-underline",
+                      "h-12 rounded-lg border-white/50 bg-white/5 px-8 text-white backdrop-blur-sm hover:bg-white/12 no-underline hover:no-underline",
                     )}
                   >
                     {String(fields.label ?? secondaryLabel)}
@@ -211,8 +213,17 @@ export function AboutHero() {
                 )}
               </EditableElement>
             </div>
-
           </div>
+        </div>
+
+        <div
+          className="pointer-events-none absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 opacity-70 sm:flex"
+          aria-hidden
+        >
+          <span className="text-[0.65rem] uppercase tracking-[0.22em] text-white/70">
+            Scroll
+          </span>
+          <span className="h-8 w-px bg-gradient-to-b from-accent-gold-400 to-transparent" />
         </div>
       </div>
     </header>

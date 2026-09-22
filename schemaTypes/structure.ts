@@ -35,6 +35,14 @@ export const structure: StructureResolver = (S) =>
         .schemaType("navigation")
         .child(S.documentTypeList("navigation").title("Navigation")),
       S.listItem()
+        .title("Services mega menu")
+        .child(
+          S.document()
+            .schemaType("servicesMegaMenu")
+            .documentId("servicesMegaMenu")
+            .title("Services mega menu"),
+        ),
+      S.listItem()
         .title("Homepage")
         .child(
           S.document()

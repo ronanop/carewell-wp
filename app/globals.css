@@ -1174,6 +1174,27 @@
   }
 }
 
+/* About page hero subtle ken burns + gold rule */
+@keyframes about-hero-ken {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes about-rule-in {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
 .admin-nav-progress-bar {
   width: 40%;
   animation: admin-nav-progress 0.48s ease-out forwards;

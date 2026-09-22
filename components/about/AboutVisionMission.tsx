@@ -3,15 +3,18 @@ import { visionPoints } from "@/components/about/content";
 
 export function AboutVisionMission() {
   return (
-    <section className="bg-background" aria-labelledby="vision-heading">
-      <div className="container-content section-padding !pt-6 md:!pt-8 lg:!pt-8">
+    <section
+      className="relative overflow-hidden bg-primary-50/40"
+      aria-labelledby="vision-heading"
+    >
+      <div className="container-content section-padding !pt-8 md:!pt-10">
         <AboutReveal className="mx-auto max-w-2xl text-center">
-          <p className="text-label uppercase tracking-[0.16em] text-accent-gold-600">
+          <p className="text-label uppercase tracking-[0.18em] text-accent-gold-600">
             Purpose
           </p>
           <h2
             id="vision-heading"
-            className="mt-3 font-heading text-h2 font-bold tracking-tight text-[#0A2540]"
+            className="mt-4 font-heading text-h2 font-bold tracking-tight text-[#0A2540]"
           >
             Vision &amp; mission
           </h2>
@@ -21,21 +24,21 @@ export function AboutVisionMission() {
           </p>
         </AboutReveal>
 
-        <ul className="mx-auto mt-12 grid max-w-5xl gap-8 md:grid-cols-3 md:gap-10">
+        <ul className="mx-auto mt-14 grid max-w-5xl gap-6 md:grid-cols-3 md:gap-5">
           {visionPoints.map((point, index) => (
             <AboutReveal key={point.title} delay={index * 0.06}>
-              <li className="relative pt-2">
+              <li className="relative flex h-full flex-col rounded-[1.25rem] bg-background px-6 py-8 ring-1 ring-primary-100/80">
                 <span
-                  className="font-heading text-sm font-semibold tabular-nums tracking-[0.14em] text-accent-gold-600"
+                  className="font-heading text-sm font-semibold tabular-nums tracking-[0.16em] text-accent-gold-600"
                   aria-hidden
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <div className="mt-3 h-px w-10 bg-primary-300" aria-hidden />
-                <h3 className="mt-4 font-heading text-h4 font-semibold text-[#0A2540]">
+                <div className="mt-4 h-[2px] w-9 bg-primary-600" aria-hidden />
+                <h3 className="mt-5 font-heading text-h4 font-semibold text-[#0A2540]">
                   {point.title}
                 </h3>
-                <p className="mt-2 text-body leading-relaxed text-muted-foreground">
+                <p className="mt-3 flex-1 text-body leading-relaxed text-muted-foreground">
                   {point.description}
                 </p>
               </li>

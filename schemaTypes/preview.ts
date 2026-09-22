@@ -60,6 +60,12 @@ export const presentationLocations = {
       locations: [{ title: "Homepage", href: "/" }],
     }),
   }),
+  servicesMegaMenu: defineLocations({
+    select: {},
+    resolve: () => ({
+      locations: [{ title: "Site (Services menu)", href: "/" }],
+    }),
+  }),
 };
 
 /** Opens the public page with unpublished drafts, without publishing. */

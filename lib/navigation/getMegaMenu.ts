@@ -9,6 +9,7 @@ import {
   type MegaServiceGroup,
   type MegaServiceLink,
 } from "@/lib/navigation/services-mega-menu";
+import { getSanityMegaMenuImages } from "@/lib/sanity/megaMenu";
 
 export const MEGA_MENU_CACHE_TAG = "mega-menu";
 
@@ -98,18 +99,37 @@ export function getDefaultMegaMenuCategories(): MegaServiceCategory[] {
   return structuredClone(MEGA_SERVICE_CATEGORIES);
 }
 
+function applySanityPanelImages(
+  categories: MegaServiceCategory[],
+  sanityImages: Map<string, string>,
+): MegaServiceCategory[] {
+  if (!sanityImages.size) return categories;
+  return categories.map((category) => {
+    const fromSanity = sanityImages.get(category.id);
+    return fromSanity ? { ...category, imageSrc: fromSanity } : category;
+  });
+}
+
 async function loadMegaMenuCategoriesFromDb(): Promise<MegaServiceCategory[]> {
+  let categories: MegaServiceCategory[];
   try {
     const prisma = getPrisma();
     const row = await prisma.siteMegaMenu.findUnique({
       where: { key: "default" },
     });
-    if (!row) return getDefaultMegaMenuCategories();
-    const parsed = normalizeMegaMenuCategories(row.categories);
-    return parsed ?? getDefaultMegaMenuCategories();
+    if (!row) {
+      categories = getDefaultMegaMenuCategories();
+    } else {
+      categories =
+        normalizeMegaMenuCategories(row.categories) ??
+        getDefaultMegaMenuCategories();
+    }
   } catch {
-    return getDefaultMegaMenuCategories();
+    categories = getDefaultMegaMenuCategories();
   }
+
+  const sanityImages = await getSanityMegaMenuImages();
+  return applySanityPanelImages(categories, sanityImages);
 }
 
 const getCachedMegaMenuCategories = unstable_cache(
@@ -123,6 +143,7 @@ const getCachedMegaMenuCategories = unstable_cache(
  * Public + admin: resolved mega menu (DB override or code defaults).
  * Cached so the public site can stay on ISR (no `noStore` on the hot path).
  * Admin saves call `revalidateTag(MEGA_MENU_CACHE_TAG)`.
+ * Sanity Studio panel images override DB/code defaults when set.
  */
 export async function getMegaMenuCategories(): Promise<MegaServiceCategory[]> {
   return getCachedMegaMenuCategories();
